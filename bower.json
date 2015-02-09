@@ -1,0 +1,6 @@
+{
+  "name": "yc-tracking",
+  "version": "0.0.1",
+  "main": "./dist/yc-tracking.min.js",
+  "license": "MIT"
+}
