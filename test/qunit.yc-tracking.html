@@ -22,14 +22,26 @@
 
         module('Public API');
 
+        // testing private methods, only for debugging purposes!
         test('userId call', function () {
             var library = new YcTracking();
             equal(library.getUserId(), library.getUserId(), 'Storing userId failed!');
         });
 
+        // testing private methods, only for debugging purposes!
         test('userDetails call', function () {
             var library = new YcTracking();
             equal(library.getUserId(), library.getUserDetails().userId, 'Storing userId failed!');
+        });
+
+        test('private function call', function () {
+            var library = new YcTracking();
+            equal(library._executeEventCall, undefined, '_executeEventCall is exposed publicly!');
+        });
+
+        test('private variable', function () {
+            var library = new YcTracking();
+            equal(library.customerId, undefined, 'customerId is exposed publicly!');
         });
 
         test('trackClick call', function () {
@@ -75,6 +87,11 @@
         test('trackBlacklist call', function () {
             var library = new YcTracking();
             equal(library, library.trackBlacklist(1, (Math.random() * 100) + 1), 'trackBlacklist not called properly.');
+        });
+
+        test('method chaining (trackClick) call', function () {
+            var library = new YcTracking();
+            equal(library, library.trackClick(1, (Math.random() * 100) + 1).trackClick(1, (Math.random() * 100) + 1), 'chaining not supported.');
         });
     }());
 </script>

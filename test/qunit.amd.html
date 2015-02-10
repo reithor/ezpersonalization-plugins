@@ -55,35 +55,138 @@
                 requireConfig();
 
                 require(['ycTrackingMin'], function (ycTracking) {
-                    var track = new ycTracking();
-                    ok(track.getUserId === undefined);
-                    start();
-                });
-            });
-
-            asyncTest('trackClick call', function () {
-                requireConfig();
-                require(['ycTracking'], function (ycTracking) {
-                    var track = new ycTracking();
-                    ok(track === track.trackClick(1, 29429));
+                    var library = new ycTracking();
+                    ok(library.getUserId === undefined);
                     start();
                 });
             });
 
             asyncTest('userId call', function () {
                 requireConfig();
+
                 require(['ycTracking'], function (ycTracking) {
-                    var track = new ycTracking();
-                    ok(track.getUserId() === track.getUserId());
+                    var library = new ycTracking();
+                    ok(library.getUserId() === library.getUserId());
                     start();
                 });
             });
 
             asyncTest('userDetails call', function () {
                 requireConfig();
+
                 require(['ycTracking'], function (ycTracking) {
-                    var track = new ycTracking();
-                    ok(track.getUserId() === track.getUserDetails().userId);
+                    var library = new ycTracking();
+                    ok(library.getUserId() === library.getUserDetails().userId);
+                    start();
+                });
+            });
+
+            asyncTest('_executeEventCall is private.', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    var library = new ycTracking();
+                    ok(library._executeEventCall === undefined);
+                    start();
+                });
+            });
+
+            asyncTest('customerId is private.', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    var library = new ycTracking();
+                    ok(library.customerId === undefined);
+                    start();
+                });
+            });
+
+            asyncTest('trackClick call', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    var library = new ycTracking();
+                    ok(library === library.trackClick(1, (Math.random() * 100) + 1));
+                    start();
+                });
+            });
+
+            asyncTest('trackRate call', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    var library = new ycTracking();
+                    ok(library === library.trackRate(1, (Math.random() * 100) + 1, (Math.random() * 100) + 1));
+                    start();
+                });
+            });
+
+            asyncTest('trackBasket call', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    var library = new ycTracking();
+                    ok(library === library.trackBasket(1, (Math.random() * 100) + 1, 'cat/subcat'));
+                    start();
+                });
+            });
+
+            asyncTest('trackBuy call', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    var library = new ycTracking();
+                    ok(library === library.trackBuy(1, (Math.random() * 100) + 1, (Math.random() * 10) + 1, Math.random() * 100, 'EUR'));
+                    start();
+                });
+            });
+
+            asyncTest('trackLogin call', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    var library = new ycTracking();
+                    ok(library === library.trackLogin((Math.random() * 100) + 1));
+                    start();
+                });
+            });
+
+            asyncTest('trackRendered call', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    var library = new ycTracking();
+                    ok(library === library.trackRendered(1, [(Math.random() * 100) + 1, (Math.random() * 100) + 1, (Math.random() * 100) + 1]));
+                    start();
+                });
+            });
+
+            asyncTest('trackClickRecommended call', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    var library = new ycTracking();
+                    ok(library === library.trackClickRecommended(1, (Math.random() * 100) + 1, 'SCENARIO with & chars'));
+                    start();
+                });
+            });
+
+            asyncTest('trackConsume call', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    var library = new ycTracking();
+                    ok(library === library.trackConsume(1, (Math.random() * 100) + 1));
+                    start();
+                });
+            });
+
+            asyncTest('trackBlacklist call', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    var library = new ycTracking();
+                    ok(library === library.trackBlacklist(1, (Math.random() * 100) + 1));
                     start();
                 });
             });
