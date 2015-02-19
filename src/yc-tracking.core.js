@@ -43,7 +43,7 @@ function initYcTrackingCore(context) {
             eventHost = '//event.yoochoose.net/api/' + customerId,
 
             /**
-             * Duration of session in days.
+             * Duration of session in minutes.
              *
              * @private
              * @readonly
@@ -130,7 +130,7 @@ function initYcTrackingCore(context) {
                 var userData = _getLocalStore(),
                     expirationDate = new Date();
 
-                expirationDate.setDate(expirationDate.getDate() + sessionDuration);
+                expirationDate.setMinutes(expirationDate.getMinutes() + sessionDuration);
                 if (!userId) {
                     if (userData && userData.expires > new Date().getTime()) {
                         userId = userData.userId;
@@ -139,7 +139,7 @@ function initYcTrackingCore(context) {
                     }
                 }
 
-                _setLocalStore({userId: userId, expires: expirationDate.getTime()});
+                _setLocalStore({ userId: userId, expires: expirationDate.getTime() });
                 return userId;
             },
 
@@ -158,7 +158,7 @@ function initYcTrackingCore(context) {
                     c_start = cookieValue.indexOf(' ' + cookieId + '='),
                     c_end;
 
-                expirationDate.setDate(expirationDate.getDate() + sessionDuration);
+                expirationDate.setMinutes(expirationDate.getMinutes() + sessionDuration);
                 if (!userId) {
                     if (c_start === -1) {
                         c_start = cookieValue.indexOf(cookieId + '=');
@@ -211,11 +211,18 @@ function initYcTrackingCore(context) {
             };
 
         /**
+         * Resets user identifier. Should be called when user logs out.
+         */
+        this.resetUser = function () {
+            return _userId(_generateGuid());
+        };
+
+        /**
          * Method for tracking Click event.
          *
          * @param {number} itemTypeId
          * @param {string} itemId
-         * @param {string} [categoryPath]
+         * @param {string} [categoryPath] The forward slash separated path of categories of the item.
          * @return {YcTracking} This object's instance.
          */
         this.trackClick = function (itemTypeId, itemId, categoryPath) {
@@ -233,7 +240,7 @@ function initYcTrackingCore(context) {
          *
          * @param {number} itemTypeId
          * @param {string} itemId
-         * @param {number} rating
+         * @param {number} rating The rating a user gives an item. Value range: [0-100]
          * @return {YcTracking} This object's instance.
          */
         this.trackRate = function (itemTypeId, itemId, rating) {
@@ -247,7 +254,7 @@ function initYcTrackingCore(context) {
          *
          * @param {number} itemTypeId
          * @param {string} itemId
-         * @param {string} [categoryPath]
+         * @param {string} [categoryPath] The category path from where the item is placed into the shopping cart.
          * @return {YcTracking} This object's instance.
          */
         this.trackBasket = function (itemTypeId, itemId, categoryPath) {
@@ -265,8 +272,9 @@ function initYcTrackingCore(context) {
          *
          * @param {number} itemTypeId
          * @param {string} itemId
-         * @param {number} quantity
-         * @param {number} price
+         * @param {number} quantity The number of items the user bought.
+         * @param {number} price A price in decimal format for a <b>single item</b>.
+         *      If the price has a decimal part, the dot must be used.
          * @param {string} currencyCode
          * @return {YcTracking} This object's instance.
          */
@@ -285,10 +293,12 @@ function initYcTrackingCore(context) {
          * @return {YcTracking} This object's instance.
          */
         this.trackLogin = function (targetUserId) {
-            _executeEventCall('/login/' + _userId() + '/' + encodeURIComponent(targetUserId));
+            var userID = _userId();
+            if (userID !== targetUserId) {
+                _executeEventCall('/login/' + userID + '/' + encodeURIComponent(targetUserId));
+                _userId(targetUserId, true);
+            }
 
-            // @todo: check whether targetUserId should be used from now on.
-            _userId(targetUserId);
             return this;
         };
 
@@ -315,7 +325,7 @@ function initYcTrackingCore(context) {
          *
          * @param {number} itemTypeId
          * @param {number} itemId
-         * @param {string} scenario
+         * @param {string} scenario Name of the scenario, where recommendations originated from.
          * @return {YcTracking} This object's instance.
          */
         this.trackClickRecommended = function (itemTypeId, itemId, scenario) {
@@ -330,10 +340,13 @@ function initYcTrackingCore(context) {
          *
          * @param {number} itemTypeId
          * @param {string} itemId
+         * @param {number} percentage It defines how much of an item was consumed,
+         *      e.g. an article was read only by 20%, a movie was watched by 90% or someone finished 3/4
+         *      of all levels of a game. Value range: [0-100]
          * @return {YcTracking} This object's instance.
          */
-        this.trackConsume = function (itemTypeId, itemId) {
-            _executeEventCall('/consume/' + _userId() + '/' + itemTypeId + '/' + itemId);
+        this.trackConsume = function (itemTypeId, itemId, percentage) {
+            _executeEventCall('/consume/' + _userId() + '/' + itemTypeId + '/' + itemId + (percentage ? '?percentage=' + percentage : ''));
             return this;
         };
 
@@ -367,6 +380,7 @@ function initYcTrackingCore(context) {
                 return _getLocalStore();
             };
         }
+
         return this;
     };
 
@@ -405,6 +419,6 @@ function initYcTrackingCore(context) {
         }
     };
 
-    context.YcTracking = YcTracking;
+    context.YcTracking = new YcTracking();
     context.YcValidator = YcValidator;
 }

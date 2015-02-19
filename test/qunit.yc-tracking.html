@@ -6,6 +6,7 @@
 
     <script src="../src/yc-tracking.core.js"></script>
     <script src="../src/yc-tracking.magento.js"></script>
+    <script src="../src/yc-tracking.shopware.js"></script>
     <script src="../src/yc-tracking.init.js"></script>
 </head>
 <body>
@@ -20,78 +21,82 @@
 <script>
     (function () {
 
+        function randomFloat() {
+            return parseFloat((Math.random() * 100).toFixed(2));
+        }
+
+        function randomInt(max) {
+            max = max || 1000;
+            return parseInt(Math.random() * max);
+        }
+
+        function randomText(max) {
+            max = max || 6;
+            return ((Math.random() * (Math.pow(16, max) - 1)) | 0).toString(16);
+        }
+
         module('Public API');
 
         // testing private methods, only for debugging purposes!
         test('userId call', function () {
-            var library = new YcTracking();
-            equal(library.getUserId(), library.getUserId(), 'Storing userId failed!');
+            equal(YcTracking.getUserId(), YcTracking.getUserId(), 'Storing userId failed!');
         });
 
         // testing private methods, only for debugging purposes!
         test('userDetails call', function () {
-            var library = new YcTracking();
-            equal(library.getUserId(), library.getUserDetails().userId, 'Storing userId failed!');
+            equal(YcTracking.getUserId(), YcTracking.getUserDetails().userId, 'Storing userId failed!');
         });
 
         test('private function call', function () {
-            var library = new YcTracking();
-            equal(library._executeEventCall, undefined, '_executeEventCall is exposed publicly!');
+            equal(YcTracking._executeEventCall, undefined, '_executeEventCall is exposed publicly!');
         });
 
         test('private variable', function () {
-            var library = new YcTracking();
-            equal(library.customerId, undefined, 'customerId is exposed publicly!');
+            equal(YcTracking.customerId, undefined, 'customerId is exposed publicly!');
         });
 
         test('trackClick call', function () {
-            var library = new YcTracking();
-            equal(library, library.trackClick(1, (Math.random() * 100) + 1), 'trackClick not called properly.');
+            equal(YcTracking, YcTracking.trackClick(1, randomInt(), randomText() + '/' + randomText()), 'trackClick not called properly.');
         });
 
         test('trackRate call', function () {
-            var library = new YcTracking();
-            equal(library, library.trackRate(1, (Math.random() * 100) + 1, (Math.random() * 100) + 1), 'trackRate not called properly.');
+            equal(YcTracking, YcTracking.trackRate(1, randomInt(), randomInt(100)), 'trackRate not called properly.');
         });
 
         test('trackBasket call', function () {
-            var library = new YcTracking();
-            equal(library, library.trackBasket(1, (Math.random() * 100) + 1, 'cat/subcat'), 'trackBasket not called properly.');
+            equal(YcTracking, YcTracking.trackBasket(1, randomInt(), randomText() + '/' + randomText()), 'trackBasket not called properly.');
         });
 
         test('trackBuy call', function () {
-            var library = new YcTracking();
-            equal(library, library.trackBuy(1, (Math.random() * 100) + 1, (Math.random() * 10) + 1, Math.random() * 100, 'EUR'), 'trackBuy not called properly.');
+            equal(YcTracking, YcTracking.trackBuy(1, randomInt(), randomInt(), randomFloat(), 'EUR'), 'trackBuy not called properly.');
         });
 
         test('trackLogin call', function () {
-            var library = new YcTracking();
-            equal(library, library.trackLogin((Math.random() * 100) + 1), 'trackLogin not called properly.');
+            equal(YcTracking, YcTracking.trackLogin(randomText(12)), 'trackLogin not called properly.');
         });
 
         test('trackRendered call', function () {
-            var library = new YcTracking();
-            equal(library, library.trackRendered(1, [(Math.random() * 100) + 1, (Math.random() * 100) + 1, (Math.random() * 100) + 1]), 'trackRendered not called properly.');
+            equal(YcTracking, YcTracking.trackRendered(1, [randomInt(), randomInt(), randomInt()]), 'trackRendered not called properly.');
         });
 
         test('trackClickRecommended call', function () {
-            var library = new YcTracking();
-            equal(library, library.trackClickRecommended(1, (Math.random() * 100) + 1, 'SCENARIO with & chars'), 'trackClickRecommended not called properly.');
+            equal(YcTracking, YcTracking.trackClickRecommended(1, randomInt(), 'SCENARIO with & chars'), 'trackClickRecommended not called properly.');
         });
 
         test('trackConsume call', function () {
-            var library = new YcTracking();
-            equal(library, library.trackConsume(1, (Math.random() * 100) + 1), 'trackConsume not called properly.');
+            equal(YcTracking, YcTracking.trackConsume(1, randomInt()), 'trackConsume not called properly.');
         });
 
         test('trackBlacklist call', function () {
-            var library = new YcTracking();
-            equal(library, library.trackBlacklist(1, (Math.random() * 100) + 1), 'trackBlacklist not called properly.');
+            equal(YcTracking, YcTracking.trackBlacklist(1, randomInt()), 'trackBlacklist not called properly.');
         });
 
         test('method chaining (trackClick) call', function () {
-            var library = new YcTracking();
-            equal(library, library.trackClick(1, (Math.random() * 100) + 1).trackClick(1, (Math.random() * 100) + 1), 'chaining not supported.');
+            equal(YcTracking, YcTracking.trackClick(1, randomInt()).trackClick(1, randomInt()), 'chaining not supported.');
+        });
+
+        test('trackLogout call', function () {
+            notEqual(YcTracking.getUserId(), YcTracking.resetUser(), 'userID didn\'t change on logout.');
         });
     }());
 </script>

@@ -1,8 +1,9 @@
-/* global initYcTrackingCore initYcTrackingModule initYcTrackingSubmodule */
+/* global initYcTrackingCore initYcTrackingMagentoModule initYcTrackingShopwareModule */
 var initYcTracking = function (context) {
 
     initYcTrackingCore(context);
     initYcTrackingMagentoModule(context);
+    initYcTrackingShopwareModule(context);
 
     return context.YcTracking;
 };

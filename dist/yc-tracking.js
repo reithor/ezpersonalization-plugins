@@ -1,4 +1,4 @@
-/*! yc-tracking - v0.0.1 - 2015-02-10 - Soprex */
+/*! yc-tracking - v0.0.1 - 2015-02-19 - Soprex */
 ;(function (global) {
 
 // Compiler directive for UglifyJS.  See yc-tracking.const.js for more info.
@@ -46,7 +46,7 @@ function initYcTrackingCore(context) {
             eventHost = '//event.yoochoose.net/api/' + customerId,
 
             /**
-             * Duration of session in days.
+             * Duration of session in minutes.
              *
              * @private
              * @readonly
@@ -133,7 +133,7 @@ function initYcTrackingCore(context) {
                 var userData = _getLocalStore(),
                     expirationDate = new Date();
 
-                expirationDate.setDate(expirationDate.getDate() + sessionDuration);
+                expirationDate.setMinutes(expirationDate.getMinutes() + sessionDuration);
                 if (!userId) {
                     if (userData && userData.expires > new Date().getTime()) {
                         userId = userData.userId;
@@ -142,7 +142,7 @@ function initYcTrackingCore(context) {
                     }
                 }
 
-                _setLocalStore({userId: userId, expires: expirationDate.getTime()});
+                _setLocalStore({ userId: userId, expires: expirationDate.getTime() });
                 return userId;
             },
 
@@ -152,16 +152,17 @@ function initYcTrackingCore(context) {
              *
              * @private
              * @param {string} [userId] - User identifier
+             * @param {boolean} [login] - Indicates whether user is logged in
              * @returns {string}
              */
-            _userIdFromCookie = function (userId) {
+            _userIdFromCookie = function (userId, login) {
                 var cookieId = 'YCCookie',
                     cookieValue = GLOBAL.document.cookie,
                     expirationDate = new Date(),
                     c_start = cookieValue.indexOf(' ' + cookieId + '='),
                     c_end;
 
-                expirationDate.setDate(expirationDate.getDate() + sessionDuration);
+                expirationDate.setMinutes(expirationDate.getMinutes() + sessionDuration);
                 if (!userId) {
                     if (c_start === -1) {
                         c_start = cookieValue.indexOf(cookieId + '=');
@@ -193,12 +194,12 @@ function initYcTrackingCore(context) {
              * @param {string} [userId] - User identifier to set.
              * @returns {string} User identifier.
              */
-            _userId = function (userId) {
+            _userId = function (userId, login) {
                 if (_canUseLocalStorage()) {
-                    return _userIdFromLocalStorage(userId);
+                    return _userIdFromLocalStorage(userId, login);
                 }
 
-                return _userIdFromCookie(userId);
+                return _userIdFromCookie(userId, login);
             },
 
             /**
@@ -214,11 +215,18 @@ function initYcTrackingCore(context) {
             };
 
         /**
+         * Resets user identifier. Should be called when user logs out.
+         */
+        this.resetUser = function () {
+            return _userId(_generateGuid());
+        };
+
+        /**
          * Method for tracking Click event.
          *
          * @param {number} itemTypeId
          * @param {string} itemId
-         * @param {string} [categoryPath]
+         * @param {string} [categoryPath] The forward slash separated path of categories of the item.
          * @return {YcTracking} This object's instance.
          */
         this.trackClick = function (itemTypeId, itemId, categoryPath) {
@@ -236,7 +244,7 @@ function initYcTrackingCore(context) {
          *
          * @param {number} itemTypeId
          * @param {string} itemId
-         * @param {number} rating
+         * @param {number} rating The rating a user gives an item. Value range: [0-100]
          * @return {YcTracking} This object's instance.
          */
         this.trackRate = function (itemTypeId, itemId, rating) {
@@ -250,7 +258,7 @@ function initYcTrackingCore(context) {
          *
          * @param {number} itemTypeId
          * @param {string} itemId
-         * @param {string} [categoryPath]
+         * @param {string} [categoryPath] The category path from where the item is placed into the shopping cart.
          * @return {YcTracking} This object's instance.
          */
         this.trackBasket = function (itemTypeId, itemId, categoryPath) {
@@ -268,8 +276,9 @@ function initYcTrackingCore(context) {
          *
          * @param {number} itemTypeId
          * @param {string} itemId
-         * @param {number} quantity
-         * @param {number} price
+         * @param {number} quantity The number of items the user bought.
+         * @param {number} price A price in decimal format for a <b>single item</b>.
+         *      If the price has a decimal part, the dot must be used.
          * @param {string} currencyCode
          * @return {YcTracking} This object's instance.
          */
@@ -288,10 +297,12 @@ function initYcTrackingCore(context) {
          * @return {YcTracking} This object's instance.
          */
         this.trackLogin = function (targetUserId) {
-            _executeEventCall('/login/' + _userId() + '/' + encodeURIComponent(targetUserId));
+            var userID = _userId();
+            if (userID !== targetUserId) {
+                _executeEventCall('/login/' + userID + '/' + encodeURIComponent(targetUserId));
+                _userId(targetUserId, true);
+            }
 
-            // @todo: check whether targetUserId should be used from now on.
-            _userId(targetUserId);
             return this;
         };
 
@@ -318,7 +329,7 @@ function initYcTrackingCore(context) {
          *
          * @param {number} itemTypeId
          * @param {number} itemId
-         * @param {string} scenario
+         * @param {string} scenario Name of the scenario, where recommendations originated from.
          * @return {YcTracking} This object's instance.
          */
         this.trackClickRecommended = function (itemTypeId, itemId, scenario) {
@@ -333,10 +344,13 @@ function initYcTrackingCore(context) {
          *
          * @param {number} itemTypeId
          * @param {string} itemId
+         * @param {number} percentage It defines how much of an item was consumed,
+         *      e.g. an article was read only by 20%, a movie was watched by 90% or someone finished 3/4
+         *      of all levels of a game. Value range: [0-100]
          * @return {YcTracking} This object's instance.
          */
-        this.trackConsume = function (itemTypeId, itemId) {
-            _executeEventCall('/consume/' + _userId() + '/' + itemTypeId + '/' + itemId);
+        this.trackConsume = function (itemTypeId, itemId, percentage) {
+            _executeEventCall('/consume/' + _userId() + '/' + itemTypeId + '/' + itemId + (percentage ? '?percentage=' + percentage : ''));
             return this;
         };
 
@@ -370,6 +384,7 @@ function initYcTrackingCore(context) {
                 return _getLocalStore();
             };
         }
+
         return this;
     };
 
@@ -408,7 +423,7 @@ function initYcTrackingCore(context) {
         }
     };
 
-    context.YcTracking = YcTracking;
+    context.YcTracking = new YcTracking();
     context.YcValidator = YcValidator;
 }
 
@@ -416,16 +431,98 @@ function initYcTrackingMagentoModule(context) {
 
     'use strict';
 
-    var YcTracking = context.YcTracking;
-
-    // @todo: implement hooking of events in Magento
 }
 
-/* global initYcTrackingCore initYcTrackingModule initYcTrackingSubmodule */
+function initYcTrackingShopwareModule(context) {
+
+    'use strict';
+
+    function stripItemId(itemId) {
+        return itemId.substr(0, 2) === 'SW' ? itemId.substr(2) : itemId;
+    }
+
+    function trackClick() {
+        var articleBox = document.getElementById('buybox'),
+            itemId,
+            category,
+            metaTags,
+            i;
+        if (document.body.className === 'ctl_detail' && articleBox) {
+            metaTags = articleBox.getElementsByTagName('meta');
+            for (i = 0; i < metaTags.length; i++) {
+                if (metaTags[i].getAttribute('itemprop') === 'category') {
+                    category = metaTags[i].getAttribute('content').replace(/ > /g, '/');
+                } else if (metaTags[i].getAttribute('itemprop') === 'identifier') {
+                    itemId = metaTags[i].getAttribute('content').split(':')[1];
+                }
+            }
+
+            if (itemId) {
+                YcTracking.trackClick(1, stripItemId(itemId), category);
+            }
+        }
+    }
+
+    function hookBasketHandlers() {
+        // in widget: <a href="..shopurl../checkout/addArticle/sAdd/ITEMID" ...>...</a>
+        // on product details form: <form name="sAddToBasket" action="..shopurl../checkout/addArticle" ...>
+        var anchors = document.getElementsByTagName('a'),
+            btn = document.getElementById('basketButton'),
+            i;
+        for (i = 0; i < anchors.length; i += 1) {
+            if (/checkout\/addArticle\/sAdd/i.test(anchors[i].href)) {
+                anchors[i].onclick = function (e) {
+                    var parts = e.target.href.split('/'),
+                        itemId = parts[parts.length - 1];
+                    YcTracking.trackBasket(1, stripItemId(itemId), document.location.href);
+                };
+            }
+        }
+
+        if (document.body.className === 'ctl_detail' && btn) {
+            btn.onclick = function (e) {
+                var form = e.target.parentNode.parentNode,
+                    inputs = form.getElementsByTagName('input'),
+                    itemId, i;
+
+                if (inputs) {
+                    for (i = 0; i < inputs.length; i += 1) {
+                        if (inputs[i].name === 'sAdd') {
+                            itemId = inputs[i].value;
+                            break;
+                        }
+                    }
+                }
+
+                if (itemId) {
+                    YcTracking.trackBasket(1, stripItemId(itemId), document.location.href);
+                }
+            }
+        }
+    }
+
+    var YcTracking = context.YcTracking;
+
+    window.onload = function (e) {
+        if (window['yc_trackid']) {
+            YcTracking.trackLogin(yc_trackid);
+        }
+
+        if (window['yc_tracklogout']) {
+            YcTracking.resetUser();
+        }
+
+        trackClick();
+        hookBasketHandlers();
+    };
+}
+
+/* global initYcTrackingCore initYcTrackingMagentoModule initYcTrackingShopwareModule */
 var initYcTracking = function (context) {
 
     initYcTrackingCore(context);
     initYcTrackingMagentoModule(context);
+    initYcTrackingShopwareModule(context);
 
     return context.YcTracking;
 };

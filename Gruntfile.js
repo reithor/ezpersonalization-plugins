@@ -13,7 +13,8 @@ module.exports = function (grunt) {
     var LIBRARY_NAME = 'yc-tracking';
 
     var MODULE_LIST = [
-        sub('src/%s.magento.js')
+        sub('src/%s.magento.js'),
+        sub('src/%s.shopware.js')
     ];
 
     var DIST_HEAD_LIST = [
