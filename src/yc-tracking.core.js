@@ -31,7 +31,7 @@ function initYcTrackingCore(context) {
          * @readonly
          * @type {number}
          */
-        var customerId = 903,
+        var customerId = 904,
 
             /**
              * Holds path to event tracking api with customer id.
@@ -280,7 +280,7 @@ function initYcTrackingCore(context) {
          */
         this.trackBuy = function (itemTypeId, itemId, quantity, price, currencyCode) {
             var url = '/buy/' + _userId() + '/' + itemTypeId + '/' + itemId +
-                '?fullprice=' + price + currencyCode + '&quantity=' + quantity;
+                '?fullprice=' + price.replace(',', '.') + currencyCode + '&quantity=' + quantity;
 
             _executeEventCall(url);
             return this;

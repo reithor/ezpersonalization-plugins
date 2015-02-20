@@ -2,15 +2,24 @@ function initYcTrackingShopwareModule(context) {
 
     'use strict';
 
+    var USE_N2GO = true;
+
     function stripItemId(itemId) {
+        if (USE_N2GO) {
+            return itemId;
+        }
+
         return itemId.substr(0, 2) === 'SW' ? itemId.substr(2) : itemId;
     }
 
-    function trackClick() {
+    function trackClickAndRate() {
         var articleBox = document.getElementById('buybox'),
             itemId,
             category,
             metaTags,
+            comments,
+            form,
+            rating,
             i;
         if (document.body.className === 'ctl_detail' && articleBox) {
             metaTags = articleBox.getElementsByTagName('meta');
@@ -24,6 +33,19 @@ function initYcTrackingShopwareModule(context) {
 
             if (itemId) {
                 YcTracking.trackClick(1, stripItemId(itemId), category);
+            }
+
+            // by default, rating is done when user evaluates product
+            comments = document.getElementById('comments');
+            form = comments ? comments.getElementsByTagName('form') : null;
+            if (form && form.length === 1) {
+                form = form[0];
+                rating = form.getElementsByTagName('select');
+                if (rating && rating[0].name === 'sVoteStars') {
+                    form.onsubmit = function () {
+                        YcTracking.trackRate(1, stripItemId(itemId), rating[0].value * 10);
+                    }
+                }
             }
         }
     }
@@ -39,7 +61,7 @@ function initYcTrackingShopwareModule(context) {
                 anchors[i].onclick = function (e) {
                     var parts = e.target.href.split('/'),
                         itemId = parts[parts.length - 1];
-                    YcTracking.trackBasket(1, stripItemId(itemId), document.location.href);
+                    YcTracking.trackBasket(1, stripItemId(itemId), document.location.pathname);
                 };
             }
         }
@@ -60,8 +82,24 @@ function initYcTrackingShopwareModule(context) {
                 }
 
                 if (itemId) {
-                    YcTracking.trackBasket(1, stripItemId(itemId), document.location.href);
+                    YcTracking.trackBasket(1, stripItemId(itemId), document.location.pathname);
                 }
+            }
+        }
+    }
+
+    function trackBuy() {
+        var container = document.getElementById('yc-buy-items'),
+            i;
+        if (document.body.className === 'ctl_checkout' && container) {
+            for (i = 0; i < container.children.length; i++) {
+                var div = container.children[i],
+                    itemId = div.children[0].value,
+                    quantity = div.children[1].value,
+                    price = div.children[2].value,
+                    currency = div.children[3].value;
+
+                YcTracking.trackBuy(1, stripItemId(itemId), quantity, price, currency);
             }
         }
     }
@@ -77,7 +115,8 @@ function initYcTrackingShopwareModule(context) {
             YcTracking.resetUser();
         }
 
-        trackClick();
+        trackClickAndRate();
         hookBasketHandlers();
+        trackBuy();
     };
 }

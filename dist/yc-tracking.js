@@ -1,4 +1,4 @@
-/*! yc-tracking - v0.0.1 - 2015-02-19 - Soprex */
+/*! yc-tracking - v0.8.0 - 2015-02-20 - Soprex */
 ;(function (global) {
 
 // Compiler directive for UglifyJS.  See yc-tracking.const.js for more info.
@@ -34,7 +34,7 @@ function initYcTrackingCore(context) {
          * @readonly
          * @type {number}
          */
-        var customerId = 903,
+        var customerId = 904,
 
             /**
              * Holds path to event tracking api with customer id.
@@ -152,10 +152,9 @@ function initYcTrackingCore(context) {
              *
              * @private
              * @param {string} [userId] - User identifier
-             * @param {boolean} [login] - Indicates whether user is logged in
              * @returns {string}
              */
-            _userIdFromCookie = function (userId, login) {
+            _userIdFromCookie = function (userId) {
                 var cookieId = 'YCCookie',
                     cookieValue = GLOBAL.document.cookie,
                     expirationDate = new Date(),
@@ -194,12 +193,12 @@ function initYcTrackingCore(context) {
              * @param {string} [userId] - User identifier to set.
              * @returns {string} User identifier.
              */
-            _userId = function (userId, login) {
+            _userId = function (userId) {
                 if (_canUseLocalStorage()) {
-                    return _userIdFromLocalStorage(userId, login);
+                    return _userIdFromLocalStorage(userId);
                 }
 
-                return _userIdFromCookie(userId, login);
+                return _userIdFromCookie(userId);
             },
 
             /**
@@ -284,7 +283,7 @@ function initYcTrackingCore(context) {
          */
         this.trackBuy = function (itemTypeId, itemId, quantity, price, currencyCode) {
             var url = '/buy/' + _userId() + '/' + itemTypeId + '/' + itemId +
-                '?fullprice=' + price + currencyCode + '&quantity=' + quantity;
+                '?fullprice=' + price.replace(',', '.') + currencyCode + '&quantity=' + quantity;
 
             _executeEventCall(url);
             return this;
@@ -437,15 +436,24 @@ function initYcTrackingShopwareModule(context) {
 
     'use strict';
 
+    var USE_N2GO = true;
+
     function stripItemId(itemId) {
+        if (USE_N2GO) {
+            return itemId;
+        }
+
         return itemId.substr(0, 2) === 'SW' ? itemId.substr(2) : itemId;
     }
 
-    function trackClick() {
+    function trackClickAndRate() {
         var articleBox = document.getElementById('buybox'),
             itemId,
             category,
             metaTags,
+            comments,
+            form,
+            rating,
             i;
         if (document.body.className === 'ctl_detail' && articleBox) {
             metaTags = articleBox.getElementsByTagName('meta');
@@ -459,6 +467,19 @@ function initYcTrackingShopwareModule(context) {
 
             if (itemId) {
                 YcTracking.trackClick(1, stripItemId(itemId), category);
+            }
+
+            // by default, rating is done when user evaluates product
+            comments = document.getElementById('comments');
+            form = comments ? comments.getElementsByTagName('form') : null;
+            if (form && form.length === 1) {
+                form = form[0];
+                rating = form.getElementsByTagName('select');
+                if (rating && rating[0].name === 'sVoteStars') {
+                    form.onsubmit = function () {
+                        YcTracking.trackRate(1, stripItemId(itemId), rating[0].value * 10);
+                    }
+                }
             }
         }
     }
@@ -474,7 +495,7 @@ function initYcTrackingShopwareModule(context) {
                 anchors[i].onclick = function (e) {
                     var parts = e.target.href.split('/'),
                         itemId = parts[parts.length - 1];
-                    YcTracking.trackBasket(1, stripItemId(itemId), document.location.href);
+                    YcTracking.trackBasket(1, stripItemId(itemId), document.location.pathname);
                 };
             }
         }
@@ -495,8 +516,24 @@ function initYcTrackingShopwareModule(context) {
                 }
 
                 if (itemId) {
-                    YcTracking.trackBasket(1, stripItemId(itemId), document.location.href);
+                    YcTracking.trackBasket(1, stripItemId(itemId), document.location.pathname);
                 }
+            }
+        }
+    }
+
+    function trackBuy() {
+        var container = document.getElementById('yc-buy-items'),
+            i;
+        if (document.body.className === 'ctl_checkout' && container) {
+            for (i = 0; i < container.children.length; i++) {
+                var div = container.children[i],
+                    itemId = div.children[0].value,
+                    quantity = div.children[1].value,
+                    price = div.children[2].value,
+                    currency = div.children[3].value;
+
+                YcTracking.trackBuy(1, stripItemId(itemId), quantity, price, currency);
             }
         }
     }
@@ -512,8 +549,9 @@ function initYcTrackingShopwareModule(context) {
             YcTracking.resetUser();
         }
 
-        trackClick();
+        trackClickAndRate();
         hookBasketHandlers();
+        trackBuy();
     };
 }
 

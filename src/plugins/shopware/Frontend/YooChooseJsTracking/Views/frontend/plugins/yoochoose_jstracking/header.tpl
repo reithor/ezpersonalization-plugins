@@ -5,6 +5,6 @@
 {/block}
 
 {block name="frontend_index_header_javascript_inline" append}
-    var yc_trackid = '{$trackingId}';
-    var yc_tracklogout = '{$trackLogout}';
+    var yc_trackid = '{$ycTrackingId}';
+    var yc_tracklogout = '{$ycTrackLogout}';
 {/block}

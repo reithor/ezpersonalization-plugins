@@ -53,7 +53,7 @@ class Shopware_Plugins_Frontend_YooChooseJsTracking_Bootstrap extends Shopware_C
      */
     public function getLabel()
     {
-        return 'YooChooose JS Tracking';
+        return 'Yoochooose JS Tracking';
     }
 
     /**
@@ -63,7 +63,7 @@ class Shopware_Plugins_Frontend_YooChooseJsTracking_Bootstrap extends Shopware_C
      */
     public function getAuthor()
     {
-        return 'YooChoose GmbH';
+        return 'Yoochoose GmbH';
     }
 
     /**
@@ -73,14 +73,15 @@ class Shopware_Plugins_Frontend_YooChooseJsTracking_Bootstrap extends Shopware_C
      */
     public function getInfo()
     {
+        $img = base64_encode(file_get_contents(dirname(__FILE__) . '/logo.png'));
         return [
             'version' => $this->getVersion(),
             'author' => $this->getAuthor(),
             'copyright' => $this->getAuthor(),
             'label' => $this->getLabel(),
-            'support' => 'www.yoochoose.com',
+            'support' => 'support@yoochoose.com',
             'link' => 'http://www.yoochoose.com/',
-            'description' => ''
+            'description' => '<p><img src="data:image/png;base64,' . $img . '" /></p>'
         ];
     }
 
@@ -100,14 +101,16 @@ class Shopware_Plugins_Frontend_YooChooseJsTracking_Bootstrap extends Shopware_C
         $view->addTemplateDir($this->Path() . 'Views/');
         $view->extendsTemplate('frontend/plugins/yoochoose_jstracking/header.tpl');
         $userData = Shopware()->Modules()->Admin()->sGetUserData();
-        $view->trackingId = isset($userData['additional']['user']) ? $userData['additional']['user']['id'] : '';
+        $view->ycTrackingId = isset($userData['additional']['user']) ? $userData['additional']['user']['id'] : '';
         
+        $actionName = $request->getActionName();
         if ($request->getControllerName() === 'account') {
-            $actionName = $request->getActionName();
             if ($actionName === 'logout' || $actionName === 'ajax_logout') {
                 $view->extendsTemplate('frontend/plugins/yoochoose_jstracking/ajax_logout.tpl');
-                $view->trackLogout = true;
+                $view->ycTrackLogout = true;
             }
+        } else if ($request->getControllerName() === 'checkout' && $actionName === 'finish') {
+            $view->extendsTemplate('frontend/plugins/yoochoose_jstracking/finish.tpl');
         }
     }
 
