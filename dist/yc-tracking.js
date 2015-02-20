@@ -448,7 +448,7 @@ function initYcTrackingShopwareModule(context) {
 
     function trackClickAndRate() {
         var articleBox = document.getElementById('buybox'),
-            itemId,
+            itemId = window['yc_articleId'] ? window['yc_articleId'] : null,
             category,
             metaTags,
             comments,
@@ -460,24 +460,24 @@ function initYcTrackingShopwareModule(context) {
             for (i = 0; i < metaTags.length; i++) {
                 if (metaTags[i].getAttribute('itemprop') === 'category') {
                     category = metaTags[i].getAttribute('content').replace(/ > /g, '/');
-                } else if (metaTags[i].getAttribute('itemprop') === 'identifier') {
+                } else if (!itemId && metaTags[i].getAttribute('itemprop') === 'identifier') {
                     itemId = metaTags[i].getAttribute('content').split(':')[1];
                 }
             }
 
             if (itemId) {
                 YcTracking.trackClick(1, stripItemId(itemId), category);
-            }
 
-            // by default, rating is done when user evaluates product
-            comments = document.getElementById('comments');
-            form = comments ? comments.getElementsByTagName('form') : null;
-            if (form && form.length === 1) {
-                form = form[0];
-                rating = form.getElementsByTagName('select');
-                if (rating && rating[0].name === 'sVoteStars') {
-                    form.onsubmit = function () {
-                        YcTracking.trackRate(1, stripItemId(itemId), rating[0].value * 10);
+                // by default, rating is done when user evaluates product
+                comments = document.getElementById('comments');
+                form = comments ? comments.getElementsByTagName('form') : null;
+                if (form && form.length === 1) {
+                    form = form[0];
+                    rating = form.getElementsByTagName('select');
+                    if (rating && rating[0].name === 'sVoteStars') {
+                        form.onsubmit = function () {
+                            YcTracking.trackRate(1, stripItemId(itemId), rating[0].value * 10);
+                        }
                     }
                 }
             }
@@ -493,9 +493,11 @@ function initYcTrackingShopwareModule(context) {
         for (i = 0; i < anchors.length; i += 1) {
             if (/checkout\/addArticle\/sAdd/i.test(anchors[i].href)) {
                 anchors[i].onclick = function (e) {
-                    var parts = e.target.href.split('/'),
+                    var input = e.target.parentNode.querySelector('[name="yc_articleId"]'),
+                        parts = e.target.href.split('/'),
                         itemId = parts[parts.length - 1];
-                    YcTracking.trackBasket(1, stripItemId(itemId), document.location.pathname);
+
+                    YcTracking.trackBasket(1, stripItemId(input ? input.value : itemId), document.location.pathname);
                 };
             }
         }
@@ -504,9 +506,10 @@ function initYcTrackingShopwareModule(context) {
             btn.onclick = function (e) {
                 var form = e.target.parentNode.parentNode,
                     inputs = form.getElementsByTagName('input'),
-                    itemId, i;
+                    itemId = window['yc_articleId'] ? window['yc_articleId'] : null,
+                    i;
 
-                if (inputs) {
+                if (!itemId && inputs) {
                     for (i = 0; i < inputs.length; i += 1) {
                         if (inputs[i].name === 'sAdd') {
                             itemId = inputs[i].value;

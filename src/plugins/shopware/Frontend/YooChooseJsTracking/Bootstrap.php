@@ -104,13 +104,18 @@ class Shopware_Plugins_Frontend_YooChooseJsTracking_Bootstrap extends Shopware_C
         $view->ycTrackingId = isset($userData['additional']['user']) ? $userData['additional']['user']['id'] : '';
         
         $actionName = $request->getActionName();
-        if ($request->getControllerName() === 'account') {
+        $controllerName = $request->getControllerName();
+        if ($controllerName === 'account') {
             if ($actionName === 'logout' || $actionName === 'ajax_logout') {
                 $view->extendsTemplate('frontend/plugins/yoochoose_jstracking/ajax_logout.tpl');
                 $view->ycTrackLogout = true;
             }
-        } else if ($request->getControllerName() === 'checkout' && $actionName === 'finish') {
+        } else if ($controllerName === 'checkout' && $actionName === 'finish') {
+            // needed for buy event
             $view->extendsTemplate('frontend/plugins/yoochoose_jstracking/finish.tpl');
+        } else if ($controllerName === 'listing') {
+            // needed for basket event
+            $view->extendsTemplate('frontend/plugins/yoochoose_jstracking/box_article.tpl');
         }
     }
 
