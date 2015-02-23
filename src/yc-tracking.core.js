@@ -280,7 +280,7 @@ function initYcTrackingCore(context) {
          */
         this.trackBuy = function (itemTypeId, itemId, quantity, price, currencyCode) {
             var url = '/buy/' + _userId() + '/' + itemTypeId + '/' + itemId +
-                '?fullprice=' + price.replace(',', '.') + currencyCode + '&quantity=' + quantity;
+                '?fullprice=' + (price + '').replace(',', '.') + currencyCode + '&quantity=' + quantity;
 
             _executeEventCall(url);
             return this;

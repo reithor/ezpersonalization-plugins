@@ -1,4 +1,4 @@
-/*! yc-tracking - v0.8.0 - 2015-02-20 - Soprex */
+/*! yc-tracking - v0.8.0 - 2015-02-23 - Soprex */
 ;(function (global) {
 
 // Compiler directive for UglifyJS.  See yc-tracking.const.js for more info.
@@ -283,7 +283,7 @@ function initYcTrackingCore(context) {
          */
         this.trackBuy = function (itemTypeId, itemId, quantity, price, currencyCode) {
             var url = '/buy/' + _userId() + '/' + itemTypeId + '/' + itemId +
-                '?fullprice=' + price.replace(',', '.') + currencyCode + '&quantity=' + quantity;
+                '?fullprice=' + (price + '').replace(',', '.') + currencyCode + '&quantity=' + quantity;
 
             _executeEventCall(url);
             return this;
