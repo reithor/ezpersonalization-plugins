@@ -1,8 +1,4 @@
-// Compiler directive for UglifyJS.  See yc-tracking.const.js for more info.
-if (typeof DEBUG === 'undefined') {
-    DEBUG = true;
-}
-
+/* global _CUSTOMER_ID_ */
 /**
  * Reference to global object.
  */
@@ -31,7 +27,7 @@ function initYcTrackingCore(context) {
          * @readonly
          * @type {number}
          */
-        var customerId = 904,
+        var customerId = _CUSTOMER_ID_,
 
             /**
              * Holds path to event tracking api with customer id.
@@ -362,24 +358,6 @@ function initYcTrackingCore(context) {
             _executeEventCall(url);
             return this;
         };
-
-        if (DEBUG) {
-            /**
-             * For testing purposes only!
-             * @returns {string}
-             */
-            this.getUserId = function () {
-                return _userId();
-            };
-
-            /**
-             * For testing purposes only!
-             * @returns {*}
-             */
-            this.getUserDetails = function () {
-                return _getLocalStore();
-            };
-        }
 
         return this;
     };

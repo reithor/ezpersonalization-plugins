@@ -1,8 +1,9 @@
+/* jshint undef: true, unused: true */
 /* global initYcTrackingCore initYcTrackingMagentoModule initYcTrackingShopwareModule */
 var initYcTracking = function (context) {
 
     initYcTrackingCore(context);
-    initYcTrackingMagentoModule(context);
+    //initYcTrackingMagentoModule(context);
     initYcTrackingShopwareModule(context);
 
     return context.YcTracking;

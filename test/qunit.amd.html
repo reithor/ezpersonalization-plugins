@@ -74,24 +74,6 @@
                 });
             });
 
-            asyncTest('userId call', function () {
-                requireConfig();
-
-                require(['ycTracking'], function (ycTracking) {
-                    ok(ycTracking.getUserId() === ycTracking.getUserId());
-                    start();
-                });
-            });
-
-            asyncTest('userDetails call', function () {
-                requireConfig();
-
-                require(['ycTracking'], function (ycTracking) {
-                    ok(ycTracking.getUserId() === ycTracking.getUserDetails().userId);
-                    start();
-                });
-            });
-
             asyncTest('_executeEventCall is private.', function () {
                 requireConfig();
 

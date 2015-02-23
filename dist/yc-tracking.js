@@ -1,11 +1,7 @@
-/*! yc-tracking - v0.8.0 - 2015-02-23 - Soprex */
+/*! yc-tracking - v0.9.0 - 2015-02-23 - Soprex */
 ;(function (global) {
 
-// Compiler directive for UglifyJS.  See yc-tracking.const.js for more info.
-if (typeof DEBUG === 'undefined') {
-    DEBUG = true;
-}
-
+/* global _CUSTOMER_ID_ */
 /**
  * Reference to global object.
  */
@@ -34,7 +30,7 @@ function initYcTrackingCore(context) {
          * @readonly
          * @type {number}
          */
-        var customerId = 904,
+        var customerId = _CUSTOMER_ID_,
 
             /**
              * Holds path to event tracking api with customer id.
@@ -366,24 +362,6 @@ function initYcTrackingCore(context) {
             return this;
         };
 
-        if (DEBUG) {
-            /**
-             * For testing purposes only!
-             * @returns {string}
-             */
-            this.getUserId = function () {
-                return _userId();
-            };
-
-            /**
-             * For testing purposes only!
-             * @returns {*}
-             */
-            this.getUserDetails = function () {
-                return _getLocalStore();
-            };
-        }
-
         return this;
     };
 
@@ -436,16 +414,6 @@ function initYcTrackingShopwareModule(context) {
 
     'use strict';
 
-    var USE_N2GO = true;
-
-    function stripItemId(itemId) {
-        if (USE_N2GO) {
-            return itemId;
-        }
-
-        return itemId.substr(0, 2) === 'SW' ? itemId.substr(2) : itemId;
-    }
-
     function trackClickAndRate() {
         var articleBox = document.getElementById('buybox'),
             itemId = window['yc_articleId'] ? window['yc_articleId'] : null,
@@ -466,7 +434,7 @@ function initYcTrackingShopwareModule(context) {
             }
 
             if (itemId) {
-                YcTracking.trackClick(1, stripItemId(itemId), category);
+                YcTracking.trackClick(1, itemId, category);
 
                 // by default, rating is done when user evaluates product
                 comments = document.getElementById('comments');
@@ -476,8 +444,8 @@ function initYcTrackingShopwareModule(context) {
                     rating = form.getElementsByTagName('select');
                     if (rating && rating[0].name === 'sVoteStars') {
                         form.onsubmit = function () {
-                            YcTracking.trackRate(1, stripItemId(itemId), rating[0].value * 10);
-                        }
+                            YcTracking.trackRate(1, itemId, rating[0].value * 10);
+                        };
                     }
                 }
             }
@@ -489,16 +457,17 @@ function initYcTrackingShopwareModule(context) {
         // on product details form: <form name="sAddToBasket" action="..shopurl../checkout/addArticle" ...>
         var anchors = document.getElementsByTagName('a'),
             btn = document.getElementById('basketButton'),
-            i;
+            i,
+            clickHandler = function (e) {
+                var input = e.target.parentNode.querySelector('[name="yc_articleId"]'),
+                    parts = e.target.href.split('/'),
+                    itemId = parts[parts.length - 1];
+
+                YcTracking.trackBasket(1, input ? input.value : itemId, document.location.pathname);
+            };
         for (i = 0; i < anchors.length; i += 1) {
             if (/checkout\/addArticle\/sAdd/i.test(anchors[i].href)) {
-                anchors[i].onclick = function (e) {
-                    var input = e.target.parentNode.querySelector('[name="yc_articleId"]'),
-                        parts = e.target.href.split('/'),
-                        itemId = parts[parts.length - 1];
-
-                    YcTracking.trackBasket(1, stripItemId(input ? input.value : itemId), document.location.pathname);
-                };
+                anchors[i].onclick = clickHandler;
             }
         }
 
@@ -519,9 +488,9 @@ function initYcTrackingShopwareModule(context) {
                 }
 
                 if (itemId) {
-                    YcTracking.trackBasket(1, stripItemId(itemId), document.location.pathname);
+                    YcTracking.trackBasket(1, itemId, document.location.pathname);
                 }
-            }
+            };
         }
     }
 
@@ -536,7 +505,7 @@ function initYcTrackingShopwareModule(context) {
                     price = div.children[2].value,
                     currency = div.children[3].value;
 
-                YcTracking.trackBuy(1, stripItemId(itemId), quantity, price, currency);
+                YcTracking.trackBuy(1, itemId, quantity, price, currency);
             }
         }
     }
@@ -545,7 +514,7 @@ function initYcTrackingShopwareModule(context) {
 
     window.onload = function (e) {
         if (window['yc_trackid']) {
-            YcTracking.trackLogin(yc_trackid);
+            YcTracking.trackLogin(window['yc_trackid']);
         }
 
         if (window['yc_tracklogout']) {
@@ -558,11 +527,12 @@ function initYcTrackingShopwareModule(context) {
     };
 }
 
+/* jshint undef: true, unused: true */
 /* global initYcTrackingCore initYcTrackingMagentoModule initYcTrackingShopwareModule */
 var initYcTracking = function (context) {
 
     initYcTrackingCore(context);
-    initYcTrackingMagentoModule(context);
+    //initYcTrackingMagentoModule(context);
     initYcTrackingShopwareModule(context);
 
     return context.YcTracking;

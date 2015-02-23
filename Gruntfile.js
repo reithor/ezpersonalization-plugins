@@ -43,6 +43,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-qunit');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-replace');
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -60,6 +61,21 @@ module.exports = function (grunt) {
                 },
                 src: wrapModules(DEV_HEAD_LIST, TAIL_LIST),
                 dest: sub('dist/%s.js')
+            }
+        },
+        replace: {
+            dist: {
+                options: {
+                    patterns: [
+                        {
+                            match: /_CUSTOMER_ID_/g,
+                            replacement: '904'
+                        }
+                    ]
+                },
+                files: [
+                    {expand: true, flatten: true, src: [sub('dist/%s.js')], dest: 'dist/'}
+                ]
             }
         },
         uglify: {
@@ -97,6 +113,7 @@ module.exports = function (grunt) {
     ]);
     grunt.registerTask('build', [
         'concat:dist',
+        'replace:dist',
         'uglify:dist',
         'concat:dev'
     ]);

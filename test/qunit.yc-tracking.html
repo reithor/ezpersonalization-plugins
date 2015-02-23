@@ -37,16 +37,6 @@
 
         module('Public API');
 
-        // testing private methods, only for debugging purposes!
-        test('userId call', function () {
-            equal(YcTracking.getUserId(), YcTracking.getUserId(), 'Storing userId failed!');
-        });
-
-        // testing private methods, only for debugging purposes!
-        test('userDetails call', function () {
-            equal(YcTracking.getUserId(), YcTracking.getUserDetails().userId, 'Storing userId failed!');
-        });
-
         test('private function call', function () {
             equal(YcTracking._executeEventCall, undefined, '_executeEventCall is exposed publicly!');
         });
