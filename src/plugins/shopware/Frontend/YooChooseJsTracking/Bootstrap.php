@@ -101,15 +101,15 @@ class Shopware_Plugins_Frontend_YooChooseJsTracking_Bootstrap extends Shopware_C
         $view->addTemplateDir($this->Path() . 'Views/');
         $view->extendsTemplate('frontend/plugins/yoochoose_jstracking/header.tpl');
         $userData = Shopware()->Modules()->Admin()->sGetUserData();
-        $view->ycTrackingId = isset($userData['additional']['user']) ? $userData['additional']['user']['id'] : '';
-        $view->ycTrackingScriptUrl = preg_replace('(^https?:)', '', Shopware()->Config()->get('yoochoose_script_url'));
+        $view->assign('ycTrackingId', isset($userData['additional']['user']) ? $userData['additional']['user']['id'] : '');
+        $view->assign('ycTrackingScriptUrl', preg_replace('(^https?:)', '', Shopware()->Config()->get('yoochoose_script_url')));
         
         $actionName = $request->getActionName();
         $controllerName = $request->getControllerName();
         if ($controllerName === 'account') {
             if ($actionName === 'logout' || $actionName === 'ajax_logout') {
                 $view->extendsTemplate('frontend/plugins/yoochoose_jstracking/ajax_logout.tpl');
-                $view->ycTrackLogout = true;
+                $view->assign('ycTrackLogout', true);
             }
         } else if ($controllerName === 'checkout' && $actionName === 'finish') {
             // needed for buy event
