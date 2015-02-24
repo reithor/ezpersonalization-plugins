@@ -102,6 +102,7 @@ class Shopware_Plugins_Frontend_YooChooseJsTracking_Bootstrap extends Shopware_C
         $view->extendsTemplate('frontend/plugins/yoochoose_jstracking/header.tpl');
         $userData = Shopware()->Modules()->Admin()->sGetUserData();
         $view->ycTrackingId = isset($userData['additional']['user']) ? $userData['additional']['user']['id'] : '';
+        $view->ycTrackingScriptUrl = preg_replace('(^https?:)', '', Shopware()->Config()->get('yoochoose_script_url'));
         
         $actionName = $request->getActionName();
         $controllerName = $request->getControllerName();
@@ -121,7 +122,13 @@ class Shopware_Plugins_Frontend_YooChooseJsTracking_Bootstrap extends Shopware_C
 
     private function createPluginForm()
     {
-        // config form should be created here if necessary.
+        $form = $this->Form();
+
+        $form->setElement('text', 'yoochoose_script_url',
+            [
+                'label' => 'Script URL',
+                'required' => true,
+            ]);
     }
 
     private function createDatabase()
