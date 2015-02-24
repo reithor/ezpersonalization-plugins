@@ -1,4 +1,3 @@
-/* global _CUSTOMER_ID_ */
 /**
  * Reference to global object.
  */

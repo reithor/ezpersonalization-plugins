@@ -1,4 +1,4 @@
-function initYcTrackingShopwareModule(context) {
+function initYcTrackingModule(context) {
 
     'use strict';
 
@@ -100,7 +100,7 @@ function initYcTrackingShopwareModule(context) {
 
     var YcTracking = context.YcTracking;
 
-    window.onload = function (e) {
+    window.onload = function () {
         if (window['yc_trackid']) {
             YcTracking.trackLogin(window['yc_trackid']);
         }

@@ -1,4 +1,4 @@
-function initYcTrackingMagentoModule(context) {
+function initYcTrackingModule(context) {
 
     'use strict';
 

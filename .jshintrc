@@ -1,7 +1,10 @@
 {
   "globals": {
     "define": true,
-    "DEBUG": true
+    "DEBUG": true,
+    "_CUSTOMER_ID_": true,
+    "initYcTrackingModule": true,
+    "initYcTrackingCore": true
   },
 
   "asi": false,
