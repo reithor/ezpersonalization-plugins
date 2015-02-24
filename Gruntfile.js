@@ -55,11 +55,18 @@ module.exports = function (grunt) {
                 src: wrapModules(DIST_HEAD_LIST, TAIL_LIST),
                 dest: sub('dist/%s.js')
             },
-            dev: {
+            dev_mg: {
                 options: {
                     banner: BANNER
                 },
-                src: wrapModules(DEV_HEAD_LIST, TAIL_LIST),
+                src: DEV_HEAD_LIST.concat(sub('src/%s.magento.js')).concat(TAIL_LIST),
+                dest: sub('dist/%s.js')
+            },
+            dev_sw: {
+                options: {
+                    banner: BANNER
+                },
+                src: DEV_HEAD_LIST.concat(sub('src/%s.shopware.js')).concat(TAIL_LIST),
                 dest: sub('dist/%s.js')
             }
         },
@@ -111,10 +118,14 @@ module.exports = function (grunt) {
         'build',
         'qunit'
     ]);
-    grunt.registerTask('build', [
-        'concat:dist',
+    grunt.registerTask('build-shopware', [
+        'concat:dev_sw',
         'replace:dist',
-        'uglify:dist',
-        'concat:dev'
+        'uglify:dist'
+    ]);
+    grunt.registerTask('build-magento', [
+        'concat:dev_mg',
+        'replace:dist',
+        'uglify:dist'
     ]);
 };
