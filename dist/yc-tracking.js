@@ -1,4 +1,4 @@
-/*! yc-tracking - v0.9.0 - 2015-02-24 - Soprex */
+/*! yc-tracking - v0.9.0 - 2015-03-02 - Soprex */
 ;(function (global) {
 
 /**
@@ -292,7 +292,7 @@ function initYcTrackingCore(context) {
          */
         this.trackLogin = function (targetUserId) {
             var userID = _userId();
-            if (userID !== targetUserId) {
+            if (targetUserId && userID !== targetUserId) {
                 _executeEventCall('/login/' + userID + '/' + encodeURIComponent(targetUserId));
                 _userId(targetUserId, true);
             }
@@ -408,97 +408,176 @@ function initYcTrackingModule(context) {
     'use strict';
 
     function trackClickAndRate() {
-        var articleBox = document.getElementById('buybox'),
+        var addToCartForm = document.getElementById('product_addtocart_form'),
             itemId = window['yc_articleId'] ? window['yc_articleId'] : null,
-            category,
-            metaTags,
-            comments,
-            form,
-            rating,
+            category = '',
+            breadcrumbs, list,
+            reviewForm,
+            form = document.getElementById('review-form'),
             i;
-        if (document.body.className === 'ctl_detail' && articleBox) {
-            metaTags = articleBox.getElementsByTagName('meta');
-            for (i = 0; i < metaTags.length; i++) {
-                if (metaTags[i].getAttribute('itemprop') === 'category') {
-                    category = metaTags[i].getAttribute('content').replace(/ > /g, '/');
-                } else if (!itemId && metaTags[i].getAttribute('itemprop') === 'identifier') {
-                    itemId = metaTags[i].getAttribute('content').split(':')[1];
+        if (addToCartForm) {
+            if (!itemId) {
+                if (addToCartForm.product) {
+                    itemId = addToCartForm.product.value;
                 }
             }
 
-            if (itemId) {
-                YcTracking.trackClick(1, itemId, category);
-
-                // by default, rating is done when user evaluates product
-                comments = document.getElementById('comments');
-                form = comments ? comments.getElementsByTagName('form') : null;
-                if (form && form.length === 1) {
-                    form = form[0];
-                    rating = form.getElementsByTagName('select');
-                    if (rating && rating[0].name === 'sVoteStars') {
-                        form.onsubmit = function () {
-                            YcTracking.trackRate(1, itemId, rating[0].value * 10);
-                        };
+            // category is only stored in breadcrumbs
+            breadcrumbs = document.getElementsByClassName('breadcrumbs');
+            if (breadcrumbs) {
+                list = breadcrumbs[0].children[0].children;
+                for (i = 0; i < list.length; i++) {
+                    if (list[i].className.indexOf('category') !== -1) {
+                        category += list[i].children[0].text + '/';
                     }
                 }
+            }
+        }
+
+        if (itemId) {
+            YcTracking.trackClick(1, itemId, category);
+
+            if (reviewForm) {
+                reviewForm.onsubmit = function (e) {
+                    var getRatings = function(elements, sub) {
+                            for (var i = 0; i < elements.length; i++) {
+                                if (elements[i].checked) {
+                                    return parseInt(elements[i].value) - sub;
+                                }
+                            }
+
+                            return 0;
+                        },
+                        qualityRatings = getRatings(this.elements['ratings[1]'], 0),
+                        valueRatings = getRatings(this.elements['ratings[2]'], 5),
+                        priceRatings = getRatings(this.elements['ratings[3]'], 10);
+
+                    if (qualityRatings !== 0 && valueRatings !== 0 && priceRatings !== 0) {
+                        YcTracking.trackRate(1, itemId, qualityRatings * 20);
+                        YcTracking.trackRate(1, itemId, valueRatings * 20);
+                        YcTracking.trackRate(1, itemId, priceRatings * 20);
+                    }
+                };
             }
         }
     }
 
     function hookBasketHandlers() {
-        // in widget: <a href="..shopurl../checkout/addArticle/sAdd/ITEMID" ...>...</a>
-        // on product details form: <form name="sAddToBasket" action="..shopurl../checkout/addArticle" ...>
-        var anchors = document.getElementsByTagName('a'),
-            btn = document.getElementById('basketButton'),
-            i,
-            clickHandler = function (e) {
-                var input = e.target.parentNode.querySelector('[name="yc_articleId"]'),
-                    parts = e.target.href.split('/'),
-                    itemId = parts[parts.length - 1];
+        var addToCartForm = document.getElementById('product_addtocart_form');
 
-                YcTracking.trackBasket(1, input ? input.value : itemId, document.location.pathname);
-            };
-        for (i = 0; i < anchors.length; i += 1) {
-            if (/checkout\/addArticle\/sAdd/i.test(anchors[i].href)) {
-                anchors[i].onclick = clickHandler;
+        override('setLocation');
+        override('setPLocation');
+
+        if (window['addWItemToCart']) {
+            var oldAddWItemToCart = window.addWItemToCart;
+            window.addWItemToCart = function (itemId) {
+                YcTracking.trackBasket(1, itemId, document.location.pathname);
+                oldAddWItemToCart(itemId);
             }
         }
 
-        if (document.body.className === 'ctl_detail' && btn) {
-            btn.onclick = function (e) {
-                var form = e.target.parentNode.parentNode,
-                    inputs = form.getElementsByTagName('input'),
-                    itemId = window['yc_articleId'] ? window['yc_articleId'] : null,
-                    i;
-
-                if (!itemId && inputs) {
-                    for (i = 0; i < inputs.length; i += 1) {
-                        if (inputs[i].name === 'sAdd') {
-                            itemId = inputs[i].value;
-                            break;
+        if (window['addAllWItemsToCart']) {
+            var oldAddAllWItemsToCart = window.addAllWItemsToCart;
+            window.addAllWItemsToCart = function () {
+                var items, field, i;
+                oldAddAllWItemsToCart();
+                field = document.getElementById('qty');
+                if (field) {
+                    items = JSON.parse(field.value);
+                    if (items) {
+                        for (i = 0; i < items.length; i++) {
+                            if (items[i]) {
+                                YcTracking.trackBasket(1, i, document.location.pathname);
+                            }
                         }
+                    }
+                }
+            }
+        }
+
+        if (addToCartForm) {
+            attachSubmitAddToCartForm(addToCartForm);
+        }
+
+        if (window['productAddToCartForm']) {
+            attachSubmitAddToCartForm(window['productAddToCartForm'].form);
+        }
+
+        function override(func) {
+            if (window[func]) {
+                var oldFunc = window[func];
+                window[func] = function (url) {
+                    trackBasketFromUrl(url);
+                    oldFunc(url);
+                }
+            }
+        }
+
+        function trackBasketFromUrl(url) {
+            if (/checkout\/cart\/add/i.test(url)) {
+                var parts = url.split('/'),
+                    itemId, i;
+
+                for (i = 0; i < parts.length; i++) {
+                    if (parts[i] === 'product') {
+                        itemId = parseInt(parts[i + 1]);
+                        break;
                     }
                 }
 
                 if (itemId) {
                     YcTracking.trackBasket(1, itemId, document.location.pathname);
                 }
-            };
+            }
+        }
+
+        function attachSubmitAddToCartForm(form) {
+            var oldSubmit = null,
+                processForm = function() {
+                    if (this.product && this.product.value) {
+                        YcTracking.trackBasket(1, this.product.value, document.location.pathname);
+                    }
+
+                    if (oldSubmit) {
+                        oldSubmit.call(this);
+                    }
+                };
+
+            if (form) {
+                // bad! But since Magento js handlers did not use regular onsubmit event,
+                // this is the only way to handle submit on add to cart forms, because standard onSubmit event
+                // is not being fired.
+                oldSubmit = form.submit;
+                form.submit = processForm;
+            }
         }
     }
 
     function trackBuy() {
-        var container = document.getElementById('yc-buy-items'),
-            i;
-        if (document.body.className === 'ctl_checkout' && container) {
-            for (i = 0; i < container.children.length; i++) {
-                var div = container.children[i],
-                    itemId = div.children[0].value,
-                    quantity = div.children[1].value,
-                    price = div.children[2].value,
-                    currency = div.children[3].value;
+        var orders, order, i;
+        if (window['yc_orderData']) {
+            orders = window['yc_orderData'];
+            for (i = 0; i < orders.length; i++) {
+                order = orders[i];
+                if (order) {
+                    YcTracking.trackBuy(1, parseInt(order['id']), parseInt(order['quantity']), parseFloat(order['price']), order['currency']);
+                }
+            }
+        }
+    }
 
-                YcTracking.trackBuy(1, itemId, quantity, price, currency);
+    function hookLogoutHandler() {
+        var container = document.getElementById('header-account'),
+            anchors = container ? container.getElementsByTagName('a') : null,
+            i;
+
+        if (anchors) {
+            for (i = 0; i < anchors.length; i++) {
+                if (/customer\/account\/logout/i.test(anchors[i].href)) {
+                    anchors[i].onclick = function () {
+                        YcTracking.resetUser();
+                    }
+                }
             }
         }
     }
@@ -506,16 +585,11 @@ function initYcTrackingModule(context) {
     var YcTracking = context.YcTracking;
 
     window.onload = function () {
-        if (window['yc_trackid']) {
-            YcTracking.trackLogin(window['yc_trackid']);
-        }
-
-        if (window['yc_tracklogout']) {
-            YcTracking.resetUser();
-        }
+        YcTracking.trackLogin(window['yc_trackid']);
 
         trackClickAndRate();
         hookBasketHandlers();
+        hookLogoutHandler();
         trackBuy();
     };
 }

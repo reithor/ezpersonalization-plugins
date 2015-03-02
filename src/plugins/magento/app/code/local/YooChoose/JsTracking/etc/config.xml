@@ -18,6 +18,17 @@
         </blocks>
     </global>
     <frontend>
+        <events>
+            <checkout_onepage_controller_success_action>
+                <observers>
+                    <checkout_finish>
+                        <type>singleton</type>
+                        <class>YooChoose_JsTracking_Model_Observer</class>
+                        <method>trackBuy</method>
+                    </checkout_finish>
+                </observers>
+            </checkout_onepage_controller_success_action>
+        </events>
         <layout>
             <updates>
                 <yoochoose_jstracking module="YooChoose_JsTracking">

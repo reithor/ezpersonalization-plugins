@@ -289,7 +289,7 @@ function initYcTrackingCore(context) {
          */
         this.trackLogin = function (targetUserId) {
             var userID = _userId();
-            if (userID !== targetUserId) {
+            if (targetUserId && userID !== targetUserId) {
                 _executeEventCall('/login/' + userID + '/' + encodeURIComponent(targetUserId));
                 _userId(targetUserId, true);
             }

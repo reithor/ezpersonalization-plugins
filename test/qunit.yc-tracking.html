@@ -4,10 +4,7 @@
     <link href="qunit/qunit.css" rel="stylesheet" type="text/css"/>
     <script src="qunit/qunit.js"></script>
 
-    <script src="../src/yc-tracking.core.js"></script>
-    <script src="../src/yc-tracking.magento.js"></script>
-    <script src="../src/yc-tracking.shopware.js"></script>
-    <script src="../src/yc-tracking.init.js"></script>
+    <script src="../dist/yc-tracking.js"></script>
 </head>
 <body>
 <h1 id="qunit-header">YC tracking Unit Tests</h1>
@@ -86,7 +83,7 @@
         });
 
         test('trackLogout call', function () {
-            notEqual(YcTracking.getUserId(), YcTracking.resetUser(), 'userID didn\'t change on logout.');
+            notEqual(YcTracking.resetUser(), YcTracking.resetUser(), 'userID didn\'t change on logout.');
         });
     }());
 </script>

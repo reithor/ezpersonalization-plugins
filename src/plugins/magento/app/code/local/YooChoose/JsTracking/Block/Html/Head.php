@@ -34,9 +34,7 @@
 class YooChoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
 {
     /**
-     * Classify HTML head item and queue it into "lines" array
-     *
-     * @see self::getCssJsHtml()
+     * Inject YooChoose SJ Tracking script and related data into head.
      *
      * @param array  &$lines
      * @param string $itemIf
@@ -47,20 +45,50 @@ class YooChoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
      */
     protected function _separateOtherHtmlHeadElements(&$lines, $itemIf, $itemType, $itemParams, $itemName, $itemThe)
     {
-        $params = $itemParams ? ' ' . $itemParams : '';
-        $href = $itemName;
         switch ($itemType) {
-            case 'external_js':
-                $lines[$itemIf]['other'][] = sprintf('<script type="text/javascript" src="%s" %s></script>', $href, $params);
-                break;
-
-            case 'external_css':
-                $lines[$itemIf]['other'][] = sprintf('<link rel="stylesheet" type="text/css" href="%s" %s/>', $href, $params);
+            case 'yoochoose_js':
+                $lines[$itemIf]['other'][] = sprintf('<script type="text/javascript" src="%s"></script>',
+                    preg_replace('(^https?:)', '', Mage::getStoreConfig('yoochoose/yoochoose_script/url')));
+                $lines[$itemIf]['other'][] = $this->injectTracking();
                 break;
 
             default:
                 parent::_separateOtherHtmlHeadElements($lines, $itemIf, $itemType, $itemParams, $itemName, $itemThe);
                 break;
         }
+    }
+
+    private function injectTracking()
+    {
+        $customerId = 0;
+        if (Mage::getSingleton('customer/session')->isLoggedIn()) {
+            $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
+        }
+
+        $order = '{}';
+        if ($this->getOrderId()) {
+            $order = json_encode($this->getOrderData($this->getOrderId()));
+        }
+
+        return '<script type="text/javascript">var yc_trackid = ' . $customerId . ', yc_orderData = ' . $order . ';</script>';
+    }
+
+    private function getOrderData($orderId)
+    {
+        $collection = Mage::getResourceModel('sales/order_collection')
+            ->addFieldToFilter('entity_id', array('in' => array($orderId)));
+        $result = array();
+        foreach ($collection as $order) {
+            foreach ($order->getAllVisibleItems() as $item) {
+                $result[] = array(
+                    'id' => $item->getProductId(),
+                    'price' => $item->getBasePrice(),
+                    'quantity' => $item->getQtyOrdered(),
+                    'currency' => $order->getBaseCurrencyCode(),
+                );
+            }
+        }
+
+        return $result;
     }
 }

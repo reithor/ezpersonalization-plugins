@@ -21,16 +21,16 @@
  *
  * @category  design
  * @package   default_default
- * @author    YooChoose
+ * @author    Yoochoose
  */
 
 -->
-<layout version="0.1.0">
+<layout version="0.8.0">
     <default>
         <reference name="head">
             <action method="addItem">
-                <type>external_js</type>
-                <name>//localhost:63342/JS-Tracking/dist/yc-tracking.js</name>
+                <type>yoochoose_js</type>
+                <name>JSTracking</name>
                 <params/>
             </action>
         </reference>
