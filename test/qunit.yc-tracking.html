@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="qunit/qunit.css" rel="stylesheet" type="text/css"/>
+    <script src="qunit/qunit.js"></script>
+
+    <script src="../dist/yc-tracking.js"></script>
+</head>
+<body>
+<h1 id="qunit-header">YC tracking Unit Tests</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture"></div>
+<script>
+    (function () {
+
+        function randomFloat() {
+            return parseFloat((Math.random() * 100).toFixed(2));
+        }
+
+        function randomInt(max) {
+            max = max || 1000;
+            return parseInt(Math.random() * max);
+        }
+
+        function randomText(max) {
+            max = max || 6;
+            return ((Math.random() * (Math.pow(16, max) - 1)) | 0).toString(16);
+        }
+
+        module('Public API');
+
+        test('private function call', function () {
+            equal(YcTracking._executeEventCall, undefined, '_executeEventCall is exposed publicly!');
+        });
+
+        test('private variable', function () {
+            equal(YcTracking.customerId, undefined, 'customerId is exposed publicly!');
+        });
+
+        test('trackClick call', function () {
+            equal(YcTracking, YcTracking.trackClick(1, randomInt(), randomText() + '/' + randomText()), 'trackClick not called properly.');
+        });
+
+        test('trackRate call', function () {
+            equal(YcTracking, YcTracking.trackRate(1, randomInt(), randomInt(100)), 'trackRate not called properly.');
+        });
+
+        test('trackBasket call', function () {
+            equal(YcTracking, YcTracking.trackBasket(1, randomInt(), randomText() + '/' + randomText()), 'trackBasket not called properly.');
+        });
+
+        test('trackBuy call', function () {
+            equal(YcTracking, YcTracking.trackBuy(1, randomInt(), randomInt(), randomFloat(), 'EUR'), 'trackBuy not called properly.');
+        });
+
+        test('trackLogin call', function () {
+            equal(YcTracking, YcTracking.trackLogin(randomText(12)), 'trackLogin not called properly.');
+        });
+
+        test('trackRendered call', function () {
+            equal(YcTracking, YcTracking.trackRendered(1, [randomInt(), randomInt(), randomInt()]), 'trackRendered not called properly.');
+        });
+
+        test('trackClickRecommended call', function () {
+            equal(YcTracking, YcTracking.trackClickRecommended(1, randomInt(), 'SCENARIO with & chars'), 'trackClickRecommended not called properly.');
+        });
+
+        test('trackConsume call', function () {
+            equal(YcTracking, YcTracking.trackConsume(1, randomInt()), 'trackConsume not called properly.');
+        });
+
+        test('trackBlacklist call', function () {
+            equal(YcTracking, YcTracking.trackBlacklist(1, randomInt()), 'trackBlacklist not called properly.');
+        });
+
+        test('method chaining (trackClick) call', function () {
+            equal(YcTracking, YcTracking.trackClick(1, randomInt()).trackClick(1, randomInt()), 'chaining not supported.');
+        });
+
+        test('trackLogout call', function () {
+            notEqual(YcTracking.resetUser(), YcTracking.resetUser(), 'userID didn\'t change on logout.');
+        });
+    }());
+</script>
+</body>
+</html>
