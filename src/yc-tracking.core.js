@@ -213,6 +213,15 @@ function initYcTrackingCore(context) {
         };
 
         /**
+         * Gets current user identifier used in tracking calls.
+         *
+         * @returns {string}
+         */
+        this.getUserId = function () {
+            return _userId();
+        };
+
+        /**
          * Method for tracking Click event.
          *
          * @param {number} itemTypeId
