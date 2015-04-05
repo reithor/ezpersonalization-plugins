@@ -227,13 +227,14 @@ function initYcTrackingCore(context) {
          * @param {number} itemTypeId
          * @param {string} itemId
          * @param {string} [categoryPath] The forward slash separated path of categories of the item.
+         * @param {string} language
          * @return {YcTracking} This object's instance.
          */
-        this.trackClick = function (itemTypeId, itemId, categoryPath) {
+        this.trackClick = function (itemTypeId, itemId, categoryPath, language) {
             var url = '/click/' + _userId() + '/' + itemTypeId + '/' + itemId;
-            if (categoryPath) {
-                url += '?categorypath=' + encodeURIComponent(categoryPath);
-            }
+            
+            url += '?categorypath=' + (categoryPath ? encodeURIComponent(categoryPath) : '');
+            url += '&lang=' + language;
 
             _executeEventCall(url);
             return this;
@@ -245,10 +246,11 @@ function initYcTrackingCore(context) {
          * @param {number} itemTypeId
          * @param {string} itemId
          * @param {number} rating The rating a user gives an item. Value range: [0-100]
+         * @param {string} language
          * @return {YcTracking} This object's instance.
          */
-        this.trackRate = function (itemTypeId, itemId, rating) {
-            var url = '/rate/' + _userId() + '/' + itemTypeId + '/' + itemId + '?rating=' + rating;
+        this.trackRate = function (itemTypeId, itemId, rating, language) {
+            var url = '/rate/' + _userId() + '/' + itemTypeId + '/' + itemId + '?rating=' + rating + '&lang=' + language;
             _executeEventCall(url);
             return this;
         };
@@ -259,13 +261,14 @@ function initYcTrackingCore(context) {
          * @param {number} itemTypeId
          * @param {string} itemId
          * @param {string} [categoryPath] The category path from where the item is placed into the shopping cart.
+         * @param {string} language
          * @return {YcTracking} This object's instance.
          */
-        this.trackBasket = function (itemTypeId, itemId, categoryPath) {
+        this.trackBasket = function (itemTypeId, itemId, categoryPath, language) {
             var url = '/basket/' + _userId() + '/' + itemTypeId + '/' + itemId;
-            if (categoryPath) {
-                url += '?categorypath=' + encodeURIComponent(categoryPath);
-            }
+
+            url += '?categorypath=' + (categoryPath ? encodeURIComponent(categoryPath) : '');
+            url += '&lang=' + language;
 
             _executeEventCall(url);
             return this;
@@ -280,11 +283,13 @@ function initYcTrackingCore(context) {
          * @param {number} price A price in decimal format for a <b>single item</b>.
          *      If the price has a decimal part, the dot must be used.
          * @param {string} currencyCode
+         * @param {string} language
          * @return {YcTracking} This object's instance.
          */
-        this.trackBuy = function (itemTypeId, itemId, quantity, price, currencyCode) {
+        this.trackBuy = function (itemTypeId, itemId, quantity, price, currencyCode, language) {
             var url = '/buy/' + _userId() + '/' + itemTypeId + '/' + itemId +
-                '?fullprice=' + (price + '').replace(',', '.') + currencyCode + '&quantity=' + quantity;
+                '?fullprice=' + (price + '').replace(',', '.') + currencyCode + '&quantity=' + quantity
+                + '&lang=' + language;
 
             _executeEventCall(url);
             return this;

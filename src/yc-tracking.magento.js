@@ -4,6 +4,8 @@ function initYcTrackingModule(context) {
 
     function trackClickAndRate() {
         var addToCartForm = document.getElementById('product_addtocart_form'),
+            itemType = window['yc_itemType'] ? window['yc_itemType'] : null,
+            language = window['yc_language'] ? window['yc_language'] : null,
             itemId = window['yc_articleId'] ? window['yc_articleId'] : null,
             category = '',
             breadcrumbs, list,
@@ -30,7 +32,7 @@ function initYcTrackingModule(context) {
         }
 
         if (itemId) {
-            YcTracking.trackClick(1, itemId, category);
+            YcTracking.trackClick(itemType, itemId, category, language);
 
             if (reviewForm) {
                 reviewForm.onsubmit = function (e) {
@@ -48,9 +50,9 @@ function initYcTrackingModule(context) {
                         priceRatings = getRatings(this.elements['ratings[3]'], 10);
 
                     if (qualityRatings !== 0 && valueRatings !== 0 && priceRatings !== 0) {
-                        YcTracking.trackRate(1, itemId, qualityRatings * 20);
-                        YcTracking.trackRate(1, itemId, valueRatings * 20);
-                        YcTracking.trackRate(1, itemId, priceRatings * 20);
+                        YcTracking.trackRate(itemType, itemId, qualityRatings * 20, language);
+                        YcTracking.trackRate(itemType, itemId, valueRatings * 20, language);
+                        YcTracking.trackRate(itemType, itemId, priceRatings * 20, language);
                     }
                 };
             }
@@ -58,7 +60,9 @@ function initYcTrackingModule(context) {
     }
 
     function hookBasketHandlers() {
-        var addToCartForm = document.getElementById('product_addtocart_form');
+        var addToCartForm = document.getElementById('product_addtocart_form'),
+            itemType = window['yc_itemType'] ? window['yc_itemType'] : null,
+            language = window['yc_language'] ? window['yc_language'] : null;
 
         override('setLocation');
         override('setPLocation');
@@ -66,7 +70,7 @@ function initYcTrackingModule(context) {
         if (window['addWItemToCart']) {
             var oldAddWItemToCart = window.addWItemToCart;
             window.addWItemToCart = function (itemId) {
-                YcTracking.trackBasket(1, itemId, document.location.pathname);
+                YcTracking.trackBasket(itemType, itemId, document.location.pathname, language);
                 oldAddWItemToCart(itemId);
             }
         }
@@ -82,7 +86,7 @@ function initYcTrackingModule(context) {
                     if (items) {
                         for (i = 0; i < items.length; i++) {
                             if (items[i]) {
-                                YcTracking.trackBasket(1, i, document.location.pathname);
+                                YcTracking.trackBasket(itemType, i, document.location.pathname, language);
                             }
                         }
                     }
@@ -121,7 +125,7 @@ function initYcTrackingModule(context) {
                 }
 
                 if (itemId) {
-                    YcTracking.trackBasket(1, itemId, document.location.pathname);
+                    YcTracking.trackBasket(itemType, itemId, document.location.pathname, language);
                 }
             }
         }
@@ -130,7 +134,7 @@ function initYcTrackingModule(context) {
             var oldSubmit = null,
                 processForm = function() {
                     if (this.product && this.product.value) {
-                        YcTracking.trackBasket(1, this.product.value, document.location.pathname);
+                        YcTracking.trackBasket(itemType, this.product.value, document.location.pathname, language);
                     }
 
                     if (oldSubmit) {
@@ -149,13 +153,15 @@ function initYcTrackingModule(context) {
     }
 
     function trackBuy() {
-        var orders, order, i;
+        var orders, order, i,
+            language = window['yc_language'] ? window['yc_language'] : null;
         if (window['yc_orderData']) {
             orders = window['yc_orderData'];
             for (i = 0; i < orders.length; i++) {
                 order = orders[i];
                 if (order) {
-                    YcTracking.trackBuy(1, parseInt(order['id']), parseInt(order['quantity']), parseFloat(order['price']), order['currency']);
+                    YcTracking.trackBuy(itemType, parseInt(order['id']), parseInt(order['quantity']),
+                        parseFloat(order['price']), order['currency'], language);
                 }
             }
         }

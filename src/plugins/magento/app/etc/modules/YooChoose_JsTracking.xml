@@ -4,7 +4,7 @@
         <YooChoose_JsTracking>
             <active>true</active>
             <!-- Which code pool to use: core, community or local -->
-            <codePool>local</codePool>
+            <codePool>community</codePool>
         </YooChoose_JsTracking>
     </modules>
 </config>
