@@ -25,6 +25,7 @@ module.exports = function (grunt) {
 
     var DEV_HEAD_LIST = [
         sub('src/%s.intro.js'),
+        sub('src/%s.const.js'),
         sub('src/%s.core.js')
     ];
 
@@ -68,21 +69,10 @@ module.exports = function (grunt) {
                 },
                 src: DEV_HEAD_LIST.concat(sub('src/%s.shopware.js')).concat(TAIL_LIST),
                 dest: sub('dist/%s.js')
-            }
-        },
-        replace: {
-            dist: {
-                options: {
-                    patterns: [
-                        {
-                            match: /_CUSTOMER_ID_/g,
-                            replacement: '904'
-                        }
-                    ]
-                },
-                files: [
-                    {expand: true, flatten: true, src: [sub('dist/%s.js')], dest: 'dist/'}
-                ]
+            },
+            dev_mg_vojin: {
+                src: DEV_HEAD_LIST.concat(sub('src/%s.magento.js')).concat(TAIL_LIST),
+                dest: 'c:/xampp/htdocs'
             }
         },
         uglify: {
@@ -120,12 +110,13 @@ module.exports = function (grunt) {
     ]);
     grunt.registerTask('build-shopware', [
         'concat:dev_sw',
-        'replace:dist',
         'uglify:dist'
     ]);
     grunt.registerTask('build-magento', [
         'concat:dev_mg',
-        'replace:dist',
         'uglify:dist'
+    ]);
+    grunt.registerTask('build-magento-vojin', [
+        'concat:dev_mg_vojin'
     ]);
 };
