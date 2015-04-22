@@ -10,7 +10,8 @@ class YooChoose_JsTracking_Model_System_Config_Source_Languages
      */
     public function toOptionArray()
     {
-        return Mage::app()->getLocale()->getOptionLocales();
+        return Mage::getStoreConfig("yoochoose/general/language_country") ? Mage::app()->getLocale()->getOptionLocales() : 
+            Zend_Locale::getTranslationList('language', Mage::app()->getLocale()->getLocaleCode());
     }
 
 }

@@ -15,6 +15,8 @@ class YooChoose_JsTracking_Model_Api2_YCProducts_Rest_Admin_V1 extends YooChoose
         $limit = $this->getRequest()->getParam('limit');
         $offset = $this->getRequest()->getParam('offset');
         $storeId = $this->_getStore()->getId();
+        $helper = Mage::getModel('catalog/product_media_config');
+        $storeUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
 
         $collection = Mage::getResourceModel('catalog/product_collection');
         $collection->setStoreId($storeId);
@@ -31,8 +33,6 @@ class YooChoose_JsTracking_Model_Api2_YCProducts_Rest_Admin_V1 extends YooChoose
         }
 
         $products = $collection->load()->toArray();
-        $helper = Mage::getModel('catalog/product_media_config');
-        $storeUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
 
         foreach ($products as &$product) {
             $product['title'] = $product['name'];

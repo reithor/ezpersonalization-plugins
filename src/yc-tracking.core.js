@@ -26,7 +26,7 @@ function initYcTrackingCore(context) {
          * @readonly
          * @type {number}
          */
-        var customerId = _CUSTOMER_ID_,
+        var customerId = YC_CUSTOMER_ID,
 
             /**
              * Holds path to event tracking api with customer id.
@@ -36,6 +36,15 @@ function initYcTrackingCore(context) {
              * @type {string}
              */
             eventHost = '//event.yoochoose.net/api/' + customerId,
+
+            /**
+             * Holds path to product recommendations api with customer id.
+             *
+             * @private
+             * @readonly
+             * @type {string}
+             */
+            recommendationHost = '//reco.yoochoose.net/ebl/' + customerId,
 
             /**
              * Duration of session in minutes.
@@ -372,6 +381,30 @@ function initYcTrackingCore(context) {
             return this;
         };
 
+        /**
+         * Method for fetching product ids
+         *
+         * @param {number} itemTypeId
+         * @param {object} box
+         * @param {number} count
+         * @param {string} products
+         * @param {string} categoryPath
+         * @returns {YcTracking} This object's instance.
+         */
+        this.fetchRecommendedProducts = function (itemTypeId, scenario, count, products, categoryPath, callback) {
+            var script = document.createElement('script'), 
+                url = recommendationHost + '/' + _userId() + '/' + scenario + 
+                        '.jsonp?numrecs=' + count + '&outputtypeid=' + itemTypeId +
+                        '&jsonpcallback=' + callback;
+            
+            url += '&contextitems=' + (products ? encodeURIComponent(products) : '');
+            url += '&categorypath=' + (categoryPath ? encodeURIComponent(categoryPath) : '');
+            script.src = url;
+
+            document.getElementsByTagName('head')[0].appendChild(script);
+            return this;
+        };
+        
         return this;
     };
 

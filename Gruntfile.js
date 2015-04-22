@@ -72,7 +72,7 @@ module.exports = function (grunt) {
             },
             dev_mg_vojin: {
                 src: DEV_HEAD_LIST.concat(sub('src/%s.magento.js')).concat(TAIL_LIST),
-                dest: 'c:/xampp/htdocs'
+                dest: 'c:/xampp/htdocs/yc-tracking.js'
             }
         },
         uglify: {

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Magento
  *
@@ -33,6 +34,7 @@
  */
 class YooChoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
 {
+
     /**
      * Inject YooChoose SJ Tracking script and related data into head.
      *
@@ -47,8 +49,7 @@ class YooChoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
     {
         switch ($itemType) {
             case 'yoochoose_js':
-                $lines[$itemIf]['other'][] = sprintf('<script type="text/javascript" src="%s"></script>',
-                    preg_replace('(^https?:)', '', Mage::getStoreConfig('yoochoose/yoochoose_script/url')));
+                $lines[$itemIf]['other'][] = sprintf('<script type="text/javascript" src="%s"></script>', preg_replace('(^https?:)', '', Mage::getStoreConfig('yoochoose/yoochoose_script/url')));
                 $lines[$itemIf]['other'][] = $this->injectTracking();
                 break;
 
@@ -65,22 +66,32 @@ class YooChoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
             $customerId = Mage::getSingleton('customer/session')->getCustomer()->getId();
         }
 
-        $order = '{}';
+        $order = null;
         if ($this->getOrderId()) {
-            $order = json_encode($this->getOrderData($this->getOrderId()));
+            $order =  $this->getOrderData($this->getOrderId());
         }
-        
-        $itemTypeId = Mage::getStoreConfig('yoochoose/yoochoose_product/itemtypeid');
-        $language = Mage::getStoreConfig('yoochoose/yoochoose_product/language');
 
-        return '<script type="text/javascript">var yc_trackid = ' . $customerId . ', yc_orderData = ' . $order . ', yc_itemType = ' 
-                . $itemTypeId . ', yc_language = \'' . $language . '\';</script>';
+        $itemTypeId = Mage::getStoreConfig('yoochoose/general/itemtypeid');
+        $language = Mage::getStoreConfig('yoochoose/general/language');
+        $currentPage = $this->getCurrentPage();
+
+        $json = array(
+            'trackid' => $customerId,
+            'orderData' => $order,
+            'itemType' => $itemTypeId,
+            'language' => $language,
+            'currentPage' => $currentPage,
+            'products' => $this->getPageProducts($currentPage),
+            'boxes' => $this->getRecommendBoxes($currentPage),
+        );
+
+        return '<script type="text/javascript">var yc_config_object = ' . json_encode($json) . ';</script>';
     }
 
     private function getOrderData($orderId)
     {
         $collection = Mage::getResourceModel('sales/order_collection')
-            ->addFieldToFilter('entity_id', array('in' => array($orderId)));
+                ->addFieldToFilter('entity_id', array('in' => array($orderId)));
         $result = array();
         foreach ($collection as $order) {
             foreach ($order->getAllVisibleItems() as $item) {
@@ -95,4 +106,76 @@ class YooChoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
 
         return $result;
     }
+
+    private function getCurrentPage()
+    {
+        $request = $this->getRequest();
+        $module = $request->getModuleName();
+        $controller = $request->getControllerName();
+        $action = $request->getActionName();
+        
+        if ($module == 'cms' && $action == 'index') {
+            return 'home';
+        }
+
+        if (Mage::registry('current_product')) {
+            return 'product';
+        }
+
+        if ($module == 'checkout' && $controller == 'cart' && $action == 'index') {
+            return 'cart';
+        }
+
+        return false;
+    }
+
+    private function getRecommendBoxes($page)
+    {
+        if (!$page) {
+            return false;
+        }
+
+        $result = array();
+        switch ($page) {
+            case 'home':
+                $result[] = $this->createRecommendBox('bestseller');
+                $result[] = $this->createRecommendBox('personal');
+                break;
+            case 'product':
+                $result[] = $this->createRecommendBox('upselling');
+                $result[] = $this->createRecommendBox('related');
+                break;
+            case 'cart':
+                $result[] = $this->createRecommendBox('crossselling');
+                break;
+        }
+
+        return $result;
+    }
+
+    private function createRecommendBox($id)
+    {
+        return array(
+            'id' => $id,
+            'title' => Mage::getStoreConfig("yoochoose/$id/title"),
+            'display' => Mage::getStoreConfig("yoochoose/$id/display_yoochoose_recommendations"),
+        );
+    }
+
+    private function getPageProducts($page)
+    {
+        $result = array();
+        
+        if ($page === 'product') {
+            $result[] = Mage::registry('current_product')->getId();
+        } else if ($page === 'cart') {
+            $cart = Mage::getModel('checkout/cart')->getQuote();
+            foreach ($cart->getAllItems() as $item) {
+                $result[] = $item->getProduct()->getId();
+            }
+        }
+
+        return implode(',', $result);
+    }
+
 }
