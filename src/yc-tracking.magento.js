@@ -167,17 +167,18 @@ function initYcTrackingModule(context) {
     }
 
     function trackBuy() {
-        var orders, order, i,
-            ycObject = window['yc_config_object'] ? window['yc_config_object'] : null,
+        var ycObject = window['yc_config_object'] ? window['yc_config_object'] : null,
             itemType = ycObject ? ycObject.itemType : null,
-            language = ycObject ? ycObject.language : null;
-        if (ycObject.orderData) {
-            orders = ycObject.orderData;
+            language = ycObject ? ycObject.language : null,
+            orders = ycObject ? ycObject.orderData : null,
+            order, i;
+
+        if (orders) {
             for (i = 0; i < orders.length; i++) {
                 order = orders[i];
                 if (order) {
                     YcTracking.trackBuy(itemType, parseInt(order['id']), parseInt(order['quantity']),
-                            parseFloat(order['price']), order['currency'], language);
+                        parseFloat(order['price']), order['currency'], language);
                 }
             }
         }
@@ -201,7 +202,7 @@ function initYcTrackingModule(context) {
     
     function createJsonpCallbackFnc(box) {
         return function (response) {
-            var xmlhttp,
+            var xmlHttp,
                 products,
                 productIds = [],
                 url = location.origin + Mage.Cookies.path + '/yoochoose/products/index/?productIds=';
@@ -217,20 +218,20 @@ function initYcTrackingModule(context) {
 
             url += productIds.join();
             if (window.XMLHttpRequest) {
-                xmlhttp = new XMLHttpRequest();
+                xmlHttp = new XMLHttpRequest();
             } else {
-                xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
+                xmlHttp = new ActiveXObject('Microsoft.XMLHTTP');
             }
 
-            xmlhttp.onreadystatechange = function () {
-                if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-                    products = JSON.parse(xmlhttp.responseText);
+            xmlHttp.onreadystatechange = function () {
+                if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                    products = JSON.parse(xmlHttp.responseText);
                     renderRecommendation(box, products);
                 }
             };
 
-            xmlhttp.open('GET', url, true);
-            xmlhttp.send();
+            xmlHttp.open('GET', url, true);
+            xmlHttp.send();
         };
     }
 

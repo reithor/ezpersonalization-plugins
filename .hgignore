@@ -6,3 +6,4 @@ syntax: glob
 .buildpath
 .project
 .settings
+dist/
