@@ -382,16 +382,18 @@ function initYcTrackingCore(context) {
         };
 
         /**
-         * Method for fetching product ids
+         * Method for fetching product ids for recommendation scenario.
+         * Generates JSONP call to server.
          *
          * @param {number} itemTypeId
-         * @param {object} box
+         * @param {object} scenario
          * @param {number} count
          * @param {string} products
          * @param {string} categoryPath
+         * @param {string} callback Name of the callback function.
          * @returns {YcTracking} This object's instance.
          */
-        this.fetchRecommendedProducts = function (itemTypeId, scenario, count, products, categoryPath, callback) {
+        this.callFetchRecommendedProducts = function (itemTypeId, scenario, count, products, categoryPath, callback) {
             var script = document.createElement('script'), 
                 url = recommendationHost + '/' + _userId() + '/' + scenario + 
                         '.jsonp?numrecs=' + count + '&outputtypeid=' + itemTypeId +
@@ -403,6 +405,47 @@ function initYcTrackingCore(context) {
 
             document.getElementsByTagName('head')[0].appendChild(script);
             return this;
+        };
+        
+        /**
+         * Creates function for JSONP callback. Fetches requested products from backend
+         * and renders them using supplied function.
+         * 
+         * @param {object} box Recommendation box config with products in it.
+         * @param {string} url Backend url
+         * @param {function} renderRecommendation Function that renders recommendation boxes after items are fetched.
+         * @returns {Function} Callback function
+         */
+        this.fetchRecommendedProducts = function (box, url, renderRecommendation) {
+            return function (response) {
+                var xmlHttp,
+                    productIds = [];
+
+                if (!response.hasOwnProperty('recommendationResponseList')) {
+                    return;
+                }
+
+                response.recommendationResponseList.forEach(function (product) {
+                    productIds.push(product.itemId);
+                });
+
+                url += productIds.join();
+                if (window.XMLHttpRequest) {
+                    xmlHttp = new XMLHttpRequest();
+                } else {
+                    xmlHttp = new ActiveXObject('Microsoft.XMLHTTP');
+                }
+
+                xmlHttp.onreadystatechange = function () {
+                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                        box.products = JSON.parse(xmlHttp.responseText);
+                        renderRecommendation(box);
+                    }
+                };
+
+                xmlHttp.open('GET', url, true);
+                xmlHttp.send();
+            };
         };
         
         return this;
