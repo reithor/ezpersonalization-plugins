@@ -1,0 +1,96 @@
+# Copyright (C) 2015 Yoochoose
+# This file is distributed under the same license as the Yoochoose package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Yoochoose 1.0.0 Admin\n"
+"POT-Creation-Date: 2015-05-05 15:05+0100\n"
+"PO-Revision-Date: 2015-05-05 15:06+0100\n"
+"Last-Translator: \n"
+"Language-Team: Yoochoose\n"
+"Language: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#: admin/settings.php:46
+msgid "You do not have sufficient permissions to access this page."
+msgstr ""
+
+#: admin/views/html-admin-settings.php:9
+msgid "Yoochoose Settings"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:15
+msgid "If you don't have a Customer ID yet, please "
+msgstr ""
+
+#: admin/views/html-admin-settings.php:18
+msgid "click here"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:28
+msgid "Customer ID"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:36
+msgid "Licence Key"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:45
+msgid "Use country code with language"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:54
+msgid "Script location"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:58
+msgid "URL of tracking script."
+msgstr ""
+
+#: admin/views/html-admin-settings.php:65
+msgid "Best seller block on the home page"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:70
+#: admin/views/html-admin-settings.php:93
+#: admin/views/html-admin-settings.php:116
+#: admin/views/html-admin-settings.php:139
+#: admin/views/html-admin-settings.php:162
+#: admin/views/html-admin-settings.php:185
+msgid "Render recommendation"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:78
+#: admin/views/html-admin-settings.php:101
+#: admin/views/html-admin-settings.php:124
+#: admin/views/html-admin-settings.php:147
+#: admin/views/html-admin-settings.php:170
+#: admin/views/html-admin-settings.php:193
+msgid "Title"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:88
+msgid "Personalized recommendation block on the home page"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:111
+msgid "Upselling block of the product details page"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:134
+msgid "Related products block of the product details page"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:157
+msgid "Crossselling block of the shopping basket"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:180
+msgid "Category block of the category page"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:202
+msgid "Save changes"
+msgstr ""
