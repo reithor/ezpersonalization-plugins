@@ -45,7 +45,7 @@ class Yoochoose_JsTracking_Block_Field_Register extends Mage_Adminhtml_Block_Sys
         $data['booking.website'] = Mage::helper('core/url')->getHomeUrl();
         $data['booking.timeZone'] = Mage::getStoreConfig('general/locale/timezone', $storeId);
         $data['booking.lang'] = substr($locale, 0, strpos($locale, '_'));
-        $data['billing.countryCode'] = Mage::getStoreConfig('general/store_information/merchant_country', $storeId);
+        $data['billing.countryCode'] = substr($locale, strpos($locale, '_') + 1);
         
         return json_encode($data);
     }
@@ -59,7 +59,7 @@ class Yoochoose_JsTracking_Block_Field_Register extends Mage_Adminhtml_Block_Sys
     {
         $button = $this->getLayout()->createBlock('adminhtml/widget_button')
                 ->setData(array(
-            'label' => $this->helper('adminhtml')->__('click here'),
+            'label' => $this->helper('adminhtml')->__('Register new Yoochoose account'),
             'onclick' => 'javascript:yc_register(); return false;'
         ));
 

@@ -1,10 +1,12 @@
 var YC_CUSTOMER_ID = 903,
+    YC_RECO_EVENT_HOST = '//event.yoochoose.net/api/',
+    YC_RECO_RECOM_HOST = '//reco.yoochoose.net/api/',
     YC_RECO_TEMPLATES = {
         related: {
             html_template: "<div><h2 class='subtitle'>{{title}}</h2><ul " +
             "class='products-grid products-grid--max-5-col'>" +
             "{{#each rows}}{{#each columns}}" +
-            "<li class='item last'><a href='{{url_path}}' " +
+            "<li class='rendered-related item last'><a href='{{url_path}}' " +
             "title='{{name}}' class='product-image'>" +
             "<img src='{{thumbnail}}' alt='{{name}}'>" +
             "</a><h3 class='product-name'><a href='{{url_path}}' " +
@@ -12,7 +14,7 @@ var YC_CUSTOMER_ID = 903,
             "<span class='regular-price' id='product-price-410-new'>" +
             "<span class='price'>{{price}}</span></span></div></li>{{/each}}" +
             "{{/each}}</ul></div>",
-            target: 'main',
+            target: '.main',
             rows: 2,
             columns: 5,
             scenario: 'cross-rate'
@@ -21,7 +23,7 @@ var YC_CUSTOMER_ID = 903,
             html_template: "<div><h2 class='subtitle'>{{title}}</h2><ul " +
             "class='products-grid products-grid--max-5-col'>" +
             "{{#each rows}}{{#each columns}}" +
-            "<li class='item last'><a href='{{url_path}}' " +
+            "<li class='rendered-crossselling item last'><a href='{{url_path}}' " +
             "title='{{name}}' class='product-image'>" +
             "<img src='{{thumbnail}}' alt='{{name}}'>" +
             "</a><h3 class='product-name'><a href='{{url_path}}' " +
@@ -29,7 +31,7 @@ var YC_CUSTOMER_ID = 903,
             "<span class='regular-price' id='product-price-410-new'>" +
             "<span class='price'>{{price}}</span></span></div></li>{{/each}}" +
             "{{/each}}</ul></div>",
-            target: 'main',
+            target: '.main',
             rows: 2,
             columns: 5,
             scenario: 'cross_sell'
@@ -38,7 +40,7 @@ var YC_CUSTOMER_ID = 903,
             html_template: "<div><h2 class='subtitle'>{{title}}</h2><ul " +
             "class='products-grid products-grid--max-5-col'>" +
             "{{#each rows}}{{#each columns}}" +
-            "<li class='item last'><a href='{{url_path}}' " +
+            "<li class='rendered-personal item last'><a href='{{url_path}}' " +
             "title='{{name}}' class='product-image'>" +
             "<img src='{{thumbnail}}' alt='{{name}}'>" +
             "</a><h3 class='product-name'><a href='{{url_path}}' " +
@@ -46,7 +48,7 @@ var YC_CUSTOMER_ID = 903,
             "<span class='regular-price' id='product-price-410-new'>" +
             "<span class='price'>{{price}}</span></span></div></li>{{/each}}" +
             "{{/each}}</ul></div>",
-            target: 'main',
+            target: '.main',
             rows: 2,
             columns: 5,
             scenario: 'personalized'
@@ -55,7 +57,7 @@ var YC_CUSTOMER_ID = 903,
             html_template: "<div><h2 class='subtitle'>{{title}}</h2><ul " +
             "class='products-grid products-grid--max-5-col'>" +
             "{{#each rows}}{{#each columns}}" +
-            "<li class='item last'><a href='{{url_path}}' " +
+            "<li class='rendered-upselling item last'><a href='{{url_path}}' " +
             "title='{{name}}' class='product-image'>" +
             "<img src='{{thumbnail}}' alt='{{name}}'>" +
             "</a><h3 class='product-name'><a href='{{url_path}}' " +
@@ -63,7 +65,7 @@ var YC_CUSTOMER_ID = 903,
             "<span class='regular-price' id='product-price-410-new'>" +
             "<span class='price'>{{price}}</span></span></div></li>{{/each}}" +
             "{{/each}}</ul></div>",
-            target: 'main',
+            target: '.main',
             rows: 2,
             columns: 5,
             scenario: 'ultimately_bought'
@@ -72,7 +74,7 @@ var YC_CUSTOMER_ID = 903,
             html_template: "<div><h2 class='subtitle'>{{title}}</h2><ul " +
             "class='products-grid products-grid--max-5-col'>" +
             "{{#each rows}}{{#each columns}}" +
-            "<li class='item last'><a href='{{url_path}}' " +
+            "<li class='rendered-bestseller item last'><a href='{{url_path}}' " +
             "title='{{name}}' class='product-image'>" +
             "<img src='{{thumbnail}}' alt='{{name}}'>" +
             "</a><h3 class='product-name'><a href='{{url_path}}' " +
@@ -80,7 +82,7 @@ var YC_CUSTOMER_ID = 903,
             "<span class='regular-price' id='product-price-410-new'>" +
             "<span class='price'>{{price}}</span></span></div></li>{{/each}}" +
             "{{/each}}</ul></div>",
-            target: 'main',
+            target: '.main',
             rows: 2,
             columns: 5,
             scenario: 'landing_page'
@@ -89,7 +91,7 @@ var YC_CUSTOMER_ID = 903,
             html_template: "<div><h2 class='subtitle'>{{title}}</h2><ul " +
             "class='products-grid products-grid--max-5-col'>" +
             "{{#each rows}}{{#each columns}}" +
-            "<li class='item last'><a href='{{url_path}}' " +
+            "<li class='rendered-category_page item last'><a href='{{url_path}}' " +
             "title='{{name}}' class='product-image'>" +
             "<img src='{{thumbnail}}' alt='{{name}}'>" +
             "</a><h3 class='product-name'><a href='{{url_path}}' " +
@@ -97,7 +99,7 @@ var YC_CUSTOMER_ID = 903,
             "<span class='regular-price' id='product-price-410-new'>" +
             "<span class='price'>{{price}}</span></span></div></li>{{/each}}" +
             "{{/each}}</ul></div>",
-            target: 'category-products',
+            target: '.category-products',
             rows: 2,
             columns: 5,
             scenario: 'category_page'

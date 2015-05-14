@@ -38,27 +38,18 @@ class Yoochoose_JsTracking_Model_Observer
         }
 
         try {
-            $pluginVersion = Mage::getStoreConfig('yoochoose/general/plugin_id');
             $body = array(
                 'base' => array(
                     'type' => 'MAGENTO',
-                    'pluginId' => $pluginVersion,
+                    'pluginId' => Mage::getStoreConfig('yoochoose/general/plugin_id'),
                     'endpoint' => Mage::getStoreConfig('yoochoose/general/endpoint'),
                     ), 
                 'frontend' => array(
                     'design' => Mage::getStoreConfig('yoochoose/general/design'),
                 ));
+            
             $url = self::YOOCHOOSE_LICENSE_URL . $customerId . '/plugin/';
-            if ($pluginVersion) {
-                $url .= $pluginVersion . '/';
-            }
-
-            $url .= 'create?fallback_design=true';
-
-            $overwrite = Mage::getStoreConfig('yoochoose/general/endpoint_overwrite');
-            if (!$overwrite) {
-                $url .= '&recheck_type=true';
-            }
+            $url .= (Mage::getStoreConfig('yoochoose/general/endpoint_overwrite') ? 'update?createIfNeeded' : 'create?recheckType') . '=true&fallbackDesign=true';
 
             $response = Mage::helper('yoochoose_jstracking')->_getHttpPage($url, $body, $customerId, $licenseKey);
 

@@ -20,7 +20,7 @@ function initYcTrackingModule(context) {
                 }
             }
         }
-        
+
         return category;
     }
 
@@ -29,7 +29,7 @@ function initYcTrackingModule(context) {
             ycObject = window['yc_config_object'] ? window['yc_config_object'] : null,
             itemType = ycObject ? ycObject.itemType : null,
             language = ycObject ? ycObject.language : null,
-            itemId = ycObject ? ycObject.articleId : null,
+            itemId = ycObject ? ycObject.products : null,
             category = '',
             reviewForm = document.getElementById('review-form');
 
@@ -50,17 +50,17 @@ function initYcTrackingModule(context) {
             if (reviewForm) {
                 reviewForm.onsubmit = function (e) {
                     var getRatings = function (elements, sub) {
-                        for (var i = 0; i < elements.length; i++) {
-                            if (elements[i].checked) {
-                                return parseInt(elements[i].value) - sub;
+                            for (var i = 0; i < elements.length; i++) {
+                                if (elements[i].checked) {
+                                    return parseInt(elements[i].value) - sub;
+                                }
                             }
-                        }
 
-                        return 0;
-                    },
-                            qualityRatings = getRatings(this.elements['ratings[1]'], 0),
-                            valueRatings = getRatings(this.elements['ratings[2]'], 5),
-                            priceRatings = getRatings(this.elements['ratings[3]'], 10);
+                            return 0;
+                        },
+                        qualityRatings = getRatings(this.elements['ratings[1]'], 0),
+                        valueRatings = getRatings(this.elements['ratings[2]'], 5),
+                        priceRatings = getRatings(this.elements['ratings[3]'], 10);
 
                     if (qualityRatings !== 0 && valueRatings !== 0 && priceRatings !== 0) {
                         YcTracking.trackRate(itemType, itemId, qualityRatings * 20, language);
@@ -184,19 +184,9 @@ function initYcTrackingModule(context) {
         }
     }
 
-    function hookLogoutHandler() {
-        var container = document.getElementById('header-account'),
-            anchors = container ? container.getElementsByTagName('a') : null,
-            i;
-
-        if (anchors) {
-            for (i = 0; i < anchors.length; i++) {
-                if (/customer\/account\/logout/i.test(anchors[i].href)) {
-                    anchors[i].onclick = function () {
-                        YcTracking.resetUser();
-                    };
-                }
-            }
+    function hookLogoutHandler(trackid) {
+        if (!trackid && (typeof YcTracking.getUserId() === 'number')) {
+            YcTracking.resetUser();
         }
     }
 
@@ -210,52 +200,85 @@ function initYcTrackingModule(context) {
             fncName,
             category = null;
 
+        if (!boxes) {
+            return;
+        }
+        
         if (currentPage === 'product' || currentPage === 'category') {
             category = categoryFromBreadcrumb();
         } else if (currentPage === 'cart') {
             category = document.location.pathname;
         }
         
-        if (boxes !== null) {
-            for (var i = 0; i < boxes.length; i++) {
-                if (boxes[i].display) {
-                    tpl = templates[boxes[i].id];
-                    fncName = 'YcTracking_jsonpCallback' + boxes[i].id;
-                    window[fncName] = YcTracking.fetchRecommendedProducts(boxes[i], url, renderRecommendation);
-                    YcTracking.callFetchRecommendedProducts(itemType, tpl.scenario, tpl.rows * tpl.columns, ycObject.products, category, fncName);
+        for (var i = 0; i < boxes.length; i++) {
+            if (boxes[i].display) {
+                boxes[i].trackFollowEvent = trackFollowEvent;
+                tpl = templates[boxes[i].id];
+                if (!tpl) {
+                    document.getElementsByTagName('body')[0].innerHTML += 
+                            '<!-- Yoochoose: Template for ' + boxes[i].id + ' recommendation box is not found! -->';
+                    console.log('Template for ' + boxes[i].id + ' recommendation box is not found!');
+                    continue;
                 }
+                
+                boxes[i].template = tpl;
+                fncName = 'YcTracking_jsonpCallback' + boxes[i].id;
+                window[fncName] = fetchRecommendedProducts(boxes[i], url);
+                YcTracking.callFetchRecommendedProducts(itemType, tpl.scenario, tpl.rows * tpl.columns, ycObject.products, category, fncName);
             }
         }
     }
 
-    function renderRecommendation(box) {
-        var template = templates[box.id],
-            section = template.html_template,
-            num = 0,
-            compiled,
-            rows = [],
-            columns = [],
-            elem = document.getElementsByClassName(templates[box.id].target)[0];
-    
-        if (!box.products || !box.products.length || !elem) {
-            return;
-        }
-
-        box.products.forEach(function (product) {
-           num++;
-           columns.push(product);
-           if ((num % template.columns) === 0) {
-                rows.push({'columns' : columns});
-                columns = [];
-            }
-        });
-        if (columns.length) {
-            rows.push({'columns' : columns});
-        }
+    function trackFollowEvent(product, scenario) {
+        var ycObject = window['yc_config_object'] ? window['yc_config_object'] : null,
+            itemType = ycObject ? ycObject.itemType : null; 
         
-        box.rows = rows;
-        compiled = Handlebars.compile(section);
-        elem.innerHTML = elem.innerHTML + compiled(box);
+        return function () {
+            YcTracking.trackClickRecommended(itemType, product.entity_id, scenario);
+        };
+    }
+
+    /**
+     * Creates function for JSONP callback. Fetches requested products from backend
+     * and renders them using supplied function.
+     * 
+     * @param {object} box Recommendation box config with products in it.
+     * @param {string} url Backend url
+     * @returns {function} Callback function
+     */
+    function fetchRecommendedProducts(box, url) {
+        return function (response) {
+            var xmlHttp,
+                ycObject = window['yc_config_object'] ? window['yc_config_object'] : null,
+                itemType = ycObject && ycObject.hasOwnProperty('itemType') ? ycObject.itemType : 1,
+                productIds = [];
+
+            if (!response.hasOwnProperty('recommendationResponseList')) {
+                return;
+            }
+
+            response.recommendationResponseList.forEach(function (product) {
+                productIds.push(product.itemId);
+            });
+
+            YcTracking.trackRendered(itemType, productIds);
+            url += productIds.join();
+            if (window.XMLHttpRequest) {
+                xmlHttp = new XMLHttpRequest();
+            } else {
+                xmlHttp = new ActiveXObject('Microsoft.XMLHTTP');
+            }
+
+            xmlHttp.onreadystatechange = function () {
+                if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                    box.products = JSON.parse(xmlHttp.responseText);
+                    YcTracking.renderRecommendation(box);
+                }
+            };
+
+            xmlHttp.open('GET', url, true);
+            xmlHttp.send();
+        };
     }
 
     window.onload = function () {
@@ -272,7 +295,7 @@ function initYcTrackingModule(context) {
         YcTracking.trackLogin(trackid);
         trackClickAndRate();
         hookBasketHandlers();
-        hookLogoutHandler();
+        hookLogoutHandler(trackid);
         trackBuy();
         fetchRecommendations();
     };

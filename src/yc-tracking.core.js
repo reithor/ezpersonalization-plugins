@@ -1,3 +1,5 @@
+/* global Handlebars */
+
 /**
  * Reference to global object.
  */
@@ -35,7 +37,7 @@ function initYcTrackingCore(context) {
              * @readonly
              * @type {string}
              */
-            eventHost = '//event.yoochoose.net/api/' + customerId,
+            eventHost = YC_RECO_EVENT_HOST + customerId,
 
             /**
              * Holds path to product recommendations api with customer id.
@@ -44,7 +46,7 @@ function initYcTrackingCore(context) {
              * @readonly
              * @type {string}
              */
-            recommendationHost = '//reco.yoochoose.net/ebl/' + customerId,
+            recommendationHost = YC_RECO_RECOM_HOST + customerId,
 
             /**
              * Duration of session in minutes.
@@ -394,11 +396,11 @@ function initYcTrackingCore(context) {
          * @returns {YcTracking} This object's instance.
          */
         this.callFetchRecommendedProducts = function (itemTypeId, scenario, count, products, categoryPath, callback) {
-            var script = document.createElement('script'), 
-                url = recommendationHost + '/' + _userId() + '/' + scenario + 
-                        '.jsonp?numrecs=' + count + '&outputtypeid=' + itemTypeId +
+            var script = document.createElement('script'),
+                url = recommendationHost + '/' + _userId() + '/' + scenario +
+                        '.jsonp?numrecs=' + (count * 2) + '&outputtypeid=' + itemTypeId +
                         '&jsonpcallback=' + callback;
-            
+
             url += '&contextitems=' + (products ? encodeURIComponent(products) : '');
             url += '&categorypath=' + (categoryPath ? encodeURIComponent(categoryPath) : '');
             script.src = url;
@@ -406,51 +408,52 @@ function initYcTrackingCore(context) {
             document.getElementsByTagName('head')[0].appendChild(script);
             return this;
         };
-        
+
         /**
-         * Creates function for JSONP callback. Fetches requested products from backend
-         * and renders them using supplied function.
+         * Renders recommendation boxes and displays them on frontend page.
          * 
-         * @param {object} box Recommendation box config with products in it.
-         * @param {string} url Backend url
-         * @param {function} renderRecommendation Function that renders recommendation boxes after items are fetched.
-         * @returns {Function} Callback function
+         * @param {object} box
          */
-        this.fetchRecommendedProducts = function (box, url, renderRecommendation) {
-            return function (response) {
-                var xmlHttp,
-                    productIds = [];
+        this.renderRecommendation = function(box) {
+            var template = box.template,
+                section = template.html_template,
+                num = 0,
+                compiled,
+                rows = [],
+                i,
+                columns = [],
+                elem = document.querySelector(template.target);
 
-                if (!response.hasOwnProperty('recommendationResponseList')) {
-                    return;
+            if (!box.products || !box.products.length || !elem) {
+                return;
+            }
+
+            box.products = box.products.slice(0, template.rows * template.columns);
+            box.products.forEach(function (product) {
+               num++;
+               columns.push(product);
+               if ((num % template.columns) === 0) {
+                    rows.push({'columns' : columns});
+                    columns = [];
                 }
+            });
+            if (columns.length) {
+                rows.push({'columns' : columns});
+            }
 
-                response.recommendationResponseList.forEach(function (product) {
-                    productIds.push(product.itemId);
-                });
+            box.rows = rows;
+            compiled = Handlebars.compile(section);
+            elem.innerHTML = elem.innerHTML + compiled(box);
 
-                url += productIds.join();
-                if (window.XMLHttpRequest) {
-                    xmlHttp = new XMLHttpRequest();
-                } else {
-                    xmlHttp = new ActiveXObject('Microsoft.XMLHTTP');
-                }
-
-                xmlHttp.onreadystatechange = function () {
-                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-                        box.products = JSON.parse(xmlHttp.responseText);
-                        renderRecommendation(box);
-                    }
-                };
-
-                xmlHttp.open('GET', url, true);
-                xmlHttp.send();
-            };
+            elem = document.getElementsByClassName('rendered-' + box.id);
+            for (i = 0; i < elem.length; i++) {
+                elem[i].onclick = box.trackFollowEvent(box.products[i], template.scenario);
+            }
         };
-        
+
         return this;
     };
-
+    
     var YcValidator = {
 
         /**

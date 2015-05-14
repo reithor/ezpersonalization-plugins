@@ -6,33 +6,18 @@ module.exports = function (grunt) {
         return str.replace(/%s/g, LIBRARY_NAME);
     }
 
-    function wrapModules(head, tail) {
-        return head.concat(MODULE_LIST).concat(tail);
+    function wrapModule(module) {
+        return [
+            sub('src/%s.intro.js'),
+            sub('src/%s.const.' + module + '.js'),
+            sub('src/%s.core.js'),
+            sub('src/%s.' + module + '.js'),
+            sub('src/%s.init.js'),
+            sub('src/%s.outro.js')
+        ];
     }
 
     var LIBRARY_NAME = 'yc-tracking';
-
-    var MODULE_LIST = [
-        sub('src/%s.magento.js'),
-        sub('src/%s.shopware.js')
-    ];
-
-    var DIST_HEAD_LIST = [
-        sub('src/%s.intro.js'),
-        sub('src/%s.const.js'),
-        sub('src/%s.core.js')
-    ];
-
-    var DEV_HEAD_LIST = [
-        sub('src/%s.intro.js'),
-        sub('src/%s.const.js'),
-        sub('src/%s.core.js')
-    ];
-
-    var TAIL_LIST = [
-        sub('src/%s.init.js'),
-        sub('src/%s.outro.js')
-    ];
 
     // Gets inserted at the top of the generated files in dist/.
     var BANNER = [
@@ -49,30 +34,45 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         concat: {
-            dist: {
-                options: {
-                    banner: BANNER
-                },
-                src: wrapModules(DIST_HEAD_LIST, TAIL_LIST),
-                dest: sub('dist/%s.js')
-            },
             dev_mg: {
                 options: {
                     banner: BANNER
                 },
-                src: DEV_HEAD_LIST.concat(sub('src/%s.magento.js')).concat(TAIL_LIST),
+                src: wrapModule('magento'),
                 dest: sub('dist/%s.js')
             },
             dev_sw: {
                 options: {
                     banner: BANNER
                 },
-                src: DEV_HEAD_LIST.concat(sub('src/%s.shopware.js')).concat(TAIL_LIST),
+                src: wrapModule('shopware'),
+                dest: sub('dist/%s.js')
+            },
+            dev_wc: {
+                options: {
+                    banner: BANNER
+                },
+                src: wrapModule('woocommerce'),
+                dest: sub('dist/%s.js')
+            },
+            dev_sy: {
+                options: {
+                    banner: BANNER
+                },
+                src: wrapModule('shopify'),
                 dest: sub('dist/%s.js')
             },
             dev_mg_vojin: {
-                src: DEV_HEAD_LIST.concat(sub('src/%s.magento.js')).concat(TAIL_LIST),
-                dest: 'c:/xampp/htdocs/yc-tracking.js'
+                src: wrapModule('magento'),
+                dest: 'c:/xampp/htdocs/yc-tracking-mg.js'
+            },
+            dev_wc_vojin: {
+                src: wrapModule('woocommerce'),
+                dest: 'c:/xampp/htdocs/yc-tracking-wc.js'
+            },
+            dev_sy_vojin: {
+                src: wrapModule('shopify'),
+                dest: 'c:/xampp/htdocs/yc-tracking-sy.js'
             }
         },
         uglify: {
@@ -116,7 +116,21 @@ module.exports = function (grunt) {
         'concat:dev_mg',
         'uglify:dist'
     ]);
+    grunt.registerTask('build-shopify', [
+        'concat:dev_sy',
+        'uglify:dist'
+    ]);
+    grunt.registerTask('build-woocommerce', [
+        'concat:dev_wc',
+        'uglify:dist'
+    ]);
     grunt.registerTask('build-magento-vojin', [
         'concat:dev_mg_vojin'
+    ]);
+    grunt.registerTask('build-woocommerce-vojin', [
+        'concat:dev_wc_vojin'
+    ]);
+    grunt.registerTask('build-shopify-vojin', [
+        'concat:dev_sy_vojin'
     ]);
 };

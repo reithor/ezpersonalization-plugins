@@ -75,7 +75,7 @@ class Yoochoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
         $language = Mage::getStoreConfig('yoochoose/general/language');
         $currentPage = $this->getCurrentPage();
         
-        if (!Mage::getStoreConfig('yoochoose/general/language_country')) {
+        if (Mage::getStoreConfig('yoochoose/general/language_country')) {
             $language = substr($language, 0, strpos($language, '_'));
         }
 
@@ -155,6 +155,7 @@ class Yoochoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
                 break;
             case 'cart':
                 $result[] = $this->createRecommendBox('crossselling');
+                break;
             case 'category':
                 $result[] = $this->createRecommendBox('category_page');
                 break;
@@ -167,8 +168,8 @@ class Yoochoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
     {
         return array(
             'id' => $id,
-            'title' => Mage::getStoreConfig("yoochoose/$id/title"),
-            'display' => Mage::getStoreConfig("yoochoose/$id/display_yoochoose_recommendations"),
+            'title' => Mage::getStoreConfig("yoochoose/recommendation_blocks/{$id}_title"),
+            'display' => !Mage::getStoreConfig("yoochoose/recommendation_blocks/{$id}_display"),
         );
     }
 
