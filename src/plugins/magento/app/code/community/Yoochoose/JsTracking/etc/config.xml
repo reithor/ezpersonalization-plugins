@@ -57,7 +57,7 @@
             </updates>
         </layout>
     </frontend>
-    
+
     <admin>
         <routers>
             <adminhtml>
@@ -69,7 +69,7 @@
             </adminhtml>
         </routers>
     </admin>
-    
+
     <adminhtml>
         <events>
             <admin_system_config_changed_section_yoochoose>

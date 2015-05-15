@@ -34,7 +34,9 @@
  */
 class Yoochoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
 {
-
+    const YOOCHOOSE_CDN_SCRIPT = '/event.yoochoose.net/cdn';
+    const AMAZONE_CDN_SCRIPT = 'amazon/cdn';
+    
     /**
      * Inject Yoochoose SJ Tracking script and related data into head.
      *
@@ -49,7 +51,20 @@ class Yoochoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
     {
         switch ($itemType) {
             case 'yoochoose_js':
-                $lines[$itemIf]['other'][] = sprintf('<script type="text/javascript" src="%s"></script>', preg_replace('(^https?:)', '', Mage::getStoreConfig('yoochoose/yoochoose_script/url')));
+                $scriptUrl = '';
+                $mandator = Mage::getStoreConfig('yoochoose/general/customer_id');
+                $plugin = Mage::getStoreConfig('yoochoose/general/plugin_id');
+                $plugin = $plugin? '/' . $plugin : '';
+                $js = "/v1/{$mandator}{$plugin}/tracking.js";
+
+                if (Mage::getStoreConfig('yoochoose/advanced/overwrite')) {
+                    $scriptUrl = preg_replace('(^https?:)', '', Mage::getStoreConfig('yoochoose/advanced/overwrite'));
+                } else {
+                    $scriptUrl = Mage::getStoreConfig('yoochoose/advanced/performance') ? self::AMAZONE_CDN_SCRIPT : self::YOOCHOOSE_CDN_SCRIPT;
+                }
+
+                $scriptUrl = rtrim($scriptUrl, '/');
+                $lines[$itemIf]['other'][] = sprintf('<script type="text/javascript" src="%s"></script>', $scriptUrl . $js);
                 $lines[$itemIf]['other'][] = $this->injectTracking();
                 break;
 
@@ -176,7 +191,7 @@ class Yoochoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
     private function getPageProducts($page)
     {
         $result = array();
-        
+
         if ($page === 'product') {
             $result[] = Mage::registry('current_product')->getId();
         } else if ($page === 'cart') {

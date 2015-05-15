@@ -64,7 +64,7 @@ module.exports = function (grunt) {
             },
             dev_mg_vojin: {
                 src: wrapModule('magento'),
-                dest: 'c:/xampp/htdocs/yc-tracking-mg.js'
+                dest: 'c:/xampp/htdocs/v1/903/tracking.js'
             },
             dev_wc_vojin: {
                 src: wrapModule('woocommerce'),

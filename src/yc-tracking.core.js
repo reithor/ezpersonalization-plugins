@@ -428,7 +428,6 @@ function initYcTrackingCore(context) {
                 return;
             }
 
-            box.products = box.products.slice(0, template.rows * template.columns);
             box.products.forEach(function (product) {
                num++;
                columns.push(product);

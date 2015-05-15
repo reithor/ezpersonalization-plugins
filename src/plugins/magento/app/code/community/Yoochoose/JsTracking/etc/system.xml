@@ -144,25 +144,41 @@
                     </fields>
                 </general>
 
-                <yoochoose_script translate="label">
-                    <label>Tracking Script</label>
+                <advanced>
+                    <label>Script Endpoint</label>
                     <sort_order>6</sort_order>
                     <frontend_type>text</frontend_type>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
                     <fields>
-                        <url translate="label">
-                            <label>Script URL</label>
+                        <performance translate="label">
+                            <label>Performance</label>
+                            <comment><![CDATA[CDN mode provide better performance
+                            but takes about a 30 minutes, if the configuration is updated. 
+                            Please switch to CDN only, if the configuration is 
+                            done and stable.]]></comment>
+                            <sort_order>10</sort_order>
+                            <frontend_type>select</frontend_type>
+                            <source_model>yoochoose_jstracking/system_config_source_rendersource</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </performance>
+                        <overwrite translate="label">
+                            <label>Overwrite Endpoint</label>
+                            <backend_model>yoochoose_jstracking/scriptvalidation</backend_model> 
                             <frontend_type>text</frontend_type>
                             <sort_order>50</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <validate>validate-url</validate>
-                        </url>
+                            <comment><![CDATA[<span style="color: red; font-weight: bold;">Attention!
+                            </span> See the <a href="https://www.yoochoose.com/magento-connect-2-tutorial" 
+                            target="_blank">extension manual</a>, if you about to use this property.]]></comment>
+                        </overwrite>
                     </fields>
-                </yoochoose_script>
+                </advanced>
 
                 <recommendation_blocks translate="label">
                     <label>Product recommendation blocks</label>
@@ -188,7 +204,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </personal_title>
-                        
+
                         <bestseller_display translate="label">
                             <label>Home page. Bestsellers</label>
                             <frontend_type>select</frontend_type>
@@ -206,7 +222,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </bestseller_title>
-                        
+
                         <related_display translate="label">
                             <label>Product page. Related products</label>
                             <frontend_type>select</frontend_type>
@@ -224,7 +240,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </related_title>
-                        
+
                         <upselling_display translate="label">
                             <label>Product page. Up-selling block</label>
                             <frontend_type>select</frontend_type>
@@ -242,7 +258,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
                         </upselling_title>
-                        
+
                         <category_page_display translate="label">
                             <label>Category page. Recommendations</label>
                             <frontend_type>select</frontend_type>
@@ -264,7 +280,7 @@
  be replaces with the current category path, for example "HOME / MEN / SHIRTS".
 ]]></comment>
                         </category_page_title>
-                        
+
                         <crossselling_display translate="label">
                             <label>Shopping basket page. Cross-selling products</label>
                             <frontend_type>select</frontend_type>
