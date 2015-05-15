@@ -112,6 +112,10 @@ function initYcTrackingModule(context) {
             fncName,
             category = null;
 
+        if (!boxes) {
+            return;
+        }
+
         if (currentPage === 'product' || currentPage === 'category') {
             category = categoryFromBreadcrumb();
         } else if (currentPage === 'cart') {
@@ -127,18 +131,64 @@ function initYcTrackingModule(context) {
             products = products.join();
         }
 
-        if (boxes !== null) {
-            for (var i = 0; i < boxes.length; i++) {
-                if (boxes[i].display) {
-                    boxes[i].trackFollowEvent = trackFollowEvent;
-                    tpl = templates[boxes[i].id];
-                    boxes[i].template = tpl;
-                    fncName = 'YcTracking_jsonpCallback' + boxes[i].id;
-                    window[fncName] = YcTracking.fetchRecommendedProducts(boxes[i], url);
-                    YcTracking.callFetchRecommendedProducts(1, tpl.scenario, tpl.rows * tpl.columns, products, category, fncName);
+        for (var i = 0; i < boxes.length; i++) {
+            if (boxes[i].display) {
+                boxes[i].trackFollowEvent = trackFollowEvent;
+                tpl = templates[boxes[i].id];
+                if (!tpl) {
+                    document.getElementsByTagName('body')[0].innerHTML += 
+                            '<!-- Yoochoose: Template for ' + boxes[i].id + ' recommendation box is not found! -->';
+                    console.log('Template for ' + boxes[i].id + ' recommendation box is not found!');
+                    continue;
                 }
+
+                boxes[i].template = tpl;
+                fncName = 'YcTracking_jsonpCallback' + boxes[i].id;
+                window[fncName] = fetchRecommendedProducts(boxes[i], url);
+                YcTracking.callFetchRecommendedProducts(1, tpl.scenario, tpl.rows * tpl.columns, products, category, fncName);
             }
         }
+    }
+    
+    /**
+     * Creates function for JSONP callback. Fetches requested products from backend
+     * and renders them using supplied function.
+     * 
+     * @param {object} box Recommendation box config with products in it.
+     * @param {string} url Backend url
+     * @returns {function} Callback function
+     */
+    function fetchRecommendedProducts(box, url) {
+        return function (response) {
+            var xmlHttp,
+                productIds = [];
+
+            if (!response.hasOwnProperty('recommendationResponseList')) {
+                return;
+            }
+
+            response.recommendationResponseList.forEach(function (product) {
+                productIds.push(product.itemId);
+            });
+
+            YcTracking.trackRendered(1, productIds);
+            url += productIds.join();
+            if (window.XMLHttpRequest) {
+                xmlHttp = new XMLHttpRequest();
+            } else {
+                xmlHttp = new ActiveXObject('Microsoft.XMLHTTP');
+            }
+
+            xmlHttp.onreadystatechange = function () {
+                if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                    box.products = JSON.parse(xmlHttp.responseText);
+                    YcTracking.renderRecommendation(box);
+                }
+            };
+
+            xmlHttp.open('GET', url, true);
+            xmlHttp.send();
+        };
     }
 
     function trackFollowEvent(product, scenario) {

@@ -5,7 +5,9 @@ function initYcTrackingModule(context) {
     'use strict';
 
     var YcTracking = context.YcTracking,
-        templates = YC_RECO_TEMPLATES;
+        templates = YC_RECO_TEMPLATES,
+        requestsSent = 0,
+        responsesCount = 0;
     
     function categoryFromBreadcrumb() {
         var breadcrumbs = document.getElementsByClassName('breadcrumbs'),
@@ -16,7 +18,7 @@ function initYcTrackingModule(context) {
             list = breadcrumbs[0].children[0].children;
             for (i = 0; i < list.length; i++) {
                 if (list[i].className.indexOf('category') !== -1) {
-                    category += list[i].children[0].text + '/';
+                    category += list[i].children[0].innerHTML + '/';
                 }
             }
         }
@@ -200,22 +202,36 @@ function initYcTrackingModule(context) {
             fncName,
             category = null;
 
+        if (!boxes) {
+            return;
+        }
+
         if (currentPage === 'product' || currentPage === 'category') {
             category = categoryFromBreadcrumb();
         } else if (currentPage === 'cart') {
             category = document.location.pathname;
         }
-        
-        if (boxes !== null) {
-            for (var i = 0; i < boxes.length; i++) {
-                if (boxes[i].display) {
-                    boxes[i].trackFollowEvent = trackFollowEvent;
-                    tpl = templates[boxes[i].id];
-                    boxes[i].template = tpl;
-                    fncName = 'YcTracking_jsonpCallback' + boxes[i].id;
-                    window[fncName] = YcTracking.fetchRecommendedProducts(boxes[i], url);
-                    YcTracking.callFetchRecommendedProducts(itemType, tpl.scenario, tpl.rows * tpl.columns, ycObject.products, category, fncName);
+
+        if (currentPage === 'category') {
+            boxes[0].title =  boxes[0].title.replace(/%/g, category);
+        }
+
+        for (var i = 0; i < boxes.length; i++) {
+            if (boxes[i].display) {
+                boxes[i].trackFollowEvent = trackFollowEvent;
+                tpl = templates[boxes[i].id];
+                if (!tpl) {
+                    document.getElementsByTagName('body')[0].innerHTML += 
+                            '<!-- Yoochoose: Template for ' + boxes[i].id + ' recommendation box is not found! -->';
+                    console.log('Template for ' + boxes[i].id + ' recommendation box is not found!');
+                    continue;
                 }
+
+                boxes[i].template = tpl;
+                boxes[i].priority = tpl.priority;
+                fncName = 'YcTracking_jsonpCallback' + boxes[i].id;
+                window[fncName] = fetchRecommendedProducts(boxes[i], url);
+                YcTracking.callFetchRecommendedProducts(itemType, tpl.scenario, tpl.rows * tpl.columns, ycObject.products, category, fncName);
             }
         }
     }
@@ -226,6 +242,87 @@ function initYcTrackingModule(context) {
         
         return function () {
             YcTracking.trackClickRecommended(itemType, product.entity_id, scenario);
+        };
+    }
+
+    /**
+     * Creates function for JSONP callback. Fetches requested products from backend
+     * and renders them using supplied function.
+     * 
+     * @param {object} box Recommendation box config with products in it.
+     * @param {string} url Backend url
+     * @returns {function} Callback function
+     */
+    function fetchRecommendedProducts(box, url) {
+        return function (response) {
+            var xmlHttp,
+                ycObject = window['yc_config_object'] ? window['yc_config_object'] : null,
+                itemType = ycObject && ycObject.hasOwnProperty('itemType') ? ycObject.itemType : 1,
+                productIds = [];
+
+            if (!response.hasOwnProperty('recommendationResponseList')) {
+                return;
+            }
+
+            response.recommendationResponseList.forEach(function (product) {
+                productIds.push(product.itemId);
+            });
+
+            url += productIds.join();
+            if (window.XMLHttpRequest) {
+                xmlHttp = new XMLHttpRequest();
+            } else {
+                xmlHttp = new ActiveXObject('Microsoft.XMLHTTP');
+            }
+
+            xmlHttp.onreadystatechange = function () {
+                var allBoxes = context.yc_config_object.boxes,
+                    idHistory = [];
+
+                if (xmlHttp.readyState === 4) {
+                    responsesCount++;
+                    if (xmlHttp.status === 200) {
+                        box.products = JSON.parse(xmlHttp.responseText);
+                        if (responsesCount === requestsSent) {
+                            allBoxes.sort(function (a, b) {
+                                return a.priority - b.priority;
+                            });
+
+                            allBoxes.forEach(function (box) {
+                                var renderedIds = [],
+                                    currentBox = [];
+
+                                if (!box.products) {
+                                    return;
+                                }
+
+                                //select products that weren't rendered in higher priority boxes
+                                box.products.forEach(function (item) {
+                                    if (idHistory.indexOf(item.entity_id) === -1) {
+                                        currentBox.push(item);
+                                    } 
+                                });
+
+                                //out of unique products, take first N products
+                                box.products = currentBox.slice(0, box.template.rows * box.template.columns);
+
+                                //add Ids of N selected products, so they wouldn't have duplicates
+                                box.products.forEach(function (item) {
+                                    idHistory.push(item.entity_id);
+                                    renderedIds.push(item.entity_id);
+                                });
+
+                                YcTracking.trackRendered(itemType, renderedIds);
+                                YcTracking.renderRecommendation(box);
+                            });
+                        }
+                    }
+                }
+            };
+
+            requestsSent++;
+            xmlHttp.open('GET', url, true);
+            xmlHttp.send();
         };
     }
 

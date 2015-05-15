@@ -16,8 +16,8 @@ class Yoochoose_JsTracking_Model_System_Config_Source_Languages
     public function useCountryCode()
     {
         return array(
-            '0' => 'Do not use country code (e.g. "en")',
-            '1' => 'Use country code (e.g. "en_US")',
+            '1' => 'Do not use country code (e.g. "en")',
+            '0' => 'Use country code (e.g. "en_US")',
         );
     }
 }

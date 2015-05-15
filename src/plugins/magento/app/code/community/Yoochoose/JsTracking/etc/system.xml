@@ -29,6 +29,8 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
+                            <comment><![CDATA[Please visit <a href='https://www.yoochoose.com' target='_blank'>
+                                     Yoochoose website</a> for information to pricing, data privacy and terms of service.]]></comment>
                         </click_here>
                         <customer_id translate="label">
                             <label>Customer ID</label>
@@ -37,18 +39,32 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <validate>validate-alphanum</validate>
+                            <validate>validate-alphanum required-entry</validate>
                         </customer_id>
                         <license_key translate="label">
                             <label>License Key</label>
                             <comment><![CDATA[
-                            	You can find your license key and detailed statistics on the <a href='https://admin.yoochoose.net' target='_blank'>Yoochoose Configuration Backend</a>.
+                            	You can find your license key and detailed statistics on the <a id="ycLicenceLink" 
+                                href='https://admin.yoochoose.net?customer_id={{mandator_id}}#plugin/configuration{{plugin-id}}' 
+                                target='_blank'>Yoochoose Configuration Backend</a>.
+                                <script>
+                                    window.onload = function(){
+                                        var link = document.getElementById('ycLicenceLink'),
+                                            mandator = document.getElementById('yoochoose_general_customer_id').value,
+                                            plugin = document.getElementById('yoochoose_general_plugin_id').value;
+                                        
+                                        link.href = link.href.replace('{{mandator_id}}', mandator);
+                                        plugin = (plugin ? '/' + plugin : '');
+                                        link.href = link.href.replace('{{plugin-id}}', plugin);
+                                     };
+                                </script>
                             ]]></comment>
                             <frontend_type>text</frontend_type>
                             <sort_order>15</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
+                            <validate>required-entry</validate>
                         </license_key>
                         <plugin_id>
                             <label>Plugin ID</label>
@@ -72,7 +88,7 @@
                         <design>
                             <label>Design</label>
                             <comment><![CDATA[We will try to find a design template for you shop. Please read 
-                                        <a href="http://www.magentocommerce.com/magento-connect/create_your_extension/" 
+                                        <a href="https://www.yoochoose.com/magento-connect-2-tutorial" 
                                         target="_blank">Magento Connect Extention Tutorial</a>, if you need to customize 
                                         the desing of the recommendations.]]></comment>
                             <sort_order>26</sort_order>
@@ -98,13 +114,14 @@
                             <comment><![CDATA[In the most cases the item type must be set to 1. 
                                         If more than one type is needed or if more, than one 
                                         shop language is supported, please read the 
-                                        <a href="http://doc.yoochoose.net/" target="_blank" >User Guide</a>.]]></comment>
+                                        <a href="http://doc.yoochoose.net/" target="_blank" >User Guide</a>.]]>
+                            </comment>
                             <frontend_type>text</frontend_type>
                             <sort_order>50</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <validate>validate-not-negative-number</validate>
+                            <validate>validate-not-negative-number required-entry</validate>
                         </itemtypeid>
                         <language translate="label">
                             <label>Language</label>
@@ -127,187 +144,174 @@
                     </fields>
                 </general>
 
-                <yoochoose_script translate="label">
-                    <label>Tracking Script</label>
+                <advanced>
+                    <label>Script Endpoint</label>
                     <sort_order>6</sort_order>
                     <frontend_type>text</frontend_type>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
                     <fields>
-                        <url translate="label">
-                            <label>Script URL</label>
+                        <performance translate="label">
+                            <label>Performance</label>
+                            <comment><![CDATA[CDN mode provide better performance
+                            but takes about a 30 minutes, if the configuration is updated. 
+                            Please switch to CDN only, if the configuration is 
+                            done and stable.]]></comment>
+                            <sort_order>10</sort_order>
+                            <frontend_type>select</frontend_type>
+                            <source_model>yoochoose_jstracking/system_config_source_rendersource</source_model>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </performance>
+                        <overwrite translate="label">
+                            <label>Overwrite Endpoint</label>
+                            <backend_model>yoochoose_jstracking/scriptvalidation</backend_model> 
                             <frontend_type>text</frontend_type>
                             <sort_order>50</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <validate>validate-url</validate>
-                        </url>
+                            <comment><![CDATA[<span style="color: red; font-weight: bold;">Attention!
+                            </span> See the <a href="https://www.yoochoose.com/magento-connect-2-tutorial" 
+                            target="_blank">extension manual</a>, if you about to use this property.]]></comment>
+                        </overwrite>
                     </fields>
-                </yoochoose_script>
+                </advanced>
 
-                <bestseller translate="label">
-                    <label>Best seller block on the home page</label>
+                <recommendation_blocks translate="label">
+                    <label>Product recommendation blocks</label>
                     <sort_order>10</sort_order>
                     <show_in_default>1</show_in_default>
                     <show_in_website>1</show_in_website>
                     <show_in_store>1</show_in_store>
                     <fields>
-                        <display_yoochoose_recommendations translate="label">
-                            <label>Render recommendations</label>
+                        <personal_display translate="label">
+                            <label>Home page. Personalized recommendations</label>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <source_model>yoochoose_jstracking/system_config_source_displayrecommendation</source_model>
+                            <sort_order>5</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </personal_display>
+                        <personal_title translate="label">
+                            <label>Title</label>
+                            <frontend_type>text</frontend_type>
                             <sort_order>10</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </display_yoochoose_recommendations>
-                        <title translate="label">
-                            <label>Title</label>
-                            <frontend_type>text</frontend_type>
-                            <sort_order>15</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </title>
-                    </fields>
-                </bestseller>
+                        </personal_title>
 
-                <personal translate="label">
-                    <label>Personalized recommendation block on the home page</label>
-                    <sort_order>20</sort_order>
-                    <show_in_default>1</show_in_default>
-                    <show_in_website>1</show_in_website>
-                    <show_in_store>1</show_in_store>
-                    <fields>
-                        <display_yoochoose_recommendations translate="label">
-                            <label>Render recommendations</label>
+                        <bestseller_display translate="label">
+                            <label>Home page. Bestsellers</label>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>10</sort_order>
-                            <show_in_default>1</show_in_default>
-                            <show_in_website>1</show_in_website>
-                            <show_in_store>1</show_in_store>
-                        </display_yoochoose_recommendations>
-                        <title translate="label">
-                            <label>Title</label>
-                            <frontend_type>text</frontend_type>
+                            <source_model>yoochoose_jstracking/system_config_source_displayrecommendation</source_model>
                             <sort_order>15</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </title>
-                    </fields>
-                </personal>
+                        </bestseller_display>
+                        <bestseller_title translate="label">
+                            <label>Title</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>20</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </bestseller_title>
 
-                <upselling translate="label">
-                    <label>Upselling block of the product details page</label>
-                    <sort_order>40</sort_order>
-                    <show_in_default>1</show_in_default>
-                    <show_in_website>1</show_in_website>
-                    <show_in_store>1</show_in_store>
-                    <fields>
-                        <display_yoochoose_recommendations translate="label">
-                            <label>Render recommendations</label>
+                        <related_display translate="label">
+                            <label>Product page. Related products</label>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>10</sort_order>
+                            <source_model>yoochoose_jstracking/system_config_source_displayrecommendation</source_model>
+                            <sort_order>25</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </display_yoochoose_recommendations>
-                        <title translate="label">
+                        </related_display>
+                        <related_title translate="label">
                             <label>Title</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>15</sort_order>
+                            <sort_order>30</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </title>
-                    </fields>
-                </upselling>
+                        </related_title>
 
-                <related translate="label">
-                    <label>Related products block of the product details page</label>
-                    <sort_order>50</sort_order>
-                    <show_in_default>1</show_in_default>
-                    <show_in_website>1</show_in_website>
-                    <show_in_store>1</show_in_store>
-                    <fields>
-                        <display_yoochoose_recommendations translate="label">
-                            <label>Render recommendations</label>
+                        <upselling_display translate="label">
+                            <label>Product page. Up-selling block</label>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>10</sort_order>
+                            <source_model>yoochoose_jstracking/system_config_source_displayrecommendation</source_model>
+                            <sort_order>35</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </display_yoochoose_recommendations>
-                        <title translate="label">
+                        </upselling_display>
+                        <upselling_title translate="label">
                             <label>Title</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>15</sort_order>
+                            <sort_order>40</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </title>
-                    </fields>
-                </related>
+                        </upselling_title>
 
-                <crossselling translate="label">
-                    <label>Crossselling block of the shopping basket</label>
-                    <sort_order>60</sort_order>
-                    <show_in_default>1</show_in_default>
-                    <show_in_website>1</show_in_website>
-                    <show_in_store>1</show_in_store>
-                    <fields>
-                        <display_yoochoose_recommendations translate="label">
-                            <label>Render recommendations</label>
+                        <category_page_display translate="label">
+                            <label>Category page. Recommendations</label>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>10</sort_order>
+                            <source_model>yoochoose_jstracking/system_config_source_displayrecommendation</source_model>
+                            <sort_order>45</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </display_yoochoose_recommendations>
-                        <title translate="label">
+                        </category_page_display>
+                        <category_page_title translate="label">
                             <label>Title</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>15</sort_order>
+                            <sort_order>50</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </title>
-                    </fields>
-                </crossselling>
+                            <comment><![CDATA[Wildchar % will be replaces with
+ the name of the current category, for example "SHIRTS". Wildchar %% will
+ be replaces with the current category path, for example "HOME / MEN / SHIRTS".
+]]></comment>
+                        </category_page_title>
 
-                <category_page translate="label">
-                    <label>Category block of the category page</label>
-                    <sort_order>70</sort_order>
-                    <show_in_default>1</show_in_default>
-                    <show_in_website>1</show_in_website>
-                    <show_in_store>1</show_in_store>
-                    <fields>
-                        <display_yoochoose_recommendations translate="label">
-                            <label>Render recommendations</label>
+                        <crossselling_display translate="label">
+                            <label>Shopping basket page. Cross-selling products</label>
                             <frontend_type>select</frontend_type>
-                            <source_model>adminhtml/system_config_source_yesno</source_model>
-                            <sort_order>10</sort_order>
+                            <source_model>yoochoose_jstracking/system_config_source_displayrecommendation</source_model>
+                            <sort_order>55</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </display_yoochoose_recommendations>
-                        <title translate="label">
+                        </crossselling_display>
+                        <crossselling_title translate="label">
                             <label>Title</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>15</sort_order>
+                            <sort_order>60</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                        </title>
+                        </crossselling_title>
+
+                        <customization>
+                            <label>Yoochoose Extension Customization</label>
+                            <frontend_type>Button</frontend_type>
+                            <frontend_model>yoochoose_jstracking/field_customize</frontend_model>
+                            <sort_order>65</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                            <comment><![CDATA[ In the Yoochoose dashboard you can specify the amount of the 
+recommendation for every block and customize the HTML template.]]></comment>
+                        </customization>
                     </fields>
-                </category_page>
+                </recommendation_blocks>
 
                 <data_export>
                     <label>Data Import Configuration</label>

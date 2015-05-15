@@ -59,7 +59,7 @@ class Yoochoose_JsTracking_Block_Field_Register extends Mage_Adminhtml_Block_Sys
     {
         $button = $this->getLayout()->createBlock('adminhtml/widget_button')
                 ->setData(array(
-            'label' => $this->helper('adminhtml')->__('click here'),
+            'label' => $this->helper('adminhtml')->__('Register new Yoochoose account'),
             'onclick' => 'javascript:yc_register(); return false;'
         ));
 

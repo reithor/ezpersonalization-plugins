@@ -55,13 +55,24 @@ module.exports = function (grunt) {
                 src: wrapModule('woocommerce'),
                 dest: sub('dist/%s.js')
             },
+            dev_sy: {
+                options: {
+                    banner: BANNER
+                },
+                src: wrapModule('shopify'),
+                dest: sub('dist/%s.js')
+            },
             dev_mg_vojin: {
                 src: wrapModule('magento'),
-                dest: 'c:/xampp/htdocs/yc-tracking-mg.js'
+                dest: 'c:/xampp/htdocs/v1/903/tracking.js'
             },
             dev_wc_vojin: {
                 src: wrapModule('woocommerce'),
                 dest: 'c:/xampp/htdocs/yc-tracking-wc.js'
+            },
+            dev_sy_vojin: {
+                src: wrapModule('shopify'),
+                dest: 'c:/xampp/htdocs/yc-tracking-sy.js'
             }
         },
         uglify: {
@@ -105,6 +116,10 @@ module.exports = function (grunt) {
         'concat:dev_mg',
         'uglify:dist'
     ]);
+    grunt.registerTask('build-shopify', [
+        'concat:dev_sy',
+        'uglify:dist'
+    ]);
     grunt.registerTask('build-woocommerce', [
         'concat:dev_wc',
         'uglify:dist'
@@ -114,5 +129,8 @@ module.exports = function (grunt) {
     ]);
     grunt.registerTask('build-woocommerce-vojin', [
         'concat:dev_wc_vojin'
+    ]);
+    grunt.registerTask('build-shopify-vojin', [
+        'concat:dev_sy_vojin'
     ]);
 };
