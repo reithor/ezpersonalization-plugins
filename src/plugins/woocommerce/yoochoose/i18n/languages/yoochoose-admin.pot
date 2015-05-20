@@ -13,7 +13,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.7\n"
 
-#: admin/settings.php:46
+#: admin/settings.php:47
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
@@ -26,71 +26,134 @@ msgid "If you don't have a Customer ID yet, please "
 msgstr ""
 
 #: admin/views/html-admin-settings.php:18
-msgid "click here"
+msgid "Register new Yoochoose account"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:28
+#: admin/views/html-admin-settings.php:19
+msgid "Please visit"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:19
+msgid "Yoochoose website"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:20
+msgid "for information to pricing, data privacy and terms of service."
+msgstr ""
+
+#: admin/views/html-admin-settings.php:25
+msgid "General Options"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:30
 msgid "Customer ID"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:36
+#: admin/views/html-admin-settings.php:38
 msgid "Licence Key"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:45
+#: admin/views/html-admin-settings.php:42
+msgid "You can find your license key and detailed statistics on the"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:42
+msgid "Yoochoose Configuration Backend"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:47
 msgid "Use country code with language"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:54
-msgid "Script location"
+#: admin/views/html-admin-settings.php:51
+msgid "Example: en_US"
 msgstr ""
 
 #: admin/views/html-admin-settings.php:58
-msgid "URL of tracking script."
+msgid "Script Endpoint"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:65
-msgid "Best seller block on the home page"
+#: admin/views/html-admin-settings.php:63
+msgid "Performance"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:67
+msgid "Load scripts directly from Yoochoose server"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:68
+msgid "Load scripts from the Amazon content delivery network (CDN)"
 msgstr ""
 
 #: admin/views/html-admin-settings.php:70
-#: admin/views/html-admin-settings.php:93
-#: admin/views/html-admin-settings.php:116
-#: admin/views/html-admin-settings.php:139
-#: admin/views/html-admin-settings.php:162
-#: admin/views/html-admin-settings.php:185
+msgid ""
+"CDN mode provide better performance but takes about a 30 minutes, if the "
+"configuration is updated. Please switch to CDN only, if the configuration is "
+"done and stable."
+msgstr ""
+
+#: admin/views/html-admin-settings.php:76
+msgid "Overwrite Endpoint"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:81
+msgid "Attention!"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:82
+msgid "See the"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:83
+msgid "extension manual"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:83
+msgid "if you about to use this property."
+msgstr ""
+
+#: admin/views/html-admin-settings.php:90
+msgid "Best seller block on the home page"
+msgstr ""
+
+#: admin/views/html-admin-settings.php:95
+#: admin/views/html-admin-settings.php:118
+#: admin/views/html-admin-settings.php:141
+#: admin/views/html-admin-settings.php:164
+#: admin/views/html-admin-settings.php:187
+#: admin/views/html-admin-settings.php:210
 msgid "Render recommendation"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:78
-#: admin/views/html-admin-settings.php:101
-#: admin/views/html-admin-settings.php:124
-#: admin/views/html-admin-settings.php:147
-#: admin/views/html-admin-settings.php:170
-#: admin/views/html-admin-settings.php:193
+#: admin/views/html-admin-settings.php:103
+#: admin/views/html-admin-settings.php:126
+#: admin/views/html-admin-settings.php:149
+#: admin/views/html-admin-settings.php:172
+#: admin/views/html-admin-settings.php:195
+#: admin/views/html-admin-settings.php:218
 msgid "Title"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:88
+#: admin/views/html-admin-settings.php:113
 msgid "Personalized recommendation block on the home page"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:111
+#: admin/views/html-admin-settings.php:136
 msgid "Upselling block of the product details page"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:134
+#: admin/views/html-admin-settings.php:159
 msgid "Related products block of the product details page"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:157
+#: admin/views/html-admin-settings.php:182
 msgid "Crossselling block of the shopping basket"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:180
+#: admin/views/html-admin-settings.php:205
 msgid "Category block of the category page"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:202
+#: admin/views/html-admin-settings.php:227
 msgid "Save changes"
 msgstr ""

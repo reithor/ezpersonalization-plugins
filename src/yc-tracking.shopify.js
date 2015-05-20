@@ -10,7 +10,10 @@ function initYcTrackingModule(context) {
         syObject = window['__st'] ? window['__st'] : null,
         shopify = window['Shopify'] ? window['Shopify'] : null,
         trackid = syObject ? syObject.cid : null,
-        script = document.createElement('script');
+        script = document.createElement('script'),
+        requestsSent = 0,
+        responsesCount = 0,
+        allBoxes = [];
 
     function categoryFromBreadcrumb() {
         var breadcrumbs = document.querySelectorAll('.breadcrumb a span'),
@@ -117,27 +120,26 @@ function initYcTrackingModule(context) {
         var currentPage = syObject.p ? syObject.p : syObject.t,
             pageUrl = syObject ? syObject.pageurl : '',
             category = null,
-            products = [],
-            boxes = [];
+            products = [];
 
         switch (currentPage) {
             case 'product':
                 category = categoryFromBreadcrumb();
-                boxes.push({id: 'related', template: templates.related});
-                boxes.push({id: 'upselling', template: templates.upselling});
+                allBoxes.push({id: 'related', template: templates.related});
+                allBoxes.push({id: 'upselling', template: templates.upselling});
                 products.push(pageUrl.split('/').pop().split('?')[0].replace(/-/g, "_"));
                 break;
             case 'home':
-                boxes.push({id: 'personal', template: templates.personal});
-                boxes.push({id: 'bestseller', template: templates.bestseller});
+                allBoxes.push({id: 'personal', template: templates.personal});
+                allBoxes.push({id: 'bestseller', template: templates.bestseller});
                 break;
             case 'collection':
                 category = categoryFromBreadcrumb();
-                boxes.push({id: 'category_page', template: templates.category_page});
+                allBoxes.push({id: 'category_page', template: templates.category_page});
                 break;
             case 'prospect':
                 category = document.location.pathname;
-                boxes.push({id: 'crossselling', template: templates.crossselling});
+                allBoxes.push({id: 'crossselling', template: templates.crossselling});
                 shopify.getCart(function (cart) {
                     cart.items.forEach(function (item) {
                         products.push(item.handle);
@@ -146,11 +148,20 @@ function initYcTrackingModule(context) {
                 break;
         }
 
-        boxes.forEach(function (box) {
+        allBoxes.forEach(function (box) {
             var tpl = box.template,
                 fncName;
+                
+            if (!tpl) {
+                document.getElementsByTagName('body')[0].innerHTML += 
+                        '<!-- Yoochoose: Template for ' + box.id + ' recommendation box is not found! -->';
+                console.log('Template for ' + box.id + ' recommendation box is not found!');
+                box.priority = 999;
+                return;
+            }
 
             if (tpl.display) {
+                box.priority = tpl.priority;
                 box.title = tpl.title;
                 box.trackFollowEvent = trackFollowEvent;
                 fncName = 'YcTracking_jsonpCallback' + box.id;
@@ -170,7 +181,8 @@ function initYcTrackingModule(context) {
             if (!response.hasOwnProperty('recommendationResponseList') || !response.recommendationResponseList.length) {
                 return;
             }
-
+            
+            requestsSent++;
             all = response.recommendationResponseList.length;
             response.recommendationResponseList.forEach(function (item) {
                 productIds.push(item.itemId);
@@ -181,13 +193,49 @@ function initYcTrackingModule(context) {
                     url: "/products/" + item.itemId.replace(/_/g, "-") + ".js",
                     success: function (e) {
                         products.push(e);
-                    },
+                    }
                 }).always(function () {
+                    var handleHistory = [];
+
                     current++;
                     if (current === all) {
+                        responsesCount++;
                         box.products = products;
-                        YcTracking.trackRendered(1, productIds);
-                        YcTracking.renderRecommendation(box);
+                        if (responsesCount === requestsSent) {
+                            //sort recommendation boxes by priority
+                            allBoxes.sort(function (a, b) {
+                                return a.priority - b.priority;
+                            });
+
+                            allBoxes.forEach(function (box) {
+                                var renderedHandles = [],
+                                    currentBox = [];
+
+                                if (!box.products) {
+                                    return;
+                                }
+
+                                //select products that weren't rendered in any of higher priority boxes
+                                box.products.forEach(function (item) {
+                                    item.handle = item.handle.replace(/-/g, "_");
+                                    if (handleHistory.indexOf(item.handle) === -1) {
+                                        currentBox.push(item);
+                                    } 
+                                });
+
+                                //out of unique products, take first N products
+                                box.products = currentBox.slice(0, box.template.rows * box.template.columns);
+
+                                //add Ids of N selected products, so they wouldn't have duplicates
+                                box.products.forEach(function (item) {
+                                    handleHistory.push(item.handle);
+                                    renderedHandles.push(item.handle);
+                                });
+
+                                YcTracking.trackRendered(1, renderedHandles);
+                                YcTracking.renderRecommendation(box);
+                            });
+                        }
                     }
                 });
             });

@@ -6,7 +6,7 @@ class Yoochoose_JsTracking_Model_ScriptValidation extends Mage_Core_Model_Config
 
     public function save()
     {
-        if (!preg_match(self::SCRIPT_URL_REGEX, $this->getValue())) {
+        if ($this->getValue() && !preg_match(self::SCRIPT_URL_REGEX, $this->getValue())) {
             Mage::getSingleton('adminhtml/session')->addError('Unsupported URL type: (' . $this->getValue() . ')');
             return;
         }

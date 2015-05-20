@@ -7,14 +7,20 @@ module.exports = function (grunt) {
     }
 
     function wrapModule(module) {
-        return [
+        var result = [
             sub('src/%s.intro.js'),
-            sub('src/%s.const.' + module + '.js'),
+            sub('src/%s.const.js'),
             sub('src/%s.core.js'),
-            sub('src/%s.' + module + '.js'),
             sub('src/%s.init.js'),
             sub('src/%s.outro.js')
         ];
+        
+        if (module) {
+            result.splice(2, 0, sub('src/%s.const.' + module + '.js'));
+            result.splice(5, 0, sub('src/%s.' + module + '.js'));
+        }
+        
+        return result;
     }
 
     var LIBRARY_NAME = 'yc-tracking';
@@ -68,7 +74,7 @@ module.exports = function (grunt) {
             },
             dev_wc_vojin: {
                 src: wrapModule('woocommerce'),
-                dest: 'c:/xampp/htdocs/yc-tracking-wc.js'
+                dest: 'c:/xampp/htdocs/v1/904/tracking.js'
             },
             dev_sy_vojin: {
                 src: wrapModule('shopify'),

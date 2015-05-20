@@ -224,6 +224,7 @@ function initYcTrackingModule(context) {
                     document.getElementsByTagName('body')[0].innerHTML += 
                             '<!-- Yoochoose: Template for ' + boxes[i].id + ' recommendation box is not found! -->';
                     console.log('Template for ' + boxes[i].id + ' recommendation box is not found!');
+                    boxes[i].priority = 999;
                     continue;
                 }
 
@@ -239,7 +240,7 @@ function initYcTrackingModule(context) {
     function trackFollowEvent(product, scenario) {
         var ycObject = window['yc_config_object'] ? window['yc_config_object'] : null,
             itemType = ycObject ? ycObject.itemType : null; 
-        
+
         return function () {
             YcTracking.trackClickRecommended(itemType, product.entity_id, scenario);
         };
@@ -330,7 +331,7 @@ function initYcTrackingModule(context) {
         var ycObject = window['yc_config_object'] ? window['yc_config_object'] : null,
             trackid = ycObject ? ycObject.trackid : null,
             script;
-        
+
         if (!window['Handlebars']) {
             script = document.createElement('script');
             script.src = 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.2/handlebars.min.js';

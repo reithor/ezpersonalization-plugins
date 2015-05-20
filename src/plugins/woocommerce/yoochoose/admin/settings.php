@@ -18,6 +18,7 @@ class YoochooseSettings
      * Yoochoose licence validation URL
      */
     const YOOCHOOSE_LICENSE_URL = 'https://admin.yoochoose.net/api/v4/';
+    const SCRIPT_URL_REGEX = "/^(https:\/\/|http:\/\/|\/\/)?([a-zA-Z][\w\-]*)((\.[a-zA-Z][\w\-]*)*)((\/[a-zA-Z][\w\-]*){0,2})(\/)?$/";
 
     /**
      *  Static method that initializes yoochoose admin settings page
@@ -47,8 +48,10 @@ class YoochooseSettings
         }
 
         if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'POST') {
-            $this->saveOption('yc_trackingScript', filter_input(INPUT_POST, 'tackingScript', FILTER_VALIDATE_URL));
-            $this->saveOption('yc_customerId', filter_input(INPUT_POST, 'customerId'));
+            $this->saveOption('yc_cdnSource', filter_input(INPUT_POST, 'cdnSource', FILTER_VALIDATE_INT));
+            $this->saveOption('yc_scriptOverwrite', filter_input(INPUT_POST, 'scriptOverwrite', 
+                    FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => self::SCRIPT_URL_REGEX))));
+            $this->saveOption('yc_customerId', filter_input(INPUT_POST, 'customerId', FILTER_VALIDATE_INT));
             $this->saveOption('yc_licenceKey', filter_input(INPUT_POST, 'licenceKey'));
             $this->saveOption('yc_useCountryCode', filter_input(INPUT_POST, 'useCountryCode'));
             $this->saveOption('yc_boxes', filter_input(INPUT_POST, 'boxes', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY));
@@ -56,12 +59,13 @@ class YoochooseSettings
             $this->validateLicence();
         }
 
-        $trackingScript = get_option('yc_trackingScript');
+        $cdnSource = get_option('yc_cdnSource');
+        $scriptOverwrite = get_option('yc_scriptOverwrite');
         $customerId = get_option('yc_customerId');
         $licenceKey = get_option('yc_licenceKey');
         $useCountryCode = get_option('yc_useCountryCode');
         $boxes = get_option('yc_boxes');
-        
+
         $data = array();
         $lang = get_locale();
         $userId = get_current_user_id();
@@ -77,6 +81,7 @@ class YoochooseSettings
 
         $registrationInfo = json_encode($data);
         $registrationLink = 'https://admin.yoochoose.net/login.html?product=woocommerce_Direct&lang=' . substr($lang, 0, strpos($lang, '_'));
+        $ycAdminLink = 'https://admin.yoochoose.net?customer_id=' . $customerId . '#plugin/configuration';
 
         require_once 'views/html-admin-settings.php';
     }

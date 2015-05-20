@@ -1,7 +1,4 @@
-var YC_CUSTOMER_ID = 905,
-    YC_RECO_EVENT_HOST = '//event.yoochoose.net/api/',
-    YC_RECO_RECOM_HOST = '//reco.yoochoose.net/api/',
-    YC_RECO_TEMPLATES = {
+var YC_RECO_TEMPLATES = {
         related: {
             html_template: "<div class='products'><h2>{{{title}}}</h2><ul " +
             "class='products'>{{#each rows}}{{#each columns}}<li class='product" +
@@ -12,6 +9,7 @@ var YC_CUSTOMER_ID = 905,
             "{{{rating}}}<div class='price'>{{{price}}}</div></a></li>{{/each}}" +
             "{{/each}}</ul></div>",
             target: '#product',
+            priority: 0,
             rows: 2,
             columns: 2,
             scenario: 'cross-rate',
@@ -28,6 +26,7 @@ var YC_CUSTOMER_ID = 905,
             "{{{rating}}}<div class='price'>{{{price}}}</div></a></li>{{/each}}" +
             "{{/each}}</ul></div>",
             target: '#product',
+            priority: 0,
             rows: 2,
             columns: 2,
             scenario: 'cross_sell',
@@ -44,6 +43,7 @@ var YC_CUSTOMER_ID = 905,
             "{{{rating}}}<div class='price'>{{{price}}}</div></a></li>{{/each}}" +
             "{{/each}}</ul></div>",
             target: '#content',
+            priority: 0,
             rows: 2,
             columns: 2,
             scenario: 'personalized',
@@ -60,6 +60,7 @@ var YC_CUSTOMER_ID = 905,
             "{{{rating}}}<div class='price'>{{{price}}}</div></a></li>{{/each}}" +
             "{{/each}}</ul></div>",
             target: '#product',
+            priority: 1,
             rows: 2,
             columns: 2,
             scenario: 'ultimately_bought',
@@ -76,6 +77,7 @@ var YC_CUSTOMER_ID = 905,
             "{{{rating}}}<div class='price'>{{{price}}}</div></a></li>{{/each}}" +
             "{{/each}}</ul></div>",
             target: '#content',
+            priority: 1,
             rows: 2,
             columns: 2,
             scenario: 'landing_page',
@@ -92,6 +94,7 @@ var YC_CUSTOMER_ID = 905,
             "wp-post-image'><h3>{{{title}}}</h3>{{{rating}}}<div class='price'>" + 
             "{{{price}}}</div></a></li>{{/each}}{{/each}}</ul></div>",
             target: '#product',
+            priority: 0,
             rows: 2,
             columns: 2,
             scenario: 'category_page',

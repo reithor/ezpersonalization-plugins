@@ -15,12 +15,14 @@ if (!defined('ABSPATH')) {
                         <label><?php _e('If you don\'t have a Customer ID yet, please ', 'yoochoose'); ?></label>
                     </th>
                     <td>
-                        <input id="yc_registerButton" type="button" class="button button-link" value="<?php _e('click here', 'yoochoose'); ?>">
+                        <input id="yc_registerButton" type="button" class="button button-link" value="<?php _e('Register new Yoochoose account', 'yoochoose'); ?>" />
+                        <p class="description"><?php _e('Please visit', 'yoochoose'); ?> <a href="https://www.yoochoose.com" target="_blank"><?php _e('Yoochoose website', 'yoochoose'); ?></a> 
+                            <?php _e('for information to pricing, data privacy and terms of service.', 'yoochoose'); ?></p>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <h3>General Options</h3>
+        <h3><?php _e('General Options', 'yoochoose'); ?></h3>
         <table class="form-table">
             <tbody>
                 <tr valign="top">
@@ -28,7 +30,7 @@ if (!defined('ABSPATH')) {
                         <label for="customerId"><?php _e('Customer ID', 'yoochoose'); ?></label>
                     </th>
                     <td>
-                        <input type="text" id="customerId" name="customerId" value="<?= $customerId; ?>" size="50"/>
+                        <input type="text" id="customerId" name="customerId" value="<?= $customerId; ?>" size="50" required/>
                     </td>
                 </tr>
                 <tr valign="top">
@@ -36,8 +38,8 @@ if (!defined('ABSPATH')) {
                         <label for="licenceKey"><?php _e('Licence Key', 'yoochoose'); ?></label>
                     </th>
                     <td>
-                        <input type="text" id="licenceKey" name="licenceKey" value="<?= $licenceKey; ?>" size="50"/>
-                        <p class="description">You can find your license key and detailed statistics on the <a href="https://admin.yoochoose.net" target="_blank">Yoochoose Configuration Backend</a>.</p>
+                        <input type="text" id="licenceKey" name="licenceKey" value="<?= $licenceKey; ?>" size="50" required/>
+                        <p class="description"><?php _e('You can find your license key and detailed statistics on the', 'yoochoose'); ?> <a href="<?= $ycAdminLink ?>" target="_blank"><?php _e('Yoochoose Configuration Backend', 'yoochoose'); ?></a>.</p>
                     </td>
                 </tr>
                 <tr valign="top">
@@ -46,16 +48,39 @@ if (!defined('ABSPATH')) {
                     </th>
                     <td>
                         <input type="checkbox" id="useCountryCode" name="useCountryCode" <?php echo $useCountryCode ? 'checked' : ''; ?> />
-                        <p class="description">Example: en_US</p>
+                        <p class="description"><?php _e('Example: en_US', 'yoochoose'); ?></p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <hr/>
+
+        <h3><?php _e('Script Endpoint', 'yoochoose'); ?></h3>
+        <table class="form-table">
+            <tbody>
+                <tr valign="top">
+                    <th scope="row" class="titledesc">
+                        <label for="cdnSource"><?php _e('Performance', 'yoochoose'); ?></label>
+                    </th>
+                    <td>
+                        <select name="cdnSource" id="cdnSource">
+                            <option value="1" <?php echo $cdnSource == 1 ? 'selected' : ''; ?>><?php _e('Load scripts directly from Yoochoose server', 'yoochoose'); ?></option>
+                            <option value="2" <?php echo $cdnSource == 2 ? 'selected' : ''; ?>><?php _e('Load scripts from the Amazon content delivery network (CDN)', 'yoochoose'); ?></option>
+                        </select>
+                        <p class="description"><?php _e('CDN mode provide better performance but takes about a 30 minutes, if the '
+                                . 'configuration is updated. Please switch to CDN only, if the configuration is done and stable.', 'yoochoose'); ?></p>
                     </td>
                 </tr>
                 <tr valign="top">
                     <th scope="row" class="titledesc">
-                        <label for="tackingScript"><?php _e('Script location', 'yoochoose'); ?></label>
+                        <label for="scriptOverwrite"><?php _e('Overwrite Endpoint', 'yoochoose'); ?></label>
                     </th>
                     <td>
-                        <input type="text" placeholder="http://yoochoose.net/tracking.js" value="<?= $trackingScript; ?>" id="tackingScript" name="tackingScript" size="50"/>
-                        <p class="description"><?php _e('URL of tracking script.', 'yoochoose'); ?></p>
+                        <input type="text" placeholder="http://yoochoose.net/tracking.js" value="<?= $scriptOverwrite; ?>" id="scriptOverwrite" name="scriptOverwrite"
+                               pattern="<?= trim(rtrim(self::SCRIPT_URL_REGEX, '/'), '/'); ?>" size="50"/>
+                        <p class="description"><strong style="color: red;"><?php _e('Attention!', 'yoochoose'); ?></strong> 
+                            <?php _e('See the', 'yoochoose'); ?> <a href="https://www.yoochoose.com/magento-connect-2-tutorial" target="_blank">
+                                <?php _e('extension manual', 'yoochoose'); ?></a>, <?php _e('if you about to use this property.', 'yoochoose'); ?></p>
                     </td>
                 </tr>
             </tbody>
@@ -226,4 +251,3 @@ if (!defined('ABSPATH')) {
         };
     }());
 </script>
-

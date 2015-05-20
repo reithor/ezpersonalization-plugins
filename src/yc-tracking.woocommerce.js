@@ -5,7 +5,9 @@ function initYcTrackingModule(context) {
     'use strict';
 
     var YcTracking = context.YcTracking,
-        templates = YC_RECO_TEMPLATES;
+        templates = YC_RECO_TEMPLATES,
+        requestsSent = 0,
+        responsesCount = 0;
 
     function categoryFromBreadcrumb() {
         var breadcrumbs = document.getElementsByClassName('woocommerce-breadcrumb'),
@@ -139,10 +141,12 @@ function initYcTrackingModule(context) {
                     document.getElementsByTagName('body')[0].innerHTML += 
                             '<!-- Yoochoose: Template for ' + boxes[i].id + ' recommendation box is not found! -->';
                     console.log('Template for ' + boxes[i].id + ' recommendation box is not found!');
+                    boxes[i].priority = 999;
                     continue;
                 }
 
                 boxes[i].template = tpl;
+                boxes[i].priority = tpl.priority;
                 fncName = 'YcTracking_jsonpCallback' + boxes[i].id;
                 window[fncName] = fetchRecommendedProducts(boxes[i], url);
                 YcTracking.callFetchRecommendedProducts(1, tpl.scenario, tpl.rows * tpl.columns, products, category, fncName);
@@ -171,7 +175,6 @@ function initYcTrackingModule(context) {
                 productIds.push(product.itemId);
             });
 
-            YcTracking.trackRendered(1, productIds);
             url += productIds.join();
             if (window.XMLHttpRequest) {
                 xmlHttp = new XMLHttpRequest();
@@ -180,12 +183,51 @@ function initYcTrackingModule(context) {
             }
 
             xmlHttp.onreadystatechange = function () {
-                if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-                    box.products = JSON.parse(xmlHttp.responseText);
-                    YcTracking.renderRecommendation(box);
+                var allBoxes = context.yc_config_object.boxes,
+                    idHistory = [];
+
+                if (xmlHttp.readyState === 4) {
+                    responsesCount++;
+                    if (xmlHttp.status === 200) {
+                        box.products = JSON.parse(xmlHttp.responseText);
+                        if (responsesCount === requestsSent) {
+                            allBoxes.sort(function (a, b) {
+                                return a.priority - b.priority;
+                            });
+
+                            allBoxes.forEach(function (box) {
+                                var renderedIds = [],
+                                    currentBox = [];
+
+                                if (!box.products) {
+                                    return;
+                                }
+
+                                //select products that weren't rendered in higher priority boxes
+                                box.products.forEach(function (item) {
+                                    if (idHistory.indexOf(item.id) === -1) {
+                                        currentBox.push(item);
+                                    } 
+                                });
+
+                                //out of unique products, take first N products
+                                box.products = currentBox.slice(0, box.template.rows * box.template.columns);
+
+                                //add Ids of N selected products, so they wouldn't have duplicates
+                                box.products.forEach(function (item) {
+                                    idHistory.push(item.id);
+                                    renderedIds.push(item.id);
+                                });
+
+                                YcTracking.trackRendered(1, renderedIds);
+                                YcTracking.renderRecommendation(box);
+                            });
+                        }
+                    }
                 }
             };
 
+            requestsSent++;
             xmlHttp.open('GET', url, true);
             xmlHttp.send();
         };

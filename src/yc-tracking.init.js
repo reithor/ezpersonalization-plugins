@@ -1,7 +1,9 @@
 var initYcTracking = function (context) {
 
     initYcTrackingCore(context);
-    initYcTrackingModule(context);
+    if (typeof initYcTrackingModule === 'function') {
+        initYcTrackingModule(context);
+    }
 
     return context.YcTracking;
 };

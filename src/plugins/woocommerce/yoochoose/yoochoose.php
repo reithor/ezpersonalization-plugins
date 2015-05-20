@@ -22,10 +22,13 @@ if (!defined('ABSPATH')) {
 final class Yoochoose
 {
 
+    const YOOCHOOSE_CDN_SCRIPT = '//event.yoochoose.net/cdn';
+    const AMAZON_CDN_SCRIPT = '//cdn.yoochoose.net';
+
     /**
      * @var Yoochoose - Instance of Yoochoose class
      */
-    private static $_instance;
+    private static $instance;
 
     /**
      * Ensures only one instance of Yoochoose can be loaded
@@ -34,11 +37,56 @@ final class Yoochoose
      */
     public static function instance()
     {
-        if (self::$_instance === null) {
-            self::$_instance = new Yoochoose();
+        if (self::$instance === null) {
+            self::$instance = new Yoochoose();
         }
 
-        return self::$_instance;
+        return self::$instance;
+    }
+
+    /**
+     * Executed once, when plugin is activated
+     */
+    public static function pluginActivation()
+    {
+        $boxes = array(
+            'bestseller' => array(
+                'title' => 'Bestsellers',
+                'render' => 'on',
+            ),
+            'personal' => array(
+                'title' => 'Recommendations for You',
+                'render' => 'on',
+            ),
+            'upselling' => array(
+                'title' => 'You may also be interested in the following products',
+                'render' => 'on',
+            ),
+            'related' => array(
+                'title' => 'Related products',
+                'render' => 'on',
+            ),
+            'crossselling' => array(
+                'title' => 'You may also be interested in the following products',
+                'render' => 'on',
+            ),
+            'category_page' => array(
+                'title' => 'Recommendation in %',
+                'render' => 'on',
+            ),
+        );
+        add_option('yc_boxes', $boxes);
+    }
+
+    /**
+     * Executed once, when plugin is deactivated
+     */
+    public static function pluginDeactivation()
+    {
+        delete_option('yc_boxes');
+        delete_option('yc_customerId');
+        delete_option('yc_licenceKey');
+        delete_option('yc_useCountryCode');
     }
 
     /**
@@ -104,7 +152,19 @@ final class Yoochoose
      */
     public function enqueueScripts()
     {
-        wp_enqueue_script('yoochoose-jstracking', get_option('yc_trackingScript'), false);
+        $customerId = get_option('yc_customerId');
+        $js = "/v1/{$customerId}/tracking.js";
+        $scriptOverwrite = get_option('yc_scriptOverwrite');
+
+        if ($scriptOverwrite) {
+            $scriptOverwrite = (!preg_match('/^(http|\/\/)/', $scriptOverwrite) ? '//' : '') . $scriptOverwrite;
+            $scriptUrl = preg_replace('(^https?:)', '', $scriptOverwrite);
+        } else {
+            $scriptUrl = get_option('yc_cdnSource') ? self::AMAZON_CDN_SCRIPT : self::YOOCHOOSE_CDN_SCRIPT;
+        }
+
+        $scriptUrl = rtrim($scriptUrl, '/');
+        wp_enqueue_script('yoochoose-jstracking', $scriptUrl . $js, false);
         wp_localize_script('yoochoose-jstracking', 'yoochoose_ajax_script', array('ajaxurl' => admin_url('admin-ajax.php')));
     }
 
@@ -133,8 +193,7 @@ final class Yoochoose
         }
 
         header('Content-Type: application/json;');
-        echo json_encode($result);
-        die;
+        die(json_encode($result));
     }
 
     /**
@@ -142,6 +201,9 @@ final class Yoochoose
      */
     private function __construct()
     {
+        register_activation_hook(__FILE__, array('Yoochoose', 'pluginActivation'));
+        register_deactivation_hook(__FILE__, array('Yoochoose', 'pluginDeactivation'));
+
         $this->loadPluginTextDomain();
 
         require_once '/admin/settings.php';
@@ -281,7 +343,6 @@ final class Yoochoose
 
         return $result;
     }
-
 }
 
 /**
@@ -294,5 +355,4 @@ function YC()
     return Yoochoose::instance();
 }
 
-// Global for backwards compatibility.
-$GLOBALS['yoochoose'] = YC();
+YC();

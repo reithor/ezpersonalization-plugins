@@ -1,7 +1,4 @@
-var YC_CUSTOMER_ID = 904,
-    YC_RECO_EVENT_HOST = '//event.yoochoose.net/api/',
-    YC_RECO_RECOM_HOST = '//reco.yoochoose.net/api/',
-    YC_RECO_TEMPLATES = {
+var YC_RECO_TEMPLATES = {
         related: {
             html_template: "<div class='products'><h2>{{{title}}}</h2><ul " +
             "class='products'>{{#each rows}}{{#each columns}}<li class='product" +
@@ -12,6 +9,7 @@ var YC_CUSTOMER_ID = 904,
             "{{{rating}}}<div class='price'>{{{price}}}</div></a></li>{{/each}}" +
             "{{/each}}</ul></div>",
             target: '#main',
+            priority: 0,
             rows: 2,
             columns: 5,
             scenario: 'cross-rate'
@@ -26,6 +24,7 @@ var YC_CUSTOMER_ID = 904,
             "{{{rating}}}<div class='price'>{{{price}}}</div></a></li>{{/each}}" +
             "{{/each}}</ul></div>",
             target: '#main',
+            priority: 0,
             rows: 2,
             columns: 5,
             scenario: 'cross_sell'
@@ -40,6 +39,7 @@ var YC_CUSTOMER_ID = 904,
             "{{{rating}}}<div class='price'>{{{price}}}</div></a></li>{{/each}}" +
             "{{/each}}</ul></div>",
             target: '#main',
+            priority: 0,
             rows: 2,
             columns: 5,
             scenario: 'personalized'
@@ -54,6 +54,7 @@ var YC_CUSTOMER_ID = 904,
             "{{{rating}}}<div class='price'>{{{price}}}</div></a></li>{{/each}}" +
             "{{/each}}</ul></div>",
             target: '#main',
+            priority: 1,
             rows: 2,
             columns: 5,
             scenario: 'ultimately_bought'
@@ -68,6 +69,7 @@ var YC_CUSTOMER_ID = 904,
             "{{{rating}}}<div class='price'>{{{price}}}</div></a></li>{{/each}}" +
             "{{/each}}</ul></div>",
             target: '#main',
+            priority: 1,
             rows: 2,
             columns: 5,
             scenario: 'landing_page'
@@ -82,6 +84,7 @@ var YC_CUSTOMER_ID = 904,
             "{{{rating}}}<div class='price'>{{{price}}}</div></a></li>{{/each}}" +
             "{{/each}}</ul></div>",
             target: '#main',
+            priority: 0,
             rows: 2,
             columns: 5,
             scenario: 'category_page'

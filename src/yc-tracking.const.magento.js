@@ -1,7 +1,4 @@
-var YC_CUSTOMER_ID = 903,
-    YC_RECO_EVENT_HOST = '//event.yoochoose.net/api/',
-    YC_RECO_RECOM_HOST = '//reco.yoochoose.net/api/',
-    YC_RECO_TEMPLATES = {
+var YC_RECO_TEMPLATES = {
         related: {
             html_template: "<div><h2 class='subtitle'>{{{title}}}</h2><ul " +
             "class='products-grid products-grid--max-5-col'>" +

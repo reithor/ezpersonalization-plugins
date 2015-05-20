@@ -34,8 +34,9 @@
  */
 class Yoochoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
 {
-    const YOOCHOOSE_CDN_SCRIPT = '/event.yoochoose.net/cdn';
-    const AMAZONE_CDN_SCRIPT = 'amazon/cdn';
+
+    const YOOCHOOSE_CDN_SCRIPT = '//event.yoochoose.net/cdn';
+    const AMAZONE_CDN_SCRIPT = '//cdn.yoochoose.net';
     
     /**
      * Inject Yoochoose SJ Tracking script and related data into head.
@@ -56,9 +57,11 @@ class Yoochoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
                 $plugin = Mage::getStoreConfig('yoochoose/general/plugin_id');
                 $plugin = $plugin? '/' . $plugin : '';
                 $js = "/v1/{$mandator}{$plugin}/tracking.js";
+                $scriptOverwrite = Mage::getStoreConfig('yoochoose/advanced/overwrite');
 
-                if (Mage::getStoreConfig('yoochoose/advanced/overwrite')) {
-                    $scriptUrl = preg_replace('(^https?:)', '', Mage::getStoreConfig('yoochoose/advanced/overwrite'));
+                if ($scriptOverwrite) {
+                    $scriptOverwrite = (!preg_match('/^(http|\/\/)/', $scriptOverwrite) ? '//' : '') . $scriptOverwrite;
+                    $scriptUrl = preg_replace('(^https?:)', '', $scriptOverwrite);
                 } else {
                     $scriptUrl = Mage::getStoreConfig('yoochoose/advanced/performance') ? self::AMAZONE_CDN_SCRIPT : self::YOOCHOOSE_CDN_SCRIPT;
                 }
