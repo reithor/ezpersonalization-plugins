@@ -419,8 +419,8 @@ function initYcTrackingCore(context) {
                 section = template.html_template,
                 num = 0,
                 compiled,
+                wrapper = document.createElement('div'),
                 rows = [],
-                i,
                 columns = [],
                 elem = document.querySelector(template.target);
 
@@ -442,12 +442,8 @@ function initYcTrackingCore(context) {
 
             box.rows = rows;
             compiled = Handlebars.compile(section);
-            elem.innerHTML = elem.innerHTML + compiled(box);
-
-            elem = document.getElementsByClassName('rendered-' + box.id);
-            for (i = 0; i < elem.length; i++) {
-                elem[i].onclick = box.trackFollowEvent(box.products[i], template.scenario);
-            }
+            wrapper.innerHTML = compiled(box);
+            elem.appendChild(wrapper);
         };
 
         return this;

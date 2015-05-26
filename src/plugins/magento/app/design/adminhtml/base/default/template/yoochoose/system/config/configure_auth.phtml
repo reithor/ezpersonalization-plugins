@@ -12,13 +12,18 @@
         new Ajax.Request('<?php echo $this->getAjaxConfigureUrl() ?>', {
             method: 'get',
             onSuccess: function (transport) {
-                var data;
+                var data, message = document.getElementById('yc_adminConfigureMsg');
                 if (transport.responseText) {
                     data =  JSON.parse(transport.responseText);
-                    document.getElementById('yoochoose_data_export_consumer_name').value = data.consumerName;
-                    document.getElementById('yoochoose_data_export_consumer_key').value = data.consumerKey;
-                    document.getElementById('yoochoose_data_export_consumer_secret').value = data.consumerSecret;
-                    document.getElementById('yoochoose_data_export_rest_role').value = data.restRole;
+                    message.innerHTML = data.message;
+                    message.style.display = 'block';
+                    message.style.color = data.success? 'green' : 'red';
+                    if (data.success) {
+                        document.getElementById('yoochoose_data_export_consumer_name').value = data.consumerName;
+                        document.getElementById('yoochoose_data_export_consumer_key').value = data.consumerKey;
+                        document.getElementById('yoochoose_data_export_consumer_secret').value = data.consumerSecret;
+                        document.getElementById('yoochoose_data_export_rest_role').value = data.restRole;
+                    }
                 }
             }
         });

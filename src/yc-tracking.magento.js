@@ -218,7 +218,6 @@ function initYcTrackingModule(context) {
 
         for (var i = 0; i < boxes.length; i++) {
             if (boxes[i].display) {
-                boxes[i].trackFollowEvent = trackFollowEvent;
                 tpl = templates[boxes[i].id];
                 if (!tpl) {
                     document.getElementsByTagName('body')[0].innerHTML += 
@@ -315,6 +314,7 @@ function initYcTrackingModule(context) {
 
                                 YcTracking.trackRendered(itemType, renderedIds);
                                 YcTracking.renderRecommendation(box);
+                                attachFollowEvents(box);
                             });
                         }
                     }
@@ -325,6 +325,14 @@ function initYcTrackingModule(context) {
             xmlHttp.open('GET', url, true);
             xmlHttp.send();
         };
+    }
+
+    function attachFollowEvents(box){
+        var elem = document.getElementsByClassName('rendered-' + box.id), i;
+
+        for (i = 0; i < elem.length; i++) {
+            elem[i].onclick = trackFollowEvent(box.products[i], box.template.scenario);
+        }
     }
 
     window.onload = function () {

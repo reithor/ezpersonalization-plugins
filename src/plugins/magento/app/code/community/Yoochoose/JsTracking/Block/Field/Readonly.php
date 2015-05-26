@@ -7,7 +7,7 @@ class Yoochoose_JsTracking_Block_Field_Readonly extends Mage_Adminhtml_Block_Sys
     {
         switch ($element->getId()) {
             case 'yoochoose_general_endpoint':
-                if (!Mage::getStoreConfig("yoochoose/general/endpoint_overwrite")) {
+                if (!Mage::getStoreConfig('yoochoose/general/endpoint_overwrite')) {
                     $url = Mage::helper('core/url')->getHomeUrl();
                     $element->setValue($url);
                     $element->setReadonly('true');
@@ -15,7 +15,7 @@ class Yoochoose_JsTracking_Block_Field_Readonly extends Mage_Adminhtml_Block_Sys
                 
                 break;
             case 'yoochoose_general_design':
-                if (!Mage::getStoreConfig("yoochoose/general/endpoint_overwrite")) {
+                if (!Mage::getStoreConfig('yoochoose/general/endpoint_overwrite')) {
                     $theme = Mage::getSingleton('core/design_package')->getTheme('frontend');
                     $element->setValue($theme);
                     $element->setReadonly('true');

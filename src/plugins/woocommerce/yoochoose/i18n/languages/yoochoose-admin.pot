@@ -3,8 +3,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Yoochoose 1.0.0 Admin\n"
-"POT-Creation-Date: 2015-05-05 15:05+0100\n"
-"PO-Revision-Date: 2015-05-05 15:06+0100\n"
+"POT-Creation-Date: 2015-05-21 16:05+0100\n"
+"PO-Revision-Date: 2015-05-21 16:05+0100\n"
 "Last-Translator: \n"
 "Language-Team: Yoochoose\n"
 "Language: English\n"
@@ -13,147 +13,170 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.7\n"
 
-#: admin/settings.php:47
+#: settings.php:47
 msgid "You do not have sufficient permissions to access this page."
 msgstr ""
 
-#: admin/views/html-admin-settings.php:9
+#: views/html-admin-settings.php:9
 msgid "Yoochoose Settings"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:15
+#: views/html-admin-settings.php:15
 msgid "If you don't have a Customer ID yet, please "
 msgstr ""
 
-#: admin/views/html-admin-settings.php:18
+#: views/html-admin-settings.php:18
 msgid "Register new Yoochoose account"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:19
+#: views/html-admin-settings.php:19
 msgid "Please visit"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:19
+#: views/html-admin-settings.php:19
 msgid "Yoochoose website"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:20
+#: views/html-admin-settings.php:20
 msgid "for information to pricing, data privacy and terms of service."
 msgstr ""
 
-#: admin/views/html-admin-settings.php:25
+#: views/html-admin-settings.php:25
 msgid "General Options"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:30
+#: views/html-admin-settings.php:30
 msgid "Customer ID"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:38
+#: views/html-admin-settings.php:38
 msgid "Licence Key"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:42
+#: views/html-admin-settings.php:42
 msgid "You can find your license key and detailed statistics on the"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:42
+#: views/html-admin-settings.php:42
 msgid "Yoochoose Configuration Backend"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:47
+#: views/html-admin-settings.php:47
+msgid "Endpoint"
+msgstr ""
+
+#: views/html-admin-settings.php:55
+msgid "Design"
+msgstr ""
+
+#: views/html-admin-settings.php:59
+msgid "We will try to find a design template for you shop. Please read "
+msgstr ""
+
+#: views/html-admin-settings.php:60
+msgid "Magento Connect Extention Tutorial"
+msgstr ""
+
+#: views/html-admin-settings.php:61
+msgid "if you need to customize the desing of the recommendations."
+msgstr ""
+
+#: views/html-admin-settings.php:68
+msgid ""
+"Overwrite endpoint and design configuration, \n"
+"                                    if exists (it happens once, as you "
+"clicks \"Save\")"
+msgstr ""
+
+#: views/html-admin-settings.php:74
 msgid "Use country code with language"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:51
-msgid "Example: en_US"
+#: views/html-admin-settings.php:78
+msgid ""
+"Example: en_US, change language <a href=\"options-general.php#WPLANG\" "
+"target=\"_blank\">here</a>."
 msgstr ""
 
-#: admin/views/html-admin-settings.php:58
+#: views/html-admin-settings.php:85
 msgid "Script Endpoint"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:63
+#: views/html-admin-settings.php:90
 msgid "Performance"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:67
+#: views/html-admin-settings.php:94
 msgid "Load scripts directly from Yoochoose server"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:68
+#: views/html-admin-settings.php:95
 msgid "Load scripts from the Amazon content delivery network (CDN)"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:70
+#: views/html-admin-settings.php:97
 msgid ""
 "CDN mode provide better performance but takes about a 30 minutes, if the "
 "configuration is updated. Please switch to CDN only, if the configuration is "
 "done and stable."
 msgstr ""
 
-#: admin/views/html-admin-settings.php:76
+#: views/html-admin-settings.php:103
 msgid "Overwrite Endpoint"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:81
+#: views/html-admin-settings.php:108
 msgid "Attention!"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:82
+#: views/html-admin-settings.php:109
 msgid "See the"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:83
+#: views/html-admin-settings.php:110
 msgid "extension manual"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:83
+#: views/html-admin-settings.php:110
 msgid "if you about to use this property."
 msgstr ""
 
-#: admin/views/html-admin-settings.php:90
+#: views/html-admin-settings.php:117
 msgid "Best seller block on the home page"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:95
-#: admin/views/html-admin-settings.php:118
-#: admin/views/html-admin-settings.php:141
-#: admin/views/html-admin-settings.php:164
-#: admin/views/html-admin-settings.php:187
-#: admin/views/html-admin-settings.php:210
+#: views/html-admin-settings.php:122 views/html-admin-settings.php:145
+#: views/html-admin-settings.php:168 views/html-admin-settings.php:191
+#: views/html-admin-settings.php:214 views/html-admin-settings.php:237
 msgid "Render recommendation"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:103
-#: admin/views/html-admin-settings.php:126
-#: admin/views/html-admin-settings.php:149
-#: admin/views/html-admin-settings.php:172
-#: admin/views/html-admin-settings.php:195
-#: admin/views/html-admin-settings.php:218
+#: views/html-admin-settings.php:130 views/html-admin-settings.php:153
+#: views/html-admin-settings.php:176 views/html-admin-settings.php:199
+#: views/html-admin-settings.php:222 views/html-admin-settings.php:245
 msgid "Title"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:113
+#: views/html-admin-settings.php:140
 msgid "Personalized recommendation block on the home page"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:136
+#: views/html-admin-settings.php:163
 msgid "Upselling block of the product details page"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:159
+#: views/html-admin-settings.php:186
 msgid "Related products block of the product details page"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:182
+#: views/html-admin-settings.php:209
 msgid "Crossselling block of the shopping basket"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:205
+#: views/html-admin-settings.php:232
 msgid "Category block of the category page"
 msgstr ""
 
-#: admin/views/html-admin-settings.php:227
+#: views/html-admin-settings.php:254
 msgid "Save changes"
 msgstr ""

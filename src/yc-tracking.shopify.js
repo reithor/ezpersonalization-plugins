@@ -234,12 +234,21 @@ function initYcTrackingModule(context) {
 
                                 YcTracking.trackRendered(1, renderedHandles);
                                 YcTracking.renderRecommendation(box);
+                                attachFollowEvents(box);
                             });
                         }
                     }
                 });
             });
         };
+    }
+
+    function attachFollowEvents(box){
+        var elem = document.getElementsByClassName('rendered-' + box.id), i;
+
+        for (i = 0; i < elem.length; i++) {
+            elem[i].onclick = trackFollowEvent(box.products[i], box.template.scenario);
+        }
     }
 
     function trackFollowEvent(product, scenario) {

@@ -303,41 +303,45 @@ final class Yoochoose
         switch ($page) {
             case 'product':
                 $result[] = array(
-                    'id' => 'upselling',
+                    'id' => 'product_upsell',
                     'title' => $boxes['upselling']['title'],
                     'display' => $boxes['upselling']['render'],
                 );
                 $result[] = array(
-                    'id' => 'related',
+                    'id' => 'product_crosssell',
                     'title' => $boxes['related']['title'],
                     'display' => $boxes['related']['render'],
                 );
+                
                 break;
             case 'home':
                 $result[] = array(
-                    'id' => 'bestseller',
+                    'id' => 'home_bestseller',
                     'title' => $boxes['bestseller']['title'],
                     'display' => $boxes['bestseller']['render'],
                 );
                 $result[] = array(
-                    'id' => 'personal',
+                    'id' => 'home_personal',
                     'title' => $boxes['personal']['title'],
                     'display' => $boxes['personal']['render'],
                 );
+                
                 break;
             case 'cart':
                 $result[] = array(
-                    'id' => 'crossselling',
+                    'id' => 'basket_crosssell',
                     'title' => $boxes['crossselling']['title'],
                     'display' => $boxes['crossselling']['render'],
                 );
+                
                 break;
             case 'category':
                 $result[] = array(
-                    'id' => 'category_page',
+                    'id' => 'category_bestseller',
                     'title' => $boxes['category_page']['title'],
                     'display' => $boxes['category_page']['render'],
                 );
+                
                 break;
         }
 

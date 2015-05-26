@@ -41,6 +41,11 @@ class Yoochoose_JsTracking_Adminhtml_YoochooseController extends Mage_Adminhtml_
     public function configureAction()
     {
         if (Mage::getStoreConfig('yoochoose/data_export/rest_role')) {
+            Mage::getSingleton('adminhtml/session')->addError('Configuration already exists!');
+            $result['success'] = false;
+            $result['message'] = 'Automatic configuration is unable to reconfigure, it must be done manually.';
+            Mage::app()->getResponse()->setBody(json_encode($result));
+
             return;
         }
         
@@ -49,6 +54,10 @@ class Yoochoose_JsTracking_Adminhtml_YoochooseController extends Mage_Adminhtml_
             'ycstoreview' => 'views',
             'ycproducts' => 'products',
             'ycsubscriber' => 'subscribers',
+            'customer' => 'website_id,created_at,created_in,entity_id,dob,'
+                            . 'disable_auto_group_change,email,firstname,gender,group_id,'
+                            . 'confirmation,last_logged_in,lastname,middlename,prefix,suffix,'
+                            . 'taxvat,reward_update_notification,reward_warning_notification',
         );
         
         //creating oAuth consumer token
@@ -79,22 +88,29 @@ class Yoochoose_JsTracking_Adminhtml_YoochooseController extends Mage_Adminhtml_
         $result['restRole'] = $apiRole->getRoleName();
         $id = $apiRole->getId();
         $rule = Mage::getModel('api2/acl_global_rule');
+        $ruleCollection = $rule->getCollection()
+                ->addFilterByRoleId($id)
+                ->addFieldToFilter('privilege', 'retrieve')
+                ->addFieldToFilter('resource_id', array('in' => array_keys($fields)));
+        foreach ($ruleCollection as $singleRule) {
+            $singleRule->delete();
+        }
+
         foreach ($fields as $key => $value) {
             $rule->setRoleId($id)->setResourceId($key)->setPrivilege('retrieve')->save();
             $rule->setId(null)->isObjectNew(true);
         }
 
-        $customerRule = Mage::getModel('api2/acl_global_rule')->getCollection()
-                ->addFilterByRoleId($id)
-                ->addFieldToFilter('resource_id', 'customer')
-                ->addFieldToFilter('privilege', 'retrieve')
-                ->getFirstItem();
-        if (!$customerRule || !$customerRule->getId()) {
-            $rule->setRoleId($id)->setResourceId('customer')->setPrivilege('retrieve')->save();
-        }
-
         //setting attributes
         $attribute = Mage::getModel('api2/acl_filter_attribute');
+        $attributeCollection = $attribute->getCollection()
+                ->addFieldToFilter('user_type', 'admin')
+                ->addFieldToFilter('operation', 'read')
+                ->addFieldToFilter('resource_id', array('in' => array_keys($fields)));
+        foreach ($attributeCollection as $singleAttribute) {
+            $singleAttribute->delete();
+        }
+
         foreach ($fields as $key => $value) {
             $attribute->setUserType('admin')
                     ->setResourceId($key)
@@ -103,29 +119,15 @@ class Yoochoose_JsTracking_Adminhtml_YoochooseController extends Mage_Adminhtml_
                     ->save();
             $attribute->setId(null)->isObjectNew(true);
         }
-        
-        $customerAttributes = Mage::getModel('api2/acl_filter_attribute')->getCollection()
-                ->addFieldToFilter('user_type', 'admin')
-                ->addFieldToFilter('resource_id', 'customer')
-                ->addFieldToFilter('operation', 'read')
-                ->getFirstItem();
-        if (!$customerAttributes || !$customerAttributes->getId()) {
-            $attribute->setUserType('admin')
-                    ->setResourceId('customer')
-                    ->setOperation('read')
-                    ->setAllowedAttributes('website_id,created_at,created_in,entity_id,dob,'
-                            . 'disable_auto_group_change,email,firstname,gender,group_id,'
-                            . 'confirmation,last_logged_in,lastname,middlename,prefix,suffix,'
-                            . 'taxvat,reward_update_notification,reward_warning_notification')
-                    ->save();
-        }
-        
+
         //saving configuration
         $configModel = Mage::getModel('core/config');
         $configModel->saveConfig('yoochoose/data_export/rest_role', $result['restRole'], 'default', 0);
         $configModel->saveConfig('yoochoose/data_export/consumer_name', $result['consumerName'], 'default', 0);
         $configModel->saveConfig('yoochoose/data_export/consumer_key', $result['consumerKey'], 'default', 0);
         $configModel->saveConfig('yoochoose/data_export/consumer_secret', $result['consumerSecret'], 'default', 0);
+        $result['success'] = true;
+        $result['message'] = 'Configured successfully';
 
         Mage::app()->getResponse()->setBody(json_encode($result));
     }

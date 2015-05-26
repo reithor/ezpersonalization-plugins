@@ -1,8 +1,8 @@
 var YC_RECO_TEMPLATES = {
-        related: {
+        product_crosssell: {
             html_template: "<div class='products'><h2>{{{title}}}</h2><ul " +
             "class='products'>{{#each rows}}{{#each columns}}<li class='product" +
-            " rendered-related type-product {{#if onsale}}sale{{/if}} last'><a href='{{link}}' " +
+            " rendered-product_crosssell type-product {{#if onsale}}sale{{/if}} last'><a href='{{link}}' " +
             "title='{{{title}}}'>{{#if onsale}}<span class='onsale'>Sale!</span>" +
             "{{/if}}<img width='300' height='300' src='{{image}}' alt='{{{title}}}'" +
             " class='attachment-shop_catalog wp-post-image'><h3>{{{title}}}</h3>" +
@@ -14,10 +14,10 @@ var YC_RECO_TEMPLATES = {
             columns: 5,
             scenario: 'cross-rate'
         },
-        crossselling: {
+        basket_crosssell: {
             html_template: "<div class='products'><h2>{{{title}}}</h2><ul " +
             "class='products'>{{#each rows}}{{#each columns}}<li class='product" +
-            " rendered-crossselling type-product {{#if onsale}}sale{{/if}} last'><a href='{{link}}' " +
+            " rendered-basket_crosssell type-product {{#if onsale}}sale{{/if}} last'><a href='{{link}}' " +
             "title='{{{title}}}'>{{#if onsale}}<span class='onsale'>Sale!</span>" +
             "{{/if}}<img width='300' height='300' src='{{image}}' alt='{{{title}}}'" +
             " class='attachment-shop_catalog wp-post-image'><h3>{{{title}}}</h3>" +
@@ -29,10 +29,10 @@ var YC_RECO_TEMPLATES = {
             columns: 5,
             scenario: 'cross_sell'
         },
-        personal: {
+        home_personal : {
             html_template: "<div class='products'><h2>{{{title}}}</h2><ul " +
             "class='products'>{{#each rows}}{{#each columns}}<li class='product" +
-            " rendered-personal type-product {{#if onsale}}sale{{/if}} last'><a href='{{link}}' " +
+            " rendered-home_personal type-product {{#if onsale}}sale{{/if}} last'><a href='{{link}}' " +
             "title='{{{title}}}'>{{#if onsale}}<span class='onsale'>Sale!</span>" +
             "{{/if}}<img width='300' height='300' src='{{image}}' alt='{{{title}}}'" +
             " class='attachment-shop_catalog wp-post-image'><h3>{{{title}}}</h3>" +
@@ -40,14 +40,14 @@ var YC_RECO_TEMPLATES = {
             "{{/each}}</ul></div>",
             target: '#main',
             priority: 0,
-            rows: 2,
-            columns: 5,
-            scenario: 'personalized'
+            rows: 1,
+            columns: 1,
+            scenario: 'landing_page'
         },
-        upselling: {
+        product_upsell: {
             html_template: "<div class='products'><h2>{{{title}}}</h2><ul " +
             "class='products'>{{#each rows}}{{#each columns}}<li class='product" +
-            " rendered-upselling type-product {{#if onsale}}sale{{/if}} last'><a href='{{link}}' " +
+            " rendered-product_upsell type-product {{#if onsale}}sale{{/if}} last'><a href='{{link}}' " +
             "title='{{{title}}}'>{{#if onsale}}<span class='onsale'>Sale!</span>" +
             "{{/if}}<img width='300' height='300' src='{{image}}' alt='{{{title}}}'" +
             " class='attachment-shop_catalog wp-post-image'><h3>{{{title}}}</h3>" +
@@ -59,10 +59,10 @@ var YC_RECO_TEMPLATES = {
             columns: 5,
             scenario: 'ultimately_bought'
         },
-        bestseller: {
+        home_bestseller: {
             html_template: "<div class='products'><h2>{{{title}}}</h2><ul " +
             "class='products'>{{#each rows}}{{#each columns}}<li class='product" +
-            " rendered-bestseller type-product {{#if onsale}}sale{{/if}} last'><a href='{{link}}' " +
+            " rendered-home_bestseller type-product {{#if onsale}}sale{{/if}} last'><a href='{{link}}' " +
             "title='{{{title}}}'>{{#if onsale}}<span class='onsale'>Sale!</span>" +
             "{{/if}}<img width='300' height='300' src='{{image}}' alt='{{{title}}}'" +
             " class='attachment-shop_catalog wp-post-image'><h3>{{{title}}}</h3>" +
@@ -74,10 +74,10 @@ var YC_RECO_TEMPLATES = {
             columns: 5,
             scenario: 'landing_page'
         },
-        category_page: {
+        category_bestseller: {
             html_template: "<div class='products'><h2>{{{title}}}</h2><ul " +
             "class='products'>{{#each rows}}{{#each columns}}<li class='product" +
-            " rendered-category_page type-product {{#if onsale}}sale{{/if}} last'><a href='{{link}}' " +
+            " rendered-category_bestseller type-product {{#if onsale}}sale{{/if}} last'><a href='{{link}}' " +
             "title='{{{title}}}'>{{#if onsale}}<span class='onsale'>Sale!</span>" +
             "{{/if}}<img width='300' height='300' src='{{image}}' alt='{{{title}}}'" +
             " class='attachment-shop_catalog wp-post-image'><h3>{{{title}}}</h3>" +

@@ -54,6 +54,9 @@ class YoochooseSettings
             $this->saveOption('yc_customerId', filter_input(INPUT_POST, 'customerId', FILTER_VALIDATE_INT));
             $this->saveOption('yc_licenceKey', filter_input(INPUT_POST, 'licenceKey'));
             $this->saveOption('yc_useCountryCode', filter_input(INPUT_POST, 'useCountryCode'));
+            $this->saveOption('yc_design', filter_input(INPUT_POST, 'design'));
+            $this->saveOption('yc_endpoint', filter_input(INPUT_POST, 'endpoint'));
+            $this->saveOption('yc_overrideDesign', filter_input(INPUT_POST, 'overrideDesign'));
             $this->saveOption('yc_boxes', filter_input(INPUT_POST, 'boxes', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY));
 
             $this->validateLicence();
@@ -64,6 +67,9 @@ class YoochooseSettings
         $customerId = get_option('yc_customerId');
         $licenceKey = get_option('yc_licenceKey');
         $useCountryCode = get_option('yc_useCountryCode');
+        $overrideDesign = get_option('yc_overrideDesign');
+        $endpoint = $overrideDesign ? get_option('yc_endpoint') : site_url();
+        $design = $overrideDesign ? get_option('yc_design') : get_current_theme();
         $boxes = get_option('yc_boxes');
 
         $data = array();
@@ -106,6 +112,7 @@ class YoochooseSettings
     {
         $customerId = get_option('yc_customerId');
         $licenseKey = get_option('yc_licenceKey');
+        $overrideDesign = get_option('yc_overrideDesign');
 
         if (!$customerId && !$licenseKey) {
             return;
@@ -116,10 +123,10 @@ class YoochooseSettings
                 'base' => array(
                     'type' => 'WOOCOMMERCE',
                     'pluginId' => null,
-                    'endpoint' => site_url(),
+                    'endpoint' => $overrideDesign ? get_option('yc_endpoint') : site_url(),
                 ),
                 'frontend' => array(
-                    'design' => get_current_theme(),
+                    'design' => $overrideDesign ? get_option('yc_design') : get_current_theme(),
             ));
 
             $url = self::YOOCHOOSE_LICENSE_URL . $customerId . '/plugin/create?recheckType=true&fallbackDesign=true';

@@ -44,11 +44,38 @@ if (!defined('ABSPATH')) {
                 </tr>
                 <tr valign="top">
                     <th scope="row" class="titledesc">
+                        <label for="endpoint"><?php _e('Endpoint', 'yoochoose'); ?></label>
+                    </th>
+                    <td>
+                        <input type="text" id="endpoint" name="endpoint" value="<?= $endpoint; ?>" size="50" <?php echo !$overrideDesign ? 'readonly' : ''; ?>/>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row" class="titledesc">
+                        <label for="design"><?php _e('Design', 'yoochoose'); ?></label>
+                    </th>
+                    <td>
+                        <input type="text" id="design" name="design" value="<?= $design; ?>" size="50" <?php echo !$overrideDesign ? 'readonly' : ''; ?>/>
+                        <p class="description"><?php _e('We will try to find a design template for you shop. Please read ', 'yoochoose'); ?>
+                            <a href="https://www.yoochoose.com/magento-connect-2-tutorial" target="_blank"><?php _e('Magento Connect Extention Tutorial', 'yoochoose'); ?></a>, 
+                            <?php _e('if you need to customize the desing of the recommendations.', 'yoochoose'); ?></p>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row" class="titledesc"></th>
+                    <td>
+                        <input type="checkbox" id="overrideDesign" name="overrideDesign" <?php echo $overrideDesign ? 'checked' : ''; ?> />
+                        <p class="description"><?php _e('Overwrite endpoint and design configuration, 
+                                    if exists (it happens once, as you clicks "Save")', 'yoochoose'); ?> </p>
+                    </td>
+                </tr>
+                <tr valign="top">
+                    <th scope="row" class="titledesc">
                         <label for="useCountryCode"><?php _e('Use country code with language', 'yoochoose'); ?></label>
                     </th>
                     <td>
                         <input type="checkbox" id="useCountryCode" name="useCountryCode" <?php echo $useCountryCode ? 'checked' : ''; ?> />
-                        <p class="description"><?php _e('Example: en_US', 'yoochoose'); ?></p>
+                        <p class="description"><?php _e('Example: en_US, change language <a href="options-general.php#WPLANG" target="_blank">here</a>.', 'yoochoose'); ?></p>
                     </td>
                 </tr>
             </tbody>
@@ -248,6 +275,14 @@ if (!defined('ABSPATH')) {
             }
 
             form.submit();
+        };
+        
+        document.getElementById('overrideDesign').onclick = function () {
+            var design = document.getElementById('design'),
+                endpoint = document.getElementById('endpoint');
+                
+                design.readOnly = !design.readOnly;
+                endpoint.readOnly = !endpoint.readOnly;
         };
     }());
 </script>
