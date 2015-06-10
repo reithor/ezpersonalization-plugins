@@ -79,6 +79,10 @@ module.exports = function (grunt) {
             dev_sy_vojin: {
                 src: wrapModule('shopify'),
                 dest: 'c:/xampp/htdocs/yc-tracking-sy.js'
+            },
+            dev_pm_vojin: {
+                src: wrapModule('plentymarkets'),
+                dest: 'c:/xampp/htdocs/yc-tracking-pm.js'
             }
         },
         uglify: {
@@ -138,5 +142,8 @@ module.exports = function (grunt) {
     ]);
     grunt.registerTask('build-shopify-vojin', [
         'concat:dev_sy_vojin'
+    ]);
+    grunt.registerTask('build-plenty-vojin', [
+        'concat:dev_pm_vojin'
     ]);
 };
