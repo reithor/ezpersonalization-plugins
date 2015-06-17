@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<package>
+    <name>Yoochoose</name>
+    <version/>
+    <stability>stable</stability>
+    <license>MIT</license>
+    <channel>Community</channel>
+    <extends/>
+    <summary>Event tracking</summary>
+    <description>Event tracking in js</description>
+    <notes>First version</notes>
+    <authors>
+        <author>
+            <name>yoochoose</name>
+            <user>yoochoose</user>
+            <email>yoochoose@yoochoose.com</email>
+        </author>
+    </authors>
+    <date/>
+    <time/>
+    <contents/>
+    <compatible/>
+    <dependencies>
+        <required>
+            <php>
+                <min>5.1.0</min>
+                <max>6.0.0</max>
+            </php>
+        </required>
+    </dependencies>
+</package>
