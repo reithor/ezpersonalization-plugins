@@ -3,10 +3,29 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 ?>
+<style>
+    .toss-message-success{
+        background-color: greenyellow;
+        text-align: center;
+        padding: 5px;
+    }
 
+    .toss-message-error{
+        background-color: orangered;
+        text-align: center;
+        padding: 5px;
+    }
+</style>
 <div class="wrap">
     <div id="icon-options-general" class="icon32"><br /></div>
     <h2><?php _e('Yoochoose Settings', 'yoochoose'); ?></h2>
+    <div style="display: <?php echo empty($this->tossMessages) ? 'none' : 'block'; ?>">
+        <?php 
+        foreach ($this->tossMessages as $toss) {?>
+        <h3 class="toss-message-<?= $toss['type']; ?>"><?= $toss['message']; ?></h3>
+       <?php  }
+        ?>
+    </div>
     <form id="mainform" method="POST">
         <table class="form-table">
             <tbody>
@@ -57,7 +76,7 @@ if (!defined('ABSPATH')) {
                     <td>
                         <input type="text" id="design" name="design" value="<?= $design; ?>" size="50" <?php echo !$overrideDesign ? 'readonly' : ''; ?>/>
                         <p class="description"><?php _e('We will try to find a design template for you shop. Please read ', 'yoochoose'); ?>
-                            <a href="https://www.yoochoose.com/magento-connect-2-tutorial" target="_blank"><?php _e('Magento Connect Extention Tutorial', 'yoochoose'); ?></a>, 
+                            <a href="https://doc.yoochoose.net/display/PUBDOC/WooCommerce+Plugin+Tutorial" target="_blank"><?php _e('Yoochoose Connect Extention Tutorial', 'yoochoose'); ?></a>, 
                             <?php _e('if you need to customize the desing of the recommendations.', 'yoochoose'); ?></p>
                     </td>
                 </tr>
@@ -106,7 +125,7 @@ if (!defined('ABSPATH')) {
                         <input type="text" placeholder="http://yoochoose.net/tracking.js" value="<?= $scriptOverwrite; ?>" id="scriptOverwrite" name="scriptOverwrite"
                                pattern="<?= trim(rtrim(self::SCRIPT_URL_REGEX, '/'), '/'); ?>" size="50"/>
                         <p class="description"><strong style="color: red;"><?php _e('Attention!', 'yoochoose'); ?></strong> 
-                            <?php _e('See the', 'yoochoose'); ?> <a href="https://www.yoochoose.com/magento-connect-2-tutorial" target="_blank">
+                            <?php _e('See the', 'yoochoose'); ?> <a href="https://doc.yoochoose.net/display/PUBDOC/WooCommerce+Plugin+Tutorial" target="_blank">
                                 <?php _e('extension manual', 'yoochoose'); ?></a>, <?php _e('if you about to use this property.', 'yoochoose'); ?></p>
                     </td>
                 </tr>

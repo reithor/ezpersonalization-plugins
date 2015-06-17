@@ -136,6 +136,8 @@ final class Yoochoose
         if (!get_option('yc_useCountryCode')) {
             $json['lang'] = substr($json['lang'], 0, strpos($json['lang'], '_'));
         }
+
+        $json['lang'] = urlencode(str_replace('_', '-', $json['lang']));
         $json['trackid'] = get_current_user_id();
         $json['currentPage'] = $this->getCurrentPage();
         $json['boxes'] = $this->getRecommendBoxes($json['currentPage']);
@@ -312,7 +314,7 @@ final class Yoochoose
                     'title' => $boxes['related']['title'],
                     'display' => $boxes['related']['render'],
                 );
-                
+
                 break;
             case 'home':
                 $result[] = array(
@@ -325,7 +327,7 @@ final class Yoochoose
                     'title' => $boxes['personal']['title'],
                     'display' => $boxes['personal']['render'],
                 );
-                
+
                 break;
             case 'cart':
                 $result[] = array(
@@ -333,7 +335,7 @@ final class Yoochoose
                     'title' => $boxes['crossselling']['title'],
                     'display' => $boxes['crossselling']['render'],
                 );
-                
+
                 break;
             case 'category':
                 $result[] = array(
@@ -341,7 +343,7 @@ final class Yoochoose
                     'title' => $boxes['category_page']['title'],
                     'display' => $boxes['category_page']['render'],
                 );
-                
+
                 break;
         }
 

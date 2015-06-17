@@ -4,7 +4,7 @@
     <sections>
         <yoochoose translate="label" module="yoochoose_jstracking">
             <label>
-                <![CDATA[<img width="16" height="16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAC7klEQVR42mVTW0gUYRSeHmLRKF33NrOz615mdnZ2V7ddddVSk8KyECJIoqhNwsKnQAipHgyz9RbGJl2MfBCzK2aihBFFYoJgRmFFamBkq5WUs222vcnp/KNupg8f/Jz/fJdz5h+Koqg1yxH2ivmzXrFJ8jpGZ9MckRmPGJp02TveC4K/l+cVK/uppYOUbk2Y9TjapQwHSNkukDKdIKU5ZMxsFOGjww7DvO3tY45LXyUwZrevR+eh8BYPRPYVQGR/IYR3ZYOU5ZIFMAmEUuzwRrDBEysXvWO05P0n8MJpvTWX44Zfx/ZCNFgJ0epyWUTKdcdSTKeKgGNAn5WHuybzTGF8PCMLtBqZvLBHhJ87MuH36TL401K/IIBJpM2pqwSeWTnoNFvghFZ7oSghQUkN8tyl70RgWzpESnbD3PFDEPEXQXi7D6QMZ2yEzy47jCyMAHeSzdDIsJPlKq2fesXz41M43w+fC8JbvRAuyACyC8n3b4nfcIkTogBDPA8PLVZoSzYRgfkzGl2QGuJtkQ92AaZSUcQrxkhLzoT8yYkLtNnk+PdNZrhmMEI9rYc6rb6VemThpl/i5TiKkMZpFPqKpC9uUd78hEPA7QvwnOOhG2cn7kE9CwEdA1Vaupm6YjB0PUXlQYw3YhNgFJuJ2BjiHZ7x20Mfx0EPkm8i+TJrgDokn9XSkaNKdQVVolQe7MLLHpyNLKgfnQYQxJFE7sX6A7y/sUgm0RsQpUpVt1uhsJN3EFep0423Y8Ntkwk6cMZOk0We9R6C1K8bkuEixibONYjzKJAbtyEr9pAOJyZ6gwwbbWJYuMoa5SU1I4gj1mVHQgxoaTiXpIYamq5Y9S9U6/U5dawxVKPSQK2WgdpFtyViAOuE3Fhc3Iz9PoQRsY5aprTWrFKdLE1J6a/Ss6EArZ+XBdA9wBrDp0TnwCZRbMO+BgRJcADhpVb8WXFWtbpoJ8O0lzDMQFmS+vURmhneYzT18RpNyyLRj8hfTKD4C0YFluvNNSNVAAAAAElFTkSuQmCC"/> Yoochoose JS-Tracking]]>
+                <![CDATA[<img style="width: 16px; margin-left: -5px; margin-right: 5px; vertical-align: bottom;" src="data:image/png;base64,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"/> Yoochoose Recommendations]]>
             </label>
             <tab>service</tab>
             <frontend_type>text</frontend_type>
@@ -35,11 +35,12 @@
                         <customer_id translate="label">
                             <label>Customer ID</label>
                             <frontend_type>text</frontend_type>
+                            <backend_model>yoochoose_jstracking/requiredvalidation</backend_model> 
                             <sort_order>10</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <validate>validate-alphanum required-entry</validate>
+                            <validate>validate-alphanum</validate>
                         </customer_id>
                         <license_key translate="label">
                             <label>License Key</label>
@@ -60,11 +61,11 @@
                                 </script>
                             ]]></comment>
                             <frontend_type>text</frontend_type>
+                            <backend_model>yoochoose_jstracking/requiredvalidation</backend_model> 
                             <sort_order>15</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <validate>required-entry</validate>
                         </license_key>
                         <plugin_id>
                             <label>Plugin ID</label>
@@ -121,7 +122,8 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <validate>validate-not-negative-number required-entry</validate>
+                            <backend_model>yoochoose_jstracking/requiredvalidation</backend_model>
+                            <validate>validate-not-negative-number</validate>
                         </itemtypeid>
                         <language translate="label">
                             <label>Language</label>

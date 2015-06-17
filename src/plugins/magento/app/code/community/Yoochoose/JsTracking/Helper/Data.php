@@ -16,17 +16,17 @@ class Yoochoose_JsTracking_Helper_Data extends Mage_Core_Helper_Abstract
             CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
             CURLOPT_USERPWD => "$customerId:$licenceKey",
             CURLOPT_SSL_VERIFYPEER => FALSE,
-            CURLOPT_FAILONERROR => TRUE,
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
                 'Content-Length: ' . strlen($bodyString),
             ),
-            CURLOPT_POSTFIELDS => json_encode($bodyString)
+            CURLOPT_POSTFIELDS => $bodyString
         );
 
         $cURL = curl_init();
         curl_setopt_array($cURL, $options);
-        $result = curl_exec($cURL);
+        $response = curl_exec($cURL);
+        $result = json_decode($response, true);
 
         $eno = curl_errno($cURL);
         if ($eno && $eno != 22) {
@@ -35,14 +35,25 @@ class Yoochoose_JsTracking_Helper_Data extends Mage_Core_Helper_Abstract
         }
 
         $status = curl_getinfo($cURL, CURLINFO_HTTP_CODE);
-        if ($status != 200) {
-            $msg = 'Error requesting [' . $url . ']. Status: ' . $status . '.';
-            throw new Exception($msg);
+        switch ($status) {
+            case 200: 
+                break;
+            case 409:
+                if ($result['faultCode'] === 'pluginAlreadyExistsFault') {
+                    break;
+                }
+            default:
+                $msg = $result['faultMessage'] . 'With status code: ' . $status;
+                throw new Exception($msg);
         }
 
         curl_close($cURL);
 
-        return json_decode($result, true);
+        return $result;
     }
 
+    public function getModuleVersion()
+    {
+        return (string) Mage::getConfig()->getNode()->modules->Yoochoose_JsTracking->version;
+    }
 }

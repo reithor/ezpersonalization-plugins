@@ -52,9 +52,12 @@ class Yoochoose_JsTracking_Model_Observer
             $url .= (Mage::getStoreConfig('yoochoose/general/endpoint_overwrite') ? 'update?createIfNeeded' : 'create?recheckType') . '=true&fallbackDesign=true';
 
             $response = Mage::helper('yoochoose_jstracking')->_getHttpPage($url, $body, $customerId, $licenseKey);
+            Mage::log('Plugin registrated successfully', Zend_Log::INFO, 'yoochoose.log');
+            Mage::getSingleton('adminhtml/session')->addSuccess('Plugin registrated successfully');
 
         } catch (Exception $ex) {
-            Mage:log($ex, null, 'yoochoose.log', true);
+            Mage::log($ex->getMessage(), Zend_Log::ERR, 'yoochoose.log');
+            Mage::throwException('Plugin registration failed: ' . $ex->getMessage());
         }
     }
 

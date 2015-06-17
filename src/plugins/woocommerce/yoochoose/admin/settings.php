@@ -18,7 +18,9 @@ class YoochooseSettings
      * Yoochoose licence validation URL
      */
     const YOOCHOOSE_LICENSE_URL = 'https://admin.yoochoose.net/api/v4/';
-    const SCRIPT_URL_REGEX = "/^(https:\/\/|http:\/\/|\/\/)?([a-zA-Z][\w\-]*)((\.[a-zA-Z][\w\-]*)*)((\/[a-zA-Z][\w\-]*){0,2})(\/)?$/";
+    const SCRIPT_URL_REGEX = "/^(https:\/\/|http:\/\/|\/\/)?([a-zA-Z][\w\-]*)((\.[a-zA-Z][\w\-]*)*)(:\d+)?((\/[a-zA-Z][\w\-]*){0,2})(\/)?$/";
+
+    private $tossMessages = array();
 
     /**
      *  Static method that initializes yoochoose admin settings page
@@ -27,6 +29,7 @@ class YoochooseSettings
     {
         $settings = new YoochooseSettings();
         add_action('admin_menu', array($settings, 'adminMenu'));
+        add_action('admin_head', array($settings, 'myCustomCss'));
     }
 
     /**
@@ -36,6 +39,18 @@ class YoochooseSettings
     {
         add_menu_page('Yoochoose Settings', 'Yoochoose', 'manage_options', 'yoochoose-config', 
                 array($this, 'adminSettingsnPage'), plugins_url('/assets/images/logo.png', __FILE__), 25);
+    }
+
+    /**
+     * Adds css settings
+     */
+    public function myCustomCss()
+    {
+        echo '<style>
+            #adminmenu .wp-menu-image img {
+              opacity: 100;
+            } 
+          </style>';
     }
 
     /**
@@ -90,6 +105,7 @@ class YoochooseSettings
         $ycAdminLink = 'https://admin.yoochoose.net?customer_id=' . $customerId . '#plugin/configuration';
 
         require_once 'views/html-admin-settings.php';
+        $this->tossMessages = array();
     }
 
     /**
@@ -130,9 +146,20 @@ class YoochooseSettings
             ));
 
             $url = self::YOOCHOOSE_LICENSE_URL . $customerId . '/plugin/create?recheckType=true&fallbackDesign=true';
-
-            return $this->executeCall($url, $body, $customerId, $licenseKey);
+            $this->executeCall($url, $body, $customerId, $licenseKey);
+            $logger = new WC_Logger();
+            $logger->add('yoochoose.log', 'Plugin registrated successfully');
+            $this->tossMessages[] = array(
+                'message' => 'Plugin registrated successfully',
+                'type' => 'success',
+            );
         } catch (Exception $ex) {
+            $logger = new WC_Logger();
+            $logger->add('yoochoose.log', $ex->getMessage());
+            $this->tossMessages[] = array(
+                'message' => $ex->getMessage(),
+                'type' => 'error',
+            );
         }
     }
 
@@ -159,17 +186,17 @@ class YoochooseSettings
             CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
             CURLOPT_USERPWD => "$customerId:$licenceKey",
             CURLOPT_SSL_VERIFYPEER => FALSE,
-            CURLOPT_FAILONERROR => TRUE,
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
                 'Content-Length: ' . strlen($bodyString),
             ),
-            CURLOPT_POSTFIELDS => json_encode($bodyString)
+            CURLOPT_POSTFIELDS => $bodyString
         );
 
         $cURL = curl_init();
         curl_setopt_array($cURL, $options);
-        $result = curl_exec($cURL);
+        $response = curl_exec($cURL);
+        $result = json_decode($response, true);
 
         $eno = curl_errno($cURL);
         if ($eno && $eno != 22) {
@@ -178,14 +205,22 @@ class YoochooseSettings
         }
 
         $status = curl_getinfo($cURL, CURLINFO_HTTP_CODE);
-        if ($status != 200) {
-            $msg = 'Error requesting [' . $url . ']. Status: ' . $status . '.';
-            throw new Exception($msg);
+        switch ($status) {
+            case 200:
+                break;
+            case 409:
+                if ($result['faultCode'] === 'pluginAlreadyExistsFault') {
+                    break;
+                }
+
+            default:
+                $msg = $result['faultMessage'] . 'With status code: ' . $status;
+                throw new Exception($msg);
         }
 
         curl_close($cURL);
 
-        return json_decode($result, true);
+        return $result;
     }
 
 }

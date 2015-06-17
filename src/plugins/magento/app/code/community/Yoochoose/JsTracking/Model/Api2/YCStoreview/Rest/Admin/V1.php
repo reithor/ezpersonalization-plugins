@@ -5,20 +5,29 @@ class Yoochoose_JsTracking_Model_Api2_YCStoreView_Rest_Admin_V1 extends Yoochoos
     protected function getStoreRelations()
     {
         $result = array();
+        $storeId = $this->_getStore()->getId();
         $stores = Mage::app()->getStores();
-        
+        $justLanguage = Mage::getStoreConfig('yoochoose/general/language_country', $storeId);
         foreach ($stores as $store) {
-            $tmp = $store->toArray();
             Mage::app()->setCurrentStore($store['store_id']);
+            $lang = Mage::getStoreConfig('yoochoose/general/language', $store['store_id']);
+            if ($justLanguage) {
+                $lang = substr($lang, 0, strpos($lang, '_'));
+            }
+
             $result[] = array(
                 'id' => $store['store_id'],
                 'name' => $store['name'],
-                'item_type_id' => Mage::getStoreConfig('yoochoose/general/itemtypeid'),
-                'languange' => Mage::getStoreConfig('yoochoose/general/language'),
+                'item_type_id' => Mage::getStoreConfig('yoochoose/general/itemtypeid', $store['store_id']),
+                'languange' => str_replace('_', '-', $lang),
             );
         }
-        
-        return array('views' => $result);
+
+        if (empty($result)) {
+            $this->getResponse()->setHeader('HTTP/1.0','204', true);
+        }
+
+        return array('views' => array($result));
     }
     
     /**

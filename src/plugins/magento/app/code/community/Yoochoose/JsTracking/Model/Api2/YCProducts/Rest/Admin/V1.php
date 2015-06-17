@@ -37,7 +37,7 @@ class Yoochoose_JsTracking_Model_Api2_YCProducts_Rest_Admin_V1 extends Yoochoose
         foreach ($products as &$product) {
             $product['url'] = $storeUrl . $product['url_path'];
             unset($product['url_path']);
-            
+
             //image
             $product['image'] = $helper->getMediaUrl($product['image']);
             $imageInfo = getimagesize($product['image']);
@@ -76,6 +76,10 @@ class Yoochoose_JsTracking_Model_Api2_YCProducts_Rest_Admin_V1 extends Yoochoose
             foreach ($tags as $tag) {
                 $product['tags'][] = $tag->getName();
             }
+        }
+
+        if (empty($products)) {
+            $this->getResponse()->setHeader('HTTP/1.0','204', true);
         }
 
         return array('products' => array($products));

@@ -28,7 +28,11 @@ class Yoochoose_JsTracking_Model_Api2_YCSubscriber_Rest_Admin_V1 extends Yoochoo
 
         $subscribers = $collection->load()->toArray();
 
-        return array('subscribers' => $subscribers['items']);
+        if (empty($subscribers['items'])) {
+            $this->getResponse()->setHeader('HTTP/1.0','204', true);
+        }
+
+        return array('subscribers' => array($subscribers['items']));
     }
 
 }

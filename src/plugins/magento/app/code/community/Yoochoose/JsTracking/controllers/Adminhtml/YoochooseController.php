@@ -41,14 +41,13 @@ class Yoochoose_JsTracking_Adminhtml_YoochooseController extends Mage_Adminhtml_
     public function configureAction()
     {
         if (Mage::getStoreConfig('yoochoose/data_export/rest_role')) {
-            Mage::getSingleton('adminhtml/session')->addError('Configuration already exists!');
             $result['success'] = false;
             $result['message'] = 'Automatic configuration is unable to reconfigure, it must be done manually.';
             Mage::app()->getResponse()->setBody(json_encode($result));
 
             return;
         }
-        
+
         $result = array();
         $fields = array(
             'ycstoreview' => 'views',
@@ -59,15 +58,23 @@ class Yoochoose_JsTracking_Adminhtml_YoochooseController extends Mage_Adminhtml_
                             . 'confirmation,last_logged_in,lastname,middlename,prefix,suffix,'
                             . 'taxvat,reward_update_notification,reward_warning_notification',
         );
-        
+
         //creating oAuth consumer token
-        /** @var Mage_Mosel_oauth_consu $oauthConsumer */
-        $oauthConsumer = Mage::getModel('oauth/consumer');
-        $helper = Mage::helper('oauth');
-        $oauthConsumer->setName('Yoochoose-Consumer');
-        $oauthConsumer->setKey($helper->generateConsumerKey());
-        $oauthConsumer->setSecret($helper->generateConsumerSecret());
-        $oauthConsumer->save();
+        /* @var $oauthConsumer Mage_Oauth_Model_Consumer */
+        $oauthConsumer = Mage::getModel('oauth/consumer')->
+                getCollection()->
+                addFieldToFilter('name', 'Yoochoose-Consumer')->
+                getFirstItem();
+
+        if (!$oauthConsumer || !$oauthConsumer->getId()) {
+            $helper = Mage::helper('oauth');
+            $oauthConsumer = Mage::getModel('oauth/consumer');
+            $oauthConsumer->setName('Yoochoose-Consumer');
+            $oauthConsumer->setKey($helper->generateConsumerKey());
+            $oauthConsumer->setSecret($helper->generateConsumerSecret());
+            $oauthConsumer->save();
+        }
+
         $result['consumerName'] = 'Yoochoose-Consumer';
         $result['consumerKey'] = $oauthConsumer->getKey();
         $result['consumerSecret'] = $oauthConsumer->getSecret();

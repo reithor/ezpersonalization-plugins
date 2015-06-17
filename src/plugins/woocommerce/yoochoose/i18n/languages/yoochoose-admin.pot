@@ -74,7 +74,7 @@ msgid "We will try to find a design template for you shop. Please read "
 msgstr ""
 
 #: views/html-admin-settings.php:60
-msgid "Magento Connect Extention Tutorial"
+msgid "Woocommerce Connect Extention Tutorial"
 msgstr ""
 
 #: views/html-admin-settings.php:61

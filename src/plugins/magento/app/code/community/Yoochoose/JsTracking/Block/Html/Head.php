@@ -52,7 +52,6 @@ class Yoochoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
     {
         switch ($itemType) {
             case 'yoochoose_js':
-                $scriptUrl = '';
                 $mandator = Mage::getStoreConfig('yoochoose/general/customer_id');
                 $plugin = Mage::getStoreConfig('yoochoose/general/plugin_id');
                 $plugin = $plugin? '/' . $plugin : '';
@@ -101,7 +100,7 @@ class Yoochoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
             'trackid' => $customerId,
             'orderData' => $order,
             'itemType' => $itemTypeId,
-            'language' => $language,
+            'language' => str_replace('_', '-', $language),
             'currentPage' => $currentPage,
             'products' => $this->getPageProducts($currentPage),
             'boxes' => $this->getRecommendBoxes($currentPage),

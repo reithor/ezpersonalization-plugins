@@ -63,5 +63,5 @@ class Yoochoose_JsTracking_ProductsController extends Mage_Core_Controller_Front
         header('Content-Type: application/json;');
         exit(json_encode(array_values($products)));
     }
-    
+
 }
