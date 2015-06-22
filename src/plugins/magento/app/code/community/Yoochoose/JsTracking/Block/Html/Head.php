@@ -36,10 +36,10 @@ class Yoochoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
 {
 
     const YOOCHOOSE_CDN_SCRIPT = '//event.yoochoose.net/cdn';
-    const AMAZONE_CDN_SCRIPT = '//cdn.yoochoose.net';
+    const AMAZON_CDN_SCRIPT = '//cdn.yoochoose.net';
     
     /**
-     * Inject Yoochoose SJ Tracking script and related data into head.
+     * Inject Yoochoose JS Tracking script and related data into head.
      *
      * @param array  &$lines
      * @param string $itemIf
@@ -55,18 +55,18 @@ class Yoochoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
                 $mandator = Mage::getStoreConfig('yoochoose/general/customer_id');
                 $plugin = Mage::getStoreConfig('yoochoose/general/plugin_id');
                 $plugin = $plugin? '/' . $plugin : '';
-                $js = "/v1/{$mandator}{$plugin}/tracking.js";
                 $scriptOverwrite = Mage::getStoreConfig('yoochoose/advanced/overwrite');
 
                 if ($scriptOverwrite) {
                     $scriptOverwrite = (!preg_match('/^(http|\/\/)/', $scriptOverwrite) ? '//' : '') . $scriptOverwrite;
                     $scriptUrl = preg_replace('(^https?:)', '', $scriptOverwrite);
                 } else {
-                    $scriptUrl = Mage::getStoreConfig('yoochoose/advanced/performance') ? self::AMAZONE_CDN_SCRIPT : self::YOOCHOOSE_CDN_SCRIPT;
+                    $scriptUrl = Mage::getStoreConfig('yoochoose/advanced/performance') ? self::AMAZON_CDN_SCRIPT : self::YOOCHOOSE_CDN_SCRIPT;
                 }
 
-                $scriptUrl = rtrim($scriptUrl, '/');
-                $lines[$itemIf]['other'][] = sprintf('<script type="text/javascript" src="%s"></script>', $scriptUrl . $js);
+                $scriptUrl = rtrim($scriptUrl, '/') . "/v1/{$mandator}{$plugin}/tracking.";
+                $lines[$itemIf]['other'][] = sprintf('<script type="text/javascript" src="%s"></script>', $scriptUrl . 'js');
+                $lines[$itemIf]['other'][] = sprintf('<link type="text/css" rel="stylesheet" href="%s">', $scriptUrl . 'css');
                 $lines[$itemIf]['other'][] = $this->injectTracking();
                 break;
 
