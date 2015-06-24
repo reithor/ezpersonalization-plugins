@@ -53,6 +53,7 @@ class Yoochoose_JsTracking_Adminhtml_YoochooseController extends Mage_Adminhtml_
             'ycstoreview' => 'views',
             'ycproducts' => 'products',
             'ycsubscriber' => 'subscribers',
+            'yccategory' => 'categories',
             'customer' => 'website_id,created_at,created_in,entity_id,dob,'
                             . 'disable_auto_group_change,email,firstname,gender,group_id,'
                             . 'confirmation,last_logged_in,lastname,middlename,prefix,suffix,'

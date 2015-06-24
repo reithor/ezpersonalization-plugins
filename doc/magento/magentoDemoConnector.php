@@ -377,6 +377,15 @@ if (!isset($_SESSION['request_token']) && !isset($_GET['oauth_token'])) { // ret
     $data = $client->getShopData('yoochoose/storeviews', 'GET', array());
     echo '<h1> Store views export</h1>';
     echo '<pre>' . print_r($data, true) . '</pre>';
+
+    $params = array(
+        'limit' => 3,
+        'offset' => 5,
+        'store' => 1,
+    );
+    $data = $client->getShopData('yoochoose/categories', 'GET', $params);
+    echo '<h1> Categories export from store(1) with limit(3) and offset(5)</h1>';
+    echo '<pre>' . print_r($data, true) . '</pre>';
 }
 
 

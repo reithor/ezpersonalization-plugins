@@ -72,6 +72,27 @@
                 </routes>
                 <versions>1</versions>
             </ycstoreview>
+            <yccategory translate="title" module="api2">
+                <group>yoochoose</group>
+                <sort_order>10</sort_order>
+                <model>yoochoose_jstracking/api2_yccategory</model>
+                <title>Categories</title>
+                <privileges>
+                    <admin>
+                        <retrieve>1</retrieve>
+                    </admin>
+                </privileges>
+                <attributes translate="categories" module="api2">
+                    <categories>Categories</categories>
+                </attributes>
+                <routes>
+                    <route_collection>
+                        <route>/yoochoose/categories</route>
+                        <action_type>collection</action_type>
+                    </route_collection>
+                </routes>
+                <versions>1</versions>
+            </yccategory>
          </resources>
     </api2>
 </config>

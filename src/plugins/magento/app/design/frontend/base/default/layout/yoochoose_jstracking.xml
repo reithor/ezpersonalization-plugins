@@ -25,14 +25,11 @@
  */
 
 -->
-<layout version="0.8.0">
+
+<layout version="1.0.0">
     <default>
         <reference name="head">
-            <action method="addItem">
-                <type>yoochoose_js</type>
-                <name>JSTracking</name>
-                <params/>
-            </action>
+            <block type="yoochoose_jstracking/head" name="yoochoose.jstracking" template="yoochoose/head.phtml"/>
         </reference>
     </default>
 </layout>

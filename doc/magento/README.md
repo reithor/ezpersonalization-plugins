@@ -132,3 +132,54 @@
    ]
 }
 ```
+
+## Categories Export
+
+### Parameters
+* limit - (Integer) Number of results
+* offset - (Integer) Start from this offset
+* store - (Integer) From store with this id (optional, if not sent default store view will be selected)
+
+### Call example
+```php
+    $params = array(
+        'limit' => 3,
+        'offset' => 5,
+        'store' => 1,
+    );
+    $response = $client->getShopData('yoochoose/storeviews', 'GET', $params);
+```
+
+### Response example
+```json
+{
+    "categories": [
+        [
+            {
+                "id": "8",
+                "path": "sale",
+                "url": "http://localhost/magento/sale.html",
+                "name": "Sale",
+                "level": "2",
+                "parentId": 2
+            },
+            {
+                "id": "9",
+                "path": "vip",
+                "url": "http://localhost/magento/vip.html",
+                "name": "VIP",
+                "level": "2",
+                "parentId": 2
+            },
+            {
+                "id": "10",
+                "path": "women/new-arrivals",
+                "url": "http://localhost/magento/women/new-arrivals.html",
+                "name": "New Arrivals",
+                "level": "3",
+                "parentId": 4
+            }
+        ]
+    ]
+}
+```

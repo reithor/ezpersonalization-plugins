@@ -5,12 +5,19 @@ function initYcTrackingModule(context) {
     'use strict';
 
     var YcTracking = context.YcTracking,
-        lang = 'de';
+        lang = null;
 
     function getCategory() {
-        var category = location.pathname.split('/');
+        var breadcrumbs = document.getElementsByClassName('breadCrumbs')[0],
+            crumbs = breadcrumbs.getElementsByTagName('a'),            
+            categories = [], 
+            i = 0;
 
-        return category.slice(1, category.length - 2).join('/').replace(/\-/g, ' ');
+        for (; i < crumbs.length; i++) {
+            categories.push(crumbs[i].text);
+        }
+
+        return categories.join('/');
     }
 
     function trackClick() {
@@ -24,15 +31,15 @@ function initYcTrackingModule(context) {
     }
 
     function hookBasketEvent() {
-        var basketButton = document.getElementsByClassName('singlekaufen')[0],
+        var basketForm = document.getElementsByClassName('article_order_form')[0],
             product = document.getElementsByName('ArticleID')[0],
             oldFunction,
             category;
 
-        if (basketButton && product) {
-            oldFunction = basketButton.onclick;
+        if (basketForm && product) {
+            oldFunction = basketForm.submit;
             category = getCategory();
-            basketButton.onclick = function (e) {
+            basketForm.submit = function (e) {
                 YcTracking.trackBasket(1, product.value, category, lang);
                 if (oldFunction) {
                     oldFunction.call(this, e);
@@ -94,16 +101,27 @@ function initYcTrackingModule(context) {
                     'currency': currency
                 });
             }
-
-            console.log(result);
         }
 
         return result;
     }
 
+    function logoutHandler(trackid) {
+        if (!trackid && (typeof YcTracking.getUserId() === 'number')) {
+            YcTracking.resetUser();
+        }
+    }
+
     window.onload = function () {
+        var ycObject = context['yc_config_object'] ? context['yc_config_object'] : null,
+            trackid = ycObject ? ycObject.trackid : null;
+
+        lang = ycObject ? ycObject.lang : null;
+
+        YcTracking.trackLogin(trackid);
         trackClick();
         hookBasketEvent();
         trackBuyHandle();
+        logoutHandler(trackid);
     };
 }

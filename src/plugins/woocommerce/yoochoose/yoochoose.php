@@ -154,19 +154,8 @@ final class Yoochoose
      */
     public function enqueueScripts()
     {
-        $customerId = get_option('yc_customerId');
-        $js = "/v1/{$customerId}/tracking.js";
-        $scriptOverwrite = get_option('yc_scriptOverwrite');
-
-        if ($scriptOverwrite) {
-            $scriptOverwrite = (!preg_match('/^(http|\/\/)/', $scriptOverwrite) ? '//' : '') . $scriptOverwrite;
-            $scriptUrl = preg_replace('(^https?:)', '', $scriptOverwrite);
-        } else {
-            $scriptUrl = get_option('yc_cdnSource') ? self::AMAZON_CDN_SCRIPT : self::YOOCHOOSE_CDN_SCRIPT;
-        }
-
-        $scriptUrl = rtrim($scriptUrl, '/');
-        wp_enqueue_script('yoochoose-jstracking', $scriptUrl . $js, false);
+        wp_enqueue_script('yoochoose-jstracking', $this->createInjectFileName('.js'), false);
+        wp_enqueue_style('yoochoose-jstracking', $this->createInjectFileName('.css'), false);
         wp_localize_script('yoochoose-jstracking', 'yoochoose_ajax_script', array('ajaxurl' => admin_url('admin-ajax.php')));
     }
 
@@ -348,6 +337,22 @@ final class Yoochoose
         }
 
         return $result;
+    }
+
+    private function createInjectFileName($type)
+    {
+        $customerId = get_option('yc_customerId');
+        $suffix = "/v1/{$customerId}/tracking";
+        $scriptOverwrite = get_option('yc_scriptOverwrite');
+
+        if ($scriptOverwrite) {
+            $scriptOverwrite = (!preg_match('/^(http|\/\/)/', $scriptOverwrite) ? '//' : '') . $scriptOverwrite;
+            $scriptUrl = preg_replace('(^https?:)', '', $scriptOverwrite);
+        } else {
+            $scriptUrl = get_option('yc_cdnSource') ? self::AMAZON_CDN_SCRIPT : self::YOOCHOOSE_CDN_SCRIPT;
+        }
+
+        return rtrim($scriptUrl, '/') . $suffix . $type;
     }
 }
 

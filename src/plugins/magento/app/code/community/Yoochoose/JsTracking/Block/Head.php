@@ -1,79 +1,36 @@
 <?php
 
-/**
- * Magento
- *
- * NOTICE OF LICENSE
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://opensource.org/licenses/osl-3.0.php
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@magentocommerce.com so we can send you a copy immediately.
- *
- * DISCLAIMER
- *
- * Do not edit or add to this file if you wish to upgrade Magento to newer
- * versions in the future. If you wish to customize Magento for your
- * needs please refer to http://www.magentocommerce.com for more information.
- *
- * @category    Mage
- * @package     Mage_Page
- * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
- * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
- */
-
-/**
- * Yoochoose JS-Tracking Html page block
- *
- * @category   Yoochoose
- * @package    Yoochoose_JsTracking
- * @author     Yoochoose, yoochoose.net
- */
-class Yoochoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
+class Yoochoose_JsTracking_Block_Head extends Mage_Core_Block_Template
 {
-
     const YOOCHOOSE_CDN_SCRIPT = '//event.yoochoose.net/cdn';
     const AMAZON_CDN_SCRIPT = '//cdn.yoochoose.net';
-    
-    /**
-     * Inject Yoochoose JS Tracking script and related data into head.
-     *
-     * @param array  &$lines
-     * @param string $itemIf
-     * @param string $itemType
-     * @param string $itemParams
-     * @param string $itemName
-     * @param array  $itemThe
-     */
-    protected function _separateOtherHtmlHeadElements(&$lines, $itemIf, $itemType, $itemParams, $itemName, $itemThe)
+
+
+    public function renderScripts()
     {
-        switch ($itemType) {
-            case 'yoochoose_js':
-                $mandator = Mage::getStoreConfig('yoochoose/general/customer_id');
-                $plugin = Mage::getStoreConfig('yoochoose/general/plugin_id');
-                $plugin = $plugin? '/' . $plugin : '';
-                $scriptOverwrite = Mage::getStoreConfig('yoochoose/advanced/overwrite');
+        $yoochoose = $this->getRequest()->get('yoochoose');
+        $result = '';
 
-                if ($scriptOverwrite) {
-                    $scriptOverwrite = (!preg_match('/^(http|\/\/)/', $scriptOverwrite) ? '//' : '') . $scriptOverwrite;
-                    $scriptUrl = preg_replace('(^https?:)', '', $scriptOverwrite);
-                } else {
-                    $scriptUrl = Mage::getStoreConfig('yoochoose/advanced/performance') ? self::AMAZON_CDN_SCRIPT : self::YOOCHOOSE_CDN_SCRIPT;
-                }
+        if ($yoochoose != 'off') {
+            $mandator = Mage::getStoreConfig('yoochoose/general/customer_id');
+            $plugin = Mage::getStoreConfig('yoochoose/general/plugin_id');
+            $plugin = $plugin? '/' . $plugin : '';
+            $scriptOverwrite = Mage::getStoreConfig('yoochoose/advanced/overwrite');
 
-                $scriptUrl = rtrim($scriptUrl, '/') . "/v1/{$mandator}{$plugin}/tracking.";
-                $lines[$itemIf]['other'][] = sprintf('<script type="text/javascript" src="%s"></script>', $scriptUrl . 'js');
-                $lines[$itemIf]['other'][] = sprintf('<link type="text/css" rel="stylesheet" href="%s">', $scriptUrl . 'css');
-                $lines[$itemIf]['other'][] = $this->injectTracking();
-                break;
+            if ($scriptOverwrite) {
+                $scriptOverwrite = (!preg_match('/^(http|\/\/)/', $scriptOverwrite) ? '//' : '') . $scriptOverwrite;
+                $scriptUrl = preg_replace('(^https?:)', '', $scriptOverwrite);
+            } else {
+                $scriptUrl = Mage::getStoreConfig('yoochoose/advanced/performance') ? self::AMAZON_CDN_SCRIPT : self::YOOCHOOSE_CDN_SCRIPT;
+            }
 
-            default:
-                parent::_separateOtherHtmlHeadElements($lines, $itemIf, $itemType, $itemParams, $itemName, $itemThe);
-                break;
+            $scriptUrl = rtrim($scriptUrl, '/') . "/v1/{$mandator}{$plugin}/tracking.";
+            $result .= sprintf('<script type="text/javascript" src="%s"></script>', $scriptUrl . 'js');
+            $result .= sprintf('<link type="text/css" rel="stylesheet" href="%s">', $scriptUrl . 'css');
+            $result .= $this->injectTracking();
         }
+
+        return $result;
     }
 
     private function injectTracking()
@@ -91,7 +48,7 @@ class Yoochoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
         $itemTypeId = Mage::getStoreConfig('yoochoose/general/itemtypeid');
         $language = Mage::getStoreConfig('yoochoose/general/language');
         $currentPage = $this->getCurrentPage();
-        
+
         if (Mage::getStoreConfig('yoochoose/general/language_country')) {
             $language = substr($language, 0, strpos($language, '_'));
         }
@@ -134,7 +91,7 @@ class Yoochoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
         $module = $request->getModuleName();
         $controller = $request->getControllerName();
         $action = $request->getActionName();
-        
+
         if ($module == 'cms' && $action == 'index') {
             return 'home';
         }
@@ -146,7 +103,7 @@ class Yoochoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
         if ($module == 'checkout' && $controller == 'cart' && $action == 'index') {
             return 'cart';
         }
-        
+
         if (Mage::registry('current_category')) {
             return 'category';
         }
@@ -210,5 +167,5 @@ class Yoochoose_JsTracking_Block_Html_Head extends Mage_Page_Block_Html_Head
 
         return implode(',', $result);
     }
-
 }
+
