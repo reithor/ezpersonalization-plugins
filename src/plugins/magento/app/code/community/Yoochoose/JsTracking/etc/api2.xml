@@ -54,7 +54,7 @@
             <ycstoreview translate="title" module="api2">
                 <group>yoochoose</group>
                 <sort_order>10</sort_order>
-                <model>yoochoose_jstracking/api2_yCStoreview</model>
+                <model>yoochoose_jstracking/api2_yCStoreView</model>
                 <title>Store Views</title>
                 <privileges>
                     <admin>
