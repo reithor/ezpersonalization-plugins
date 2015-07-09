@@ -336,7 +336,10 @@ function initYcTrackingCore(context) {
                 itemIds = [itemIds];
             }
 
-            _executeEventCall(url + itemIds.join(','));
+            if (itemIds.length > 0) {
+                _executeEventCall(url + itemIds.join(','));
+            }
+
             return this;
         };
 

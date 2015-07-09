@@ -11,71 +11,77 @@ class Yoochoose_JsTracking_Model_Api2_YCProducts_Rest_Admin_V1 extends Yoochoose
     protected function _retrieveCollection()
     {
         $categoriesRel = array();
-        $productsCategories = array();
+        $products = array();
         $limit = $this->getRequest()->getParam('limit');
         $offset = $this->getRequest()->getParam('offset');
         $storeId = $this->_getStore()->getId();
         $helper = Mage::getModel('catalog/product_media_config');
         $storeUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
 
+        /* @var $collection Mage_Catalog_Model_Resource_Product_Collection */
         $collection = Mage::getResourceModel('catalog/product_collection');
         $collection->setStoreId($storeId);
+        $collection->addFieldToFilter('visibility', array(
+                    'neq' => Mage_Catalog_Model_Product_Visibility::VISIBILITY_NOT_VISIBLE
+                )
+            );
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
         $collection->getSelect()->columns(array('e.entity_id'));
-        $collection->addAttributeToSelect(array('name', 'description', 'price', 'url_path', 'image'));
+        $collection->addAttributeToSelect(array('name', 'description', 'price', 'url_path', 'image', 'manufacturer', 'qty'));
         if ($limit && is_numeric($limit)) {
             $offset = $offset ? $offset : 0;
             $collection->getSelect()->limit($limit, $offset);
         }
 
         foreach ($collection as $product) {
-            $productsCategories[$product->getId()] = $product->getCategoryCollection();
-        }
+            if ($product->getCategoryCollection()->count() == 0) {
+                continue;
+            }
 
-        $products = $collection->load()->toArray();
-
-        foreach ($products as &$product) {
-            $product['url'] = $storeUrl . $product['url_path'];
-            unset($product['url_path']);
-
-            //image
-            $product['image'] = $helper->getMediaUrl($product['image']);
-            $imageInfo = getimagesize($product['image']);
+            $id = $product->getId();
+            $manufacturer = $product->getAttributeText('manufacturer');
+            $temp = array(
+                'entity_id' => $id,
+                'name' => $product->getName(),
+                'description' => $product->getDescription(),
+                'price' => $product->getPrice(),
+                'url' => $storeUrl . $product->getUrlPath(),
+                'image' => $helper->getMediaUrl($product['image']),
+                'manufacturer' => $manufacturer ? $manufacturer : null,
+                'categories' => array(),
+                'tags' => array(),
+            );
+            $imageInfo = getimagesize($temp['image']);
             if (is_array($imageInfo)) {
-                $product['image_size'] = $imageInfo[0] . 'x' . $imageInfo[1];
+                $temp['image_size'] = $imageInfo[0] . 'x' . $imageInfo[1];
             }
 
             //Categories
-            $product['categories'] = array();
-            foreach ($productsCategories[$product['entity_id']] as $category) {
-                $path = $category->getPath();
-                $categoryIds = array_slice(explode('/', $path), 2);
+            foreach ($product->getCategoryCollection() as $category) {
+                $catId = end(explode('/', $category->getPath()));
+                if (!isset($categoriesRel[$catId])) {
+                    $cat = Mage::getResourceModel('catalog/category_collection')
+                            ->setStoreId($storeId)
+                            ->addAttributeToSelect('url_path')
+                            ->addFieldToFilter('entity_id', $catId)
+                            ->getFirstItem();
 
-                $breadcrumb = array();
-                foreach ($categoryIds as $catId) {
-                    if (!isset($categoriesRel[$catId])) {
-                        $cat = Mage::getResourceModel('catalog/category_collection')
-                                ->setStoreId($storeId)
-                                ->addAttributeToSelect('name')
-                                ->addFieldToFilter('entity_id', $catId)
-                                ->getFirstItem();
-                        
-                        $categoriesRel[$catId] = $cat->getName();
-                    }
-
-                    $breadcrumb[] = $categoriesRel[$catId];
+                    $url = $cat->getUrlPath();
+                    $path = explode('.', $url);
+                    $categoriesRel[$catId] = $path[0];
                 }
 
-                $product['categories'][] = implode('/', $breadcrumb);
+                $temp['categories'][] = $categoriesRel[$catId];
             }
 
             //Tags
-            $tags = Mage::getModel('tag/tag')->getCollection()->joinRel()->addProductFilter($product['entity_id']);
+            $tags = Mage::getModel('tag/tag')->getCollection()->joinRel()->addProductFilter($temp['entity_id']);
             $tags->addStoreFilter($storeId);
-            $product['tags'] = array();
             foreach ($tags as $tag) {
-                $product['tags'][] = $tag->getName();
+                $temp['tags'][] = $tag->getName();
             }
+
+            $products[$id] = $temp;
         }
 
         if (empty($products)) {

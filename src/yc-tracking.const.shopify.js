@@ -1,4 +1,5 @@
-var YC_RECO_TEMPLATES = {
+var YC_CUSTOMER_ID = 905,
+    YC_RECO_TEMPLATES = {
         related: {
             html_template: "<div class='products'><h2>{{{title}}}</h2><ul " +
             "class='products'>{{#each rows}}{{#each columns}}<li class='product" +

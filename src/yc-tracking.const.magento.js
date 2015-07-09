@@ -1,4 +1,5 @@
-var YC_RECO_TEMPLATES = {
+var YC_CUSTOMER_ID = 903,
+    YC_RECO_TEMPLATES = {
         related: {
             html_template: "<div><h2 class='subtitle'>{{{title}}}</h2><ul " +
             "class='products-grid products-grid--max-5-col'>" +
@@ -15,7 +16,7 @@ var YC_RECO_TEMPLATES = {
             priority: 0,
             rows: 2,
             columns: 5,
-            scenario: 'cross-rate'
+            scenario: 'cross_rate'
         },
         crossselling: {
             html_template: "<div><h2 class='subtitle'>{{{title}}}</h2><ul " +

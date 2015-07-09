@@ -12,7 +12,7 @@
             <ycsubscriber translate="title" module="api2">
                 <group>yoochoose</group>
                 <sort_order>10</sort_order>
-                <model>yoochoose_jstracking/api2_ycsubscriber</model>
+                <model>yoochoose_jstracking/api2_yCSubscriber</model>
                 <title>Subscribers</title>
                 <privileges>
                     <admin>
@@ -33,7 +33,7 @@
             <ycproducts translate="title" module="api2">
                 <group>yoochoose</group>
                 <sort_order>10</sort_order>
-                <model>yoochoose_jstracking/api2_ycproducts</model>
+                <model>yoochoose_jstracking/api2_yCProducts</model>
                 <title>Products</title>
                 <privileges>
                     <admin>
@@ -54,7 +54,7 @@
             <ycstoreview translate="title" module="api2">
                 <group>yoochoose</group>
                 <sort_order>10</sort_order>
-                <model>yoochoose_jstracking/api2_ycstoreview</model>
+                <model>yoochoose_jstracking/api2_yCStoreview</model>
                 <title>Store Views</title>
                 <privileges>
                     <admin>
@@ -75,7 +75,7 @@
             <yccategory translate="title" module="api2">
                 <group>yoochoose</group>
                 <sort_order>10</sort_order>
-                <model>yoochoose_jstracking/api2_yccategory</model>
+                <model>yoochoose_jstracking/api2_yCCategory</model>
                 <title>Categories</title>
                 <privileges>
                     <admin>

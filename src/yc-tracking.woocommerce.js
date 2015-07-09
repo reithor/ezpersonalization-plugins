@@ -133,7 +133,7 @@ function initYcTrackingModule(context) {
             products = products.join();
         }
 
-        for (var i = 0; i < boxes.length; i++) {
+        for (i = 0; i < boxes.length; i++) {
             if (boxes[i].display) {
                 tpl = templates[boxes[i].id];
                 if (!tpl) {

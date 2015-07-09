@@ -10,6 +10,11 @@
             <yoochoose_jstracking>
                 <class>Yoochoose_JsTracking_Model</class>
             </yoochoose_jstracking>
+            <adminhtml>
+                <rewrite>
+                    <search_catalog>Yoochoose_JsTracking_Model_Adminhtml_Search_Catalog</search_catalog>
+                </rewrite>
+            </adminhtml>
         </models>
         <helpers>
             <yoochoose_jstracking>
@@ -32,6 +37,13 @@
                     <frontName>yoochoose</frontName>
                 </args>
             </yoochoose>
+            <catalogsearch>
+                <args>
+                    <modules>
+                        <Yoochoose_JsTracking before="Mage_CatalogSearch">Yoochoose_JsTracking</Yoochoose_JsTracking>
+                    </modules>
+                </args>
+            </catalogsearch>
         </routers>
         <events>
             <checkout_onepage_controller_success_action>
@@ -43,6 +55,15 @@
                     </checkout_finish>
                 </observers>
             </checkout_onepage_controller_success_action>
+            <controller_action_layout_render_before_catalogsearch_result_index>
+                <observers>
+                    <stackexchange_catalogsearch>
+                        <type>singleton</type>
+                        <class>Yoochoose_JsTracking_Model_Observer</class>
+                        <method>filterParameters</method>
+                    </stackexchange_catalogsearch>
+                </observers>
+            </controller_action_layout_render_before_catalogsearch_result_index>
         </events>
         <layout>
             <updates>
@@ -102,7 +123,7 @@
         <yoochoose>
             <general>
                 <itemtypeid>1</itemtypeid>
-                <language>en_US</language>
+                <language_country>1</language_country>
             </general>
             <recommendation_blocks>
                 <personal_title>Recommendations for You</personal_title>

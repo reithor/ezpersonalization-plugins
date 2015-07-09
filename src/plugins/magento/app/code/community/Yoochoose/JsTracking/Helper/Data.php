@@ -12,7 +12,7 @@ class Yoochoose_JsTracking_Helper_Data extends Mage_Core_Helper_Abstract
             CURLOPT_CUSTOMREQUEST => "POST",
             CURLOPT_RETURNTRANSFER => TRUE,
             CURLOPT_FOLLOWLOCATION => TRUE,
-            CURLOPT_TIMEOUT => 2,
+            CURLOPT_TIMEOUT => 10,
             CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
             CURLOPT_USERPWD => "$customerId:$licenceKey",
             CURLOPT_SSL_VERIFYPEER => FALSE,
@@ -43,7 +43,7 @@ class Yoochoose_JsTracking_Helper_Data extends Mage_Core_Helper_Abstract
                     break;
                 }
             default:
-                $msg = $result['faultMessage'] . 'With status code: ' . $status;
+                $msg = $result['faultMessage'] . ' With status code: ' . $status;
                 throw new Exception($msg);
         }
 
