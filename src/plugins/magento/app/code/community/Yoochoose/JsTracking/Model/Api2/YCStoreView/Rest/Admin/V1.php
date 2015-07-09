@@ -14,7 +14,7 @@ class Yoochoose_JsTracking_Model_Api2_YCStoreView_Rest_Admin_V1 extends Yoochoos
                 $lang = substr($lang, 0, strpos($lang, '_'));
             }
 
-            $result[$store['store_id']] = array(
+            $result[] = array(
                 'id' => $store['store_id'],
                 'name' => $store['name'],
                 'item_type_id' => Mage::getStoreConfig('yoochoose/general/itemtypeid', $store['store_id']),

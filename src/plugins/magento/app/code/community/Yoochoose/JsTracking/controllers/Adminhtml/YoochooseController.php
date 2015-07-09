@@ -62,14 +62,14 @@ class Yoochoose_JsTracking_Adminhtml_YoochooseController extends Mage_Adminhtml_
                     getFirstItem();
 
             if (!$oauthConsumer || !$oauthConsumer->getId()) {
+                $helper = Mage::helper('oauth');
                 $oauthConsumer = Mage::getModel('oauth/consumer');
                 $oauthConsumer->setName('Yoochoose-Consumer');
+                $oauthConsumer->setKey($helper->generateConsumerKey());
+                $oauthConsumer->setSecret($helper->generateConsumerSecret());
+                $oauthConsumer->save();
             }
 
-            $helper = Mage::helper('oauth');
-            $oauthConsumer->setKey($helper->generateConsumerKey());
-            $oauthConsumer->setSecret($helper->generateConsumerSecret());
-            $oauthConsumer->save();
             $result['consumerName'] = 'Yoochoose-Consumer';
             $result['consumerKey'] = $oauthConsumer->getKey();
             $result['consumerSecret'] = $oauthConsumer->getSecret();

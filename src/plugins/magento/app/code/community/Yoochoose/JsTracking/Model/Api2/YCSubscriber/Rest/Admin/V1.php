@@ -10,15 +10,14 @@ class Yoochoose_JsTracking_Model_Api2_YCSubscriber_Rest_Admin_V1 extends Yoochoo
      */
     protected function _retrieveCollection()
     {
-        $subscribers = array();
         $limit = $this->getRequest()->getParam('limit');
         $offset = $this->getRequest()->getParam('offset');
         $collection = Mage::getResourceModel('newsletter/subscriber_collection');
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
         $collection->getSelect()->columns(array(
-            'customer_id',
-            'subscriber_id',
-            'subscriber_confirm_code',
+            'customer_id as id',
+            'subscriber_id as subscriber_id',
+            'subscriber_confirm_code as subscriber_code',
         ));
         $collection->getSelect()->where('customer_id != 0 AND subscriber_status = ' . Mage_Newsletter_Model_Subscriber::STATUS_SUBSCRIBED);
 
@@ -27,19 +26,13 @@ class Yoochoose_JsTracking_Model_Api2_YCSubscriber_Rest_Admin_V1 extends Yoochoo
             $collection->getSelect()->limit($limit, $offset);
         }
 
-        foreach ($collection as $subs) {
-            $subscribers[$subs->getCustomerId()] = array(
-                'id' => $subs->getCustomerId(),
-                'subscriber_id' => $subs->getSubscriberId(),
-                'subscriber_code' => $subs->getSubscriberConfirmCode(),
-            );
-        }
+        $subscribers = $collection->load()->toArray();
 
-        if (empty($subscribers)) {
+        if (empty($subscribers['items'])) {
             $this->getResponse()->setHeader('HTTP/1.0','204', true);
         }
 
-        return array('subscribers' => array($subscribers));
+        return array('subscribers' => array($subscribers['items']));
     }
 
 }

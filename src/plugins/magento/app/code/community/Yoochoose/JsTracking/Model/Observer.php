@@ -34,13 +34,13 @@ class Yoochoose_JsTracking_Model_Observer
         $licenseKey = Mage::getStoreConfig('yoochoose/general/license_key');
         $code = Mage::getSingleton('adminhtml/config_data')->getStore();
         $scopeId = Mage::getModel('core/store')->load($code)->getId();
-
-        if (!$customerId && !$licenseKey) {
-            return;
-        }
-
         if ($scopeId === null) {
             $scopeId = 0;
+        }
+
+        $scopeName = $scopeId === 0 ? 'default' : 'stores';
+        if (!$customerId && !$licenseKey) {
+            return;
         }
 
         try {
@@ -56,7 +56,7 @@ class Yoochoose_JsTracking_Model_Observer
 
             $url = self::YOOCHOOSE_LICENSE_URL . $customerId . '/plugin/';
             $url .= (Mage::getStoreConfig('yoochoose/general/endpoint_overwrite') ? 'update?createIfNeeded' : 'create?recheckType') . '=true&fallbackDesign=true';
-            Mage::getModel('core/config')->saveConfig('yoochoose/general/endpoint_overwrite', 0, 'stores', $scopeId);
+            Mage::getModel('core/config')->saveConfig('yoochoose/general/endpoint_overwrite', 0, $scopeName, $scopeId);
 
             Mage::helper('yoochoose_jstracking')->_getHttpPage($url, $body, $customerId, $licenseKey);
             Mage::log('Plugin registrated successfully', Zend_Log::INFO, 'yoochoose.log');

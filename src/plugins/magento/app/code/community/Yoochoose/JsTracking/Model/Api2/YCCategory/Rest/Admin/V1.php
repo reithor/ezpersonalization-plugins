@@ -27,11 +27,10 @@ class Yoochoose_JsTracking_Model_Api2_YCCategory_Rest_Admin_V1 extends Yoochoose
         }
 
         foreach ($categoryCollection as $category) {
-            $id = $category->getId();
             $url = $category->getUrlPath();
             $path = explode('.', $url);
-            $result[$id] = array(
-                'id' => $id,
+            $result[] = array(
+                'id' => $category->getId(),
                 'path' => $path[0],
                 'url' => $storeUrl . $url,
                 'name' => $category->getName(),
