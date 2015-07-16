@@ -1,5 +1,21 @@
 # Magento API Client
 
+## Build script
+
+### From CLI
+* parameter = (required) Magento root directory path
+
+```sh
+    php xmlPackageGenerator.php C:\xampp\htdocs\magento
+```
+
+### From browser
+* Get parameter with name 'magentoSrc', path to Magento root directory must be URL encoded
+
+```url
+    http://example.localhost/xmlPackageGenerator.php?magentoSrc=C%3A%5Cxampp%5Chtdocs%5Cmagento
+```
+
 ## Product Export
 
 ### Parameters

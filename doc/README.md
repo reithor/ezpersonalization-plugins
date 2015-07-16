@@ -1,15 +1,6 @@
 # JS-Tracking Documentation
 For specific module use README.md files in module's directory.
 
-## Build script
-Put xmlPackageGenerator.php in Magento root directory, because it uses Magento helper libraries.
-* first_param = xml file or string with package structure (default: xmlPackageStructure.xml)
-* second_param = destination directory (default: current directory)
-
-```sh
-    php xmlPackageGenerator.php [first_param] [second_param]
-```
-
 ## Handlebars template property names
 * rows - array of columns
 * columns - array of products
