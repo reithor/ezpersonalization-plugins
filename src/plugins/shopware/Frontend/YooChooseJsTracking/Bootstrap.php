@@ -42,7 +42,7 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
         /* @var $rootNode  \Shopware\Models\Menu\Menu */
         $menuItem = $this->Menu()->findOneBy('label', 'Yoochoose');
         Shopware()->Models()->remove($menuItem);
-        $this->Menu()->save();
+        Shopware()->Models()->flush();
 
         return true;
     }
@@ -183,6 +183,9 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
     {
         $this->registerController('Frontend', 'Yoochoose');
         $this->registerController('Backend', 'Yoochoose');
+        $this->registerController('Api', 'Ycsubscribers');
+        $this->registerController('Api', 'Ycarticles');
+        $this->registerController('Api', 'Yccategories');
     }
 
     private function createDatabase()
@@ -215,8 +218,6 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
      */
     private function createMenu()
     {
-        $img = dirname(__FILE__) . '/logo-red.png';
-
         $rootNode = $this->Menu()->findOneBy('label', 'Configuration');
         $item = $this->createMenuItem(array(
             'label' => 'Yoochoose',
@@ -226,8 +227,6 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
             'controller' => 'Yoochoose',
             'action' => 'index',
         ));
-        $this->Menu()->addItem($item);
-        $this->Menu()->save();
     }
 
     /**
