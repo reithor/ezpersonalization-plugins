@@ -25,6 +25,13 @@ class Yoochoose_JsTracking_Block_Head extends Mage_Core_Block_Template
             }
 
             $scriptUrl = rtrim($scriptUrl, '/') . "/v1/{$mandator}{$plugin}/tracking.";
+
+            //<temporary solution>
+            $result .= sprintf('<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>');
+            $result .= sprintf('<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.3/handlebars.min.js"></script>');
+            $result .= sprintf('<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.5/typeahead.bundle.min.js"></script>');
+            //</temporary solution>
+
             $result .= sprintf('<script type="text/javascript" src="%s"></script>', $scriptUrl . 'js');
             $result .= sprintf('<link type="text/css" rel="stylesheet" href="%s">', $scriptUrl . 'css');
             $result .= $this->injectTracking();
