@@ -83,6 +83,10 @@ module.exports = function (grunt) {
             dev_pm_vojin: {
                 src: wrapModule('plentymarkets'),
                 dest: 'c:/xampp/htdocs/yc-tracking-pm.js'
+            },
+            dev_sw_vojin: {
+                src: wrapModule('shopware'),
+                dest: 'c:/xampp/htdocs/v1/907/tracking.js'
             }
         },
         uglify: {
@@ -145,5 +149,8 @@ module.exports = function (grunt) {
     ]);
     grunt.registerTask('build-plenty-vojin', [
         'concat:dev_pm_vojin'
+    ]);
+    grunt.registerTask('build-shopware-vojin', [
+        'concat:dev_sw_vojin'
     ]);
 };
