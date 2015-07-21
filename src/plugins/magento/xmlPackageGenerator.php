@@ -1,8 +1,23 @@
 <?php
 
+if (count($argv) === 1 || $argv[1] === '-h') {
+    echo "\nMagento Packager Tool options:\n";
+    echo "First parameter must be magento root source directory.\n";
+    echo " -i : option to install magento plugin \n";
+    echo " -u : option to fully uninstall magento plugin \n";
+    echo " -d : option to delete magento plugin \n";
+    echo " -c : option to delete magento plugin config data \n";
+    echo " -a : option to do all (uninstall, install and package)\n";
+    exit;
+}
+
 if (!isset($argv[1]) && !filter_input(INPUT_GET, 'magentoSrc')) {
     exit("\nMagento root source directory MUST be specified!\n");
 }
+
+$deleteFiles = in_array('-a', $argv) || in_array('-d', $argv) || in_array('-u', $argv);
+$deleteConfig = in_array('-a', $argv) || in_array('-c', $argv) || in_array('-u', $argv);
+$install = in_array('-a', $argv) || in_array('-i', $argv);
 
 $outputPath = __DIR__;
 $currentDir = __DIR__;
@@ -15,6 +30,10 @@ $targetMap = array(
     array(
         'type' => 'file',
         'src' => './app/design/frontend/base/default/layout/yoochoose_jstracking.xml',
+    ),
+    array(
+        'type' => 'file',
+        'src' => './app/design/frontend/base/default/template/yoochoose/head.phtml',
     ),
     array(
         'type' => 'dir',
@@ -126,20 +145,29 @@ function copyNewPlugin($srcDir, $destDir)
 try {
     if (Mage::isInstalled()) {
         //Deleting previous plugin files and configuration
-        deleteConfig();
-        deletePluginFiles($targetMap);
+        if ($deleteConfig) {
+            deleteConfig();
+        }
+
+        if ($deleteFiles) {
+            deletePluginFiles($targetMap);
+        }
     }
 
-    //Copying new plugin files to shop
-    $start = DIRECTORY_SEPARATOR . 'app';
-    echo "Copying plugin files started...\n";
-    copyNewPlugin($currentDir . $start, $magentoRoot . $start);
-    echo "Copying plugin files finished successfully.\n";
+    if ($install) {
+        //Copying new plugin files to shop
+        $start = DIRECTORY_SEPARATOR . 'app';
+        echo "Copying plugin files started...\n";
+        copyNewPlugin($currentDir . $start, $magentoRoot . $start);
+        echo "Copying plugin files finished successfully.\n";
+    }
 
     if (Mage::isInstalled()) {
         //Creating plugin archive
         echo "Generating package...\n";
-        $version = Mage::helper('yoochoose_jstracking')->getModuleVersion();
+        $configString = readXmlFile(realpath('./app/code/community/Yoochoose/JsTracking/etc/config.xml'));
+        $configXml = simplexml_load_string($configString);
+        $version = (string) $configXml->modules->Yoochoose_JsTracking->version;
         $xmlString = readXmlFile($xmlName);
         if ($xmlString === false) {
             throw new Exception('File "' . $xmlString . '" not found!');
@@ -151,6 +179,7 @@ try {
             ->setTime(date('H:i:s'))
             ->addContent('modules/Yoochoose_JsTracking.xml', 'mageetc')
             ->addContent('frontend/base/default/layout/yoochoose_jstracking.xml', 'magedesign')
+            ->addContent('frontend/base/default/template/yoochoose/head.phtml', 'magedesign')
             ->addContentDir('magedesign', 'adminhtml/base/default/template/yoochoose')
             ->addContentDir('magecommunity', 'Yoochoose/JsTracking');
 
