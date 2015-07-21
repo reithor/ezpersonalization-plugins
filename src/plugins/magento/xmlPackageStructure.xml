@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<package>
+    <name>YOOCHOOSE_Recommender_Engine</name>
+    <version>2.0.0</version>
+    <stability>stable</stability>
+    <license>MIT</license>
+    <channel>community</channel>
+    <extends/>
+    <summary>Use our superior and patented recommender engine to boost your online sales with personalized and self-learning recommendations.</summary>
+    <description>
+	All leading online shops have already identifies the enormous revenue potential of professional 
+	recommendation services. Our experiences with other online shops show that a sales growth of up 
+	to 20% can be expected. &#xD;&#xD;
+	Recommendation types supported by the extension: People who bought this product, also bought that.
+	People who searched for this kind of product, finally bought this. Best sellers. Personalized 
+	recommendations: Products recommended according to the user's click or buy.
+    </description>
+    <notes></notes>
+    <authors>
+        <author>
+            <name>yoochoose</name>
+            <user>yoochoose</user>
+            <email>support@yoochoose.com</email>
+        </author>
+    </authors>
+    <date/>
+    <time/>
+    <contents/>
+    <compatible/>
+    <dependencies>
+        <required>
+            <php>
+                <min>5.1.0</min>
+                <max>6.0.0</max>
+            </php>
+        </required>
+    </dependencies>
+</package>
