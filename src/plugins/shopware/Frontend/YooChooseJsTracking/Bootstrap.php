@@ -328,9 +328,9 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
         $currentShop = $currentShopId ? $shoprep->find($currentShopId) : $shoprep->getDefault();
         $language = $currentShop->getLocale()->getLocale();
 
-        $useC = YoochooseHelper::getYoochooseConfig('useCountry');
+        $useCountry = YoochooseHelper::getYoochooseConfig('useCountry');
 
-        if (!$useC) {
+        if (!$useCountry) {
             return substr($language, 0, strpos($language, '_'));
         }
 

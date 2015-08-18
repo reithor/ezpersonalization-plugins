@@ -4,12 +4,12 @@ Ext.define('Shopware.apps.Yoochoose.view.Main', {
     extend: 'Enlight.app.Window',
     alias: 'widget.yoochoose-main-window',
     layout: 'fit',
-    width: '30%',
-    height: '75%',
+    width: '550px',
+    height: '640px',
     maximizable: false,
     minimizable: true,
+    autoScroll: true,
     stateful: true,
-    resizable: false,
     stateId: 'YoochooseId',
     border: false,
     store: 'Settings',
@@ -40,7 +40,7 @@ Ext.define('Shopware.apps.Yoochoose.view.Main', {
         return Ext.create('Ext.form.Panel', {
             collapsible: false,
             region: 'center',
-            autoScroll: false,
+            autoScroll: true,
             items: [
                 {
                     xtype: 'yoochoose-config',

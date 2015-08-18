@@ -8,8 +8,8 @@ Ext.define('Shopware.apps.Yoochoose.view.GeneralSettings', {
     hidden: false,
     width: '100%',
     margin: 5,
+    autoScroll: true,
     border: true,
-    autoScroll: false,
     defaults: {
         labelWidth: 160,
         anchor: '100%'
@@ -30,10 +30,14 @@ Ext.define('Shopware.apps.Yoochoose.view.GeneralSettings', {
         this.addEvents(
                 'registerNewUser'
                 );
+        this.addEvents(
+                'configureYoochoose'
+                );
     },
     createForm: function () {
         var me = this,
-                data = me.record[0].data;
+            data = me.record[0].data, 
+            customerLink = data.customerId ? '/?customer_id=' + data.customerId : '';
 
         return [
             {
@@ -52,8 +56,17 @@ Ext.define('Shopware.apps.Yoochoose.view.GeneralSettings', {
                 allowBlank: false,
                 blankText: 'This field is required',
                 required: true,
-                value: data.customerId,
-                maskRe: /[0-9]/i
+                value: data.customerId ? data.customerId : null,
+                listeners: {
+                    'change': function(){
+                        var customerLink = document.getElementById('yoochoose-admin-link'), 
+                            newCustomerId = arguments[1];
+
+                        customerLink.href = customerLink.href.replace(/(.*=)(\d*)/g, function () {
+                            return arguments[1] + newCustomerId;
+                        });
+                    }
+                  }
             }),
             Ext.create('Ext.form.field.Text', {
                 name: 'licenseKey',
@@ -64,9 +77,8 @@ Ext.define('Shopware.apps.Yoochoose.view.GeneralSettings', {
                 required: true,
                 helpText: 'Type plugin name, required field',
                 supportText: 'You can find you license key and detailed statistics on the\n\
-                             <a href="https://doc.yoochoose.net/display/PUBDOC/Shopware+Plugin+Tutorial" target="_blank">Yoochoose Configuration Backend</a>',
-                value: data.licenseKey,
-                maskRe: /[0-9\-]/i
+                             <a id="yoochoose-admin-link" href=" https://admin.yoochoose.net' + customerLink + '" target="_blank">Yoochoose Configuration Backend</a>',
+                value: data.licenseKey
             }),
             Ext.create('Ext.form.field.Text', {
                 name: 'pluginId',
@@ -83,6 +95,7 @@ Ext.define('Shopware.apps.Yoochoose.view.GeneralSettings', {
                 allowBlank: true,
                 blankText: 'This field is required',
                 required: false,
+                readOnly: true,
                 helpText: 'Type http://',
                 value: data.endpoint
             }),
@@ -93,9 +106,10 @@ Ext.define('Shopware.apps.Yoochoose.view.GeneralSettings', {
                 allowBlank: true,
                 blankText: 'This field is required',
                 required: false,
+                readOnly: true,
                 helpText: 'Type plugin name, required field',
                 supportText: 'We will try a design template for your shop.\n\
-                              Please read <a href="https://doc.yoochoose.net/display/PUBDOC/Shopware+Plugin+Tutorial" target="_blank">Shopware Connect Extension Tutorial</a>,\n\
+                              Please read <a href="https://doc.yoochoose.net/display/PUBDOC/Shopware+Plugin+2.0+Tutorial" target="_blank">Shopware Connect Extension Tutorial</a>,\n\
                               if you need to customize the design of the recommendations.',
                 value: data.design
             }),
