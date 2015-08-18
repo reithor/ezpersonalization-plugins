@@ -35,8 +35,8 @@ class YoochooseCategories extends Resource
                 'name' => $category['name'],
                 'parentId' => $category['parentId'],
                 'pathIds' => $category['path'],
-                'path' => $path,
-                'link' => $base . '/' . $path,
+                'path' => $path ? $path : '',
+                'link' => $base . $path,
             );
         }
 
