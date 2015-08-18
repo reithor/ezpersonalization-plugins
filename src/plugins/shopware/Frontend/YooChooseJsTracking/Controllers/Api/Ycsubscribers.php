@@ -21,8 +21,12 @@ class Shopware_Controllers_Api_Ycsubscribers extends Shopware_Controllers_Api_Re
 
             $result = $this->resource->getList($offset, $limit);
 
-            $this->View()->assign($result);
-            $this->View()->assign('success', true);
+            if (empty($result['data'])) {
+                $this->Response()->setHttpResponseCode(204);
+            } else {
+                $this->View()->assign($result);
+                $this->View()->assign('success', true);
+            }
         } catch(Exception $e) {
             $this->View()->assign(array('message' => $e->getMessage()));
             $this->View()->assign('success', false);
