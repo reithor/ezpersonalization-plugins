@@ -77,8 +77,9 @@ class Shopware_Controllers_Backend_Yoochoose extends Shopware_Controllers_Backen
             /* @var $element \Shopware\Models\Yoochoose\Yoochoose */
             $repository = $this->em->getRepository('Shopware\Models\Yoochoose\Yoochoose');
 
-            foreach (json_decode($form, true) as $f) {
-                $data[$f['name']] = $f['value'];
+            $parameters = json_decode($form, true);
+            foreach ($parameters as $f) {
+                $data[$f['name']] = trim($f['value']);
             }
 
             $userId = $_SESSION['Shopware']['Auth']->id;
@@ -110,25 +111,8 @@ class Shopware_Controllers_Backend_Yoochoose extends Shopware_Controllers_Backen
 
             $this->View()->assign(array('success' => true, 'message' => 'Configuration saved'));
         } catch (Exception $e) {
-            Shopware()->Log()->log($e->getMessage() ,Zend_Log::ERR);
+            error_log($e->getMessage() . "\n", 3, Shopware()->DocPath() . '/logs/yoochoose.log');
             $this->View()->assign(array('success' => false, 'message' => $e->getMessage()));
-            $this->Response()->setHttpResponseCode(500);
-        }
-    }
-
-    public function getCustomerDataAction()
-    {
-        try {
-            $customerId = YoochooseHelper::getYoochooseConfig('customerId');
-            $pluginId = YoochooseHelper::getYoochooseConfig('pluginId');
-
-            $this->View()->assign(array(
-                'url' => rtrim(sprintf(self::YOOCHOOSE_REGISTER_URL, $customerId, $pluginId), '/'),
-                'data' => array(),
-            ));
-        } catch (Exception $e) {
-            Shopware()->Log()->log($e->getMessage() ,Zend_Log::ERR);
-            $this->View()->assign(array('message' => $e->getMessage()));
             $this->Response()->setHttpResponseCode(500);
         }
     }
@@ -161,7 +145,7 @@ class Shopware_Controllers_Backend_Yoochoose extends Shopware_Controllers_Backen
 
         $url = self::YOOCHOOSE_LICENSE_URL . $customerId . '/plugin/update?createIfNeeded=true&fallbackDesign=true';
         $response = $this->executeCall($url, $body, $customerId, $licenseKey);
-        Shopware()->Log()->log('Registration finished successfully!' , Zend_Log::INFO);
+        error_log("Registration finished successfully!\n", 3, Shopware()->DocPath() . '/logs/yoochoose.log');
 
         return $response;
     }
@@ -201,6 +185,7 @@ class Shopware_Controllers_Backend_Yoochoose extends Shopware_Controllers_Backen
         $response = curl_exec($cURL);
         $result = json_decode($response, true);
 
+        error_log($response . "\n", 3, Shopware()->DocPath() . '/logs/yoochoose.log');
         $eno = curl_errno($cURL);
         if ($eno && $eno != 22) {
             $msg = 'I/O error requesting [' . $url . ']. Code: ' . $eno . ". " . curl_error($cURL);

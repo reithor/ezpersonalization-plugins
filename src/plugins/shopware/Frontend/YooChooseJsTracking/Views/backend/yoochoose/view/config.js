@@ -3,7 +3,11 @@
 Ext.define('Shopware.apps.Yoochoose.view.Config', {
     extend: 'Ext.container.Container',
     alias: 'widget.yoochoose-config',
-    layout: 'vbox',
+    layout: {
+        type: 'vbox',
+        align: 'stretch'
+     },
+    autoScroll: true,
     snippets: {
         title: '{s name=config/title}Base data{/s}'
     },

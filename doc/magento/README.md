@@ -18,6 +18,27 @@
 
 ## Product Export
 
+### NOTE!
+
+If categories array is empty that product can't be opened with provided link
+
+```json
+    ...
+     "818": {
+        "entity_id": "818",
+        "name": "French Cuff Cotton Twill Oxford",
+        "description": "French cuff button-front shirt with tapered collar. Imported. Available in Blue and White. Cotton twill. Machine wash.",
+        "price": "190.0000",
+        "url": "http://magento.magnalister/french-cuff-cotton-twill-oxford-823.html",
+        "image": "http://magento.magnalister/media/catalog/product/p/m/pms005a_4.jpg",
+        "manufacturer": null,
+        "categories": [],
+        "tags": [],
+        "image_size": "600x900"
+    }
+    ...
+```
+
 ### Parameters
 * limit - (Integer) Number of results
 * offset - (Integer) Start from this offset

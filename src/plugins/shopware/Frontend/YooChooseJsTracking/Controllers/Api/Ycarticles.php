@@ -21,9 +21,13 @@ class Shopware_Controllers_Api_Ycarticles extends Shopware_Controllers_Api_Rest
             $language = $this->Request()->getParam('language');
 
             $result = $this->resource->getList($offset, $limit, $language);
-
-            $this->View()->assign($result);
-            $this->View()->assign('success', true);
+            
+            if (empty($result['data'])) {
+                $this->Response()->setHttpResponseCode(204);
+            } else {
+                $this->View()->assign($result);
+                $this->View()->assign('success', true);
+            }
         } catch (Exception $e) {
             $this->View()->assign(array('message' => $e->getMessage()));
             $this->View()->assign('success', false);

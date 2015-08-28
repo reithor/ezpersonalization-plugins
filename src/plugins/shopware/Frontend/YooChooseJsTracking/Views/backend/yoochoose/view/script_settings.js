@@ -8,8 +8,8 @@ Ext.define('Shopware.apps.Yoochoose.view.ScriptSettings', {
     hidden: false,
     width: '100%',
     margin: 5,
+    autoScroll: true,
     border: true,
-    autoScroll: false,
     defaults: {
         labelWidth: 160,
         anchor: '100%'

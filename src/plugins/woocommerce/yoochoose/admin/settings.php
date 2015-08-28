@@ -198,6 +198,8 @@ class YoochooseSettings
         $response = curl_exec($cURL);
         $result = json_decode($response, true);
 
+        $logger = new WC_Logger();
+        $logger->add('yoochoose.log', $response);
         $eno = curl_errno($cURL);
         if ($eno && $eno != 22) {
             $msg = 'I/O error requesting [' . $url . ']. Code: ' . $eno . ". " . curl_error($cURL);
@@ -214,7 +216,7 @@ class YoochooseSettings
                 }
 
             default:
-                $msg = $result['faultMessage'] . 'With status code: ' . $status;
+                $msg = $result['faultMessage'] . ' With status code: ' . $status;
                 throw new Exception($msg);
         }
 

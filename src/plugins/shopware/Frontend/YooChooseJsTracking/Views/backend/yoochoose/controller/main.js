@@ -10,7 +10,8 @@ Ext.define('Shopware.apps.Yoochoose.controller.Main', {
                 saveForm: me.onSaveForm
             },
             'general-settings': {
-                registerNewUser: me.onRegisterNewUser
+                registerNewUser: me.onRegisterNewUser,
+                configureYoochoose: me.onConfigureYoochoose
             }
         });
 
@@ -25,7 +26,6 @@ Ext.define('Shopware.apps.Yoochoose.controller.Main', {
 
         me.callParent(arguments);
     },
-    
     onSaveForm: function (window) {
         var me = this,
             message,
@@ -46,18 +46,19 @@ Ext.define('Shopware.apps.Yoochoose.controller.Main', {
             Shopware.Notification.createGrowlMessage(str.join(', '), message, 'new message');
         }
     },
-    
     saveFormConfig: function (fields) {
         var elements = fields.items,
             message,
             form = [];
 
         Ext.each(elements, function(item){
-            var o = {
-              'name': item.name,
-              'value': item.value
-            };
-            form.push(o);
+            var value = item.value, trimmed;
+
+            trimmed = typeof value === 'string' ? value.trim() : value;
+            form.push({
+                'name': item.name,
+                'value': trimmed
+            });
         });
 
         Ext.Ajax.request({
@@ -78,37 +79,24 @@ Ext.define('Shopware.apps.Yoochoose.controller.Main', {
             }
         });
     },
-    
     onRegisterNewUser: function () {
-        Ext.Ajax.request({
-            url: '{url controller="Yoochoose" action="getCustomerData"}',
-            method: 'POST',
-            success: function(response) {
-                var result = Ext.decode(response.responseText),
-                    form = document.createElement('form'),
-                    input = document.createElement('input');
+        var form = document.createElement('form'),
+            lang = Ext.editorLang.split('_')[0];
 
-                form.method = 'post';
-                form.action = result.url;
-                form.target = '_blank';
+            form.method = 'get';
+            form.action = 'https://admin.yoochoose.net/login.html?product=shopware_Direct&lang=' + lang;
+            form.target = '_blank';
 
-                for (var property in result.data) {
-                    if (result.data.hasOwnProperty(property)) {
-                        input.setAttribute('name', property);
-                        input.setAttribute('value', result.data[property]);
-                        form.appendChild(input.cloneNode(true));
-                    }
-                }
+            form.submit();
+    },
+    onConfigureYoochoose: function (customerId) {
+        var form = document.createElement('form');
 
-                form.submit();
-            },
-            failure: function (response) {
-                var result = Ext.decode(response.responseText),
-                    message = Ext.String.format(result.message, '');
+            form.method = 'get';
+            form.action = 'https://admin.yoochoose.net/?customer_id=<customer_id>';
+            form.target = '_blank';
 
-                Shopware.Notification.createGrowlMessage('Error!', message, 'new message');
-            }
-        });
+            form.submit();
     }
 });
 //{/block}

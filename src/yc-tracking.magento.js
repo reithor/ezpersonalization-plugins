@@ -31,6 +31,7 @@ function initYcTrackingModule(context) {
             ycObject = window['yc_config_object'] ? window['yc_config_object'] : null,
             itemType = ycObject ? ycObject.itemType : null,
             language = ycObject ? ycObject.language : null,
+            currentPage = ycObject ? ycObject.currentPage : null,
             itemId = ycObject ? ycObject.products : null,
             category = '',
             reviewForm = document.getElementById('review-form');
@@ -46,7 +47,7 @@ function initYcTrackingModule(context) {
             category = categoryFromBreadcrumb();
         }
 
-        if (itemId) {
+        if (itemId && currentPage === 'product') {
             YcTracking.trackClick(itemType, itemId, category, language);
 
             if (reviewForm) {
@@ -198,7 +199,7 @@ function initYcTrackingModule(context) {
             boxes = ycObject ? ycObject.boxes : null,
             currentPage = ycObject ? ycObject.currentPage : null,
             tpl,
-            url = location.origin + Mage.Cookies.path + '/yoochoose/products/index/?productIds=',
+            url = location.origin + Mage.Cookies.path,
             fncName,
             category = null;
 
@@ -206,6 +207,7 @@ function initYcTrackingModule(context) {
             return;
         }
 
+        url = (url.endsWith('/') ? url.slice(0, -1) : url) + '/yoochoose/products/index/?productIds=';
         if (currentPage === 'product' || currentPage === 'category') {
             category = categoryFromBreadcrumb();
         } else if (currentPage === 'cart') {
