@@ -3,10 +3,10 @@
 if (count($argv) === 1 || $argv[1] === '-h') {
     echo "\nMagento Packager Tool options:\n";
     echo "First parameter must be magento root source directory.\n";
-    echo " -i : option to install magento plugin \n";
-    echo " -u : option to fully uninstall magento plugin \n";
+    echo " -i : option to install and package magento plugin \n";
     echo " -d : option to delete magento plugin \n";
     echo " -c : option to delete magento plugin config data \n";
+    echo " -u : option to do 'd' and 'c' \n";
     echo " -a : option to do all (uninstall, install and package)\n";
     exit;
 }

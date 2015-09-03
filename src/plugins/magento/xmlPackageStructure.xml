@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <package>
     <name>YOOCHOOSE_Recommender_Engine</name>
-    <version>2.0.0</version>
+    <!-- DO NOT CHANGE THE VERSION HERE. Use app\code\community\Yoochoose\JsTracking\etc\config.xml -->
+    <version>2.0.1</version>
     <stability>stable</stability>
     <license>MIT</license>
     <channel>community</channel>
