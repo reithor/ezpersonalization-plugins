@@ -6,7 +6,7 @@ module.exports = function (grunt) {
         return str.replace(/%s/g, LIBRARY_NAME);
     }
 
-    function wrapModule(module) {
+    function wrapModule(module, newCoreVersion) {
         var result = [
             sub('src/%s.intro.js'),
             sub('src/%s.const.js'),
@@ -19,7 +19,11 @@ module.exports = function (grunt) {
             result.splice(2, 0, sub('src/%s.const.' + module + '.js'));
             result.splice(5, 0, sub('src/%s.' + module + '.js'));
         }
-        
+
+        if (newCoreVersion) {
+            result[3] = sub('src/%s.core.v2.js');
+        }
+
         return result;
     }
 
@@ -81,7 +85,7 @@ module.exports = function (grunt) {
                 dest: 'c:/xampp/htdocs/yc-tracking-sy.js'
             },
             dev_pm_vojin: {
-                src: wrapModule('plentymarkets'),
+                src: wrapModule('plentymarkets', true),
                 dest: 'c:/xampp/htdocs/yc-tracking-pm.js'
             },
             dev_sw_vojin: {
