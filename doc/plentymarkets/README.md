@@ -23,17 +23,14 @@ Web design page can be found in CMS menu.
 {% if $IsWelcomePage %}{% $_CurrentPage = 'home' %}{% endif %}
 {% if $CheckoutCurrentStep %}{% $_CurrentPage = 'cart' %}{% endif %}
 {% if $SCRIPT_URL contains "/-OrderShowQQMakeOrder/" %}{% $_CurrentPage = 'buyout' %}{% endif %}
-{% if $CustomerID %}
-    {% $_TrackId = $CustomerID %}
-{% else %}
-    {% $_TrackId = 0 %}
-{% endif %}
+{% if $CustomerID %}{% $_TrackId = $CustomerID %}{% else %}{% $_TrackId = 0 %}{% endif %}
 <script>
     yc_config_object = {
         'trackid' : $_TrackId,
         'lang' : '$Lang',
         'page' : '$_CurrentPage',
-        'currency': '$Currency'
+        'currency' : '$Currency',
+        'currencySign' : '$CurrencySign'
     };
 </script>
 <script src="/layout/<your_theme_name>/js/yc-tracking.js" type="text/javascript"></script>

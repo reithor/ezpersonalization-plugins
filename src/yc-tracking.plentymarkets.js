@@ -7,12 +7,13 @@ function initYcTrackingModule(context) {
         currentPage = null,
         lang = null,
         currency = null,
+        currencySign = null,
         requestsSent = 0,
         responsesCount = 0,
         allBoxes = [];
 
     function getCategory() {
-        var breadcrumbs = document.getElementsByClassName(YC_BREADCRUMBS)[0],
+        var breadcrumbs = document.getElementsByClassName(YC_BREADCRUMBS_SELECTOR)[0],
             crumbs,
             categories = [],
             i = 1;
@@ -45,7 +46,7 @@ function initYcTrackingModule(context) {
     }
 
     function hookBasketEvent() {
-        var buttons = document.querySelectorAll(YC_ADD_BASKET_BUTTON),
+        var buttons = document.querySelectorAll(YC_ADD_BASKET_BUTTON_SELECTOR),
             i = 0,
             category,
             hookClickEvent = function (button) {
@@ -214,11 +215,20 @@ function initYcTrackingModule(context) {
             box.products = [];
             response.recommendationItems.forEach(function (item) {
                 var product = {
-                    itemId: item.itemId
-                };
+                        itemId: item.itemId
+                    },
+                    priceValue;
 
                 item.attributes.forEach(function (attribute) {
                     product[attribute.key] = attribute.values.length ? attribute.values[0] : '';
+                    // Price is always retrieved in 1234.00USD format
+                    if (attribute.key === 'price' && product['price']) {
+                        priceValue = product[attribute.key].replace(currency, '').replace('.', YC_DECIMAL_SEPARATOR);
+
+                        product['price'] = YC_RENDER_PRICE_FORMAT.replace('{price}', priceValue)
+                            .replace('{currencySign}', currencySign)
+                            .replace('{currency}', currency);
+                    }
                 });
 
                 if (product.title) {
@@ -293,6 +303,7 @@ function initYcTrackingModule(context) {
         lang = ycObject ? ycObject.lang : null;
         currentPage = ycObject ? ycObject.page : null;
         currency = ycObject ? ycObject.currency : null;
+        currencySign = ycObject ? ycObject.currencySign : null;
 
         if (!context['Handlebars']) {
             script = document.createElement('script');
