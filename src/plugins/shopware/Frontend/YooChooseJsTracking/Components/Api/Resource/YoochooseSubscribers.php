@@ -2,9 +2,21 @@
 
 namespace Shopware\Components\Api\Resource;
 
+/**
+ * Class YoochooseSubscribers
+ * @package Shopware\Components\Api\Resource
+ */
 class YoochooseSubscribers extends Resource
 {
 
+    /**
+     * Retrieves the list of subscribers
+     *
+     * @param $offset
+     * @param $limit
+     * @return array
+     * @throws \Shopware\Components\Api\Exception\PrivilegeException
+     */
     public function getList($offset, $limit)
     {
         $this->checkPrivilege('read');
@@ -35,6 +47,11 @@ class YoochooseSubscribers extends Resource
         return array('data' => $result, 'total' => $totalResult);
     }
 
+    /**
+     * Retrieves Newsletter Address Model Repository
+     *
+     * @return \Shopware\Components\Model\ModelRepository
+     */
     public function getRepository()
     {
         return $this->getManager()->getRepository('Shopware\Models\Newsletter\Address');

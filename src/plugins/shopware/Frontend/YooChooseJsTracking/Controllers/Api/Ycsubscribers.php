@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class Shopware_Controllers_Api_Ycsubscribers
+ */
 class Shopware_Controllers_Api_Ycsubscribers extends Shopware_Controllers_Api_Rest
 {
 
@@ -28,6 +31,7 @@ class Shopware_Controllers_Api_Ycsubscribers extends Shopware_Controllers_Api_Re
                 $this->View()->assign('success', true);
             }
         } catch(Exception $e) {
+            $this->Response()->setHttpResponseCode(400);
             $this->View()->assign(array('message' => $e->getMessage()));
             $this->View()->assign('success', false);
         }

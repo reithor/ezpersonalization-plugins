@@ -2,14 +2,31 @@
 
 namespace Shopware\Components\Api\Resource;
 
+/**
+ * Class YoochooseCategories
+ * @package Shopware\Components\Api\Resource
+ */
 class YoochooseCategories extends Resource
 {
 
+    /**
+     * Retrieves Article Model Repository
+     *
+     * @return \Shopware\Components\Model\ModelRepository
+     */
     public function getRepository()
     {
         return $this->getManager()->getRepository('Shopware\Models\Category\Category');
     }
 
+    /**
+     * Retrieves the list of categories
+     *
+     * @param $offset
+     * @param $limit
+     * @return array
+     * @throws \Shopware\Components\Api\Exception\PrivilegeException
+     */
     public function getList($offset, $limit)
     {
         $this->checkPrivilege('read');

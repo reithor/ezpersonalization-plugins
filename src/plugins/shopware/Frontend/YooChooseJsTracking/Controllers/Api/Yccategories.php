@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class Shopware_Controllers_Api_Yccategories
+ */
 class Shopware_Controllers_Api_Yccategories extends Shopware_Controllers_Api_Rest
 {
 
@@ -19,7 +22,7 @@ class Shopware_Controllers_Api_Yccategories extends Shopware_Controllers_Api_Res
             $limit = $this->Request()->getParam('limit', 1000);
             $offset = $this->Request()->getParam('start', 0);
 
-            $result = $this->resource->getList($offset, $limit, $language);
+            $result = $this->resource->getList($offset, $limit);
 
             if (empty($result['data'])) {
                 $this->Response()->setHttpResponseCode(204);
@@ -28,6 +31,7 @@ class Shopware_Controllers_Api_Yccategories extends Shopware_Controllers_Api_Res
                 $this->View()->assign('success', true);
             }
         } catch (Exception $e) {
+            $this->Response()->setHttpResponseCode(400);
             $this->View()->assign(array('message' => $e->getMessage()));
             $this->View()->assign('success', false);
         }

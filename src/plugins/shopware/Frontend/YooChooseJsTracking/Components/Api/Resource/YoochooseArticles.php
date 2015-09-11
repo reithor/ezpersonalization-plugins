@@ -2,14 +2,33 @@
 
 namespace Shopware\Components\Api\Resource;
 
+/**
+ * Class YoochooseArticles
+ * @package Shopware\Components\Api\Resource
+ */
 class YoochooseArticles extends Resource
 {
 
+    /**
+     * Retrieves Article Model Repository
+     *
+     * @return \Shopware\Components\Model\ModelRepository
+     */
     public function getRepository()
     {
         return $this->getManager()->getRepository('Shopware\Models\Article\Article');
     }
 
+    /**
+     * Retrieves the list of articles
+     *
+     * @param $offset
+     * @param $limit
+     * @param $language
+     * @return array
+     * @throws \Exception
+     * @throws \Shopware\Components\Api\Exception\PrivilegeException
+     */
     public function getList($offset, $limit, $language)
     {
         $this->checkPrivilege('read');
@@ -18,10 +37,10 @@ class YoochooseArticles extends Resource
 
         $builder = $this->getRepository()->createQueryBuilder('article');
         $builder->select(array(
-            'article',
-            'mainDetail',
-            'mainDetailPrices',
-        ))
+                'article',
+                'mainDetail',
+                'mainDetailPrices',
+            ))
             ->leftJoin('article.mainDetail', 'mainDetail')
             ->leftJoin('mainDetail.prices', 'mainDetailPrices')
             ->where('article.active = 1');
@@ -40,6 +59,9 @@ class YoochooseArticles extends Resource
                 array('id' => $language),
                 array('locale' => $language)
             ));
+            if (!$locale) {
+                throw new \Exception("Language code '$language' is not recognized, use locales in format as e.g. en_US.");
+            }
 
             foreach ($articles as &$article) {
                 $article = $this->translateArticle(
@@ -67,7 +89,7 @@ class YoochooseArticles extends Resource
 
             //Search for minimum price
             foreach ($article['mainDetail']['prices'] as $artPrice) {
-                if ($item['price'] === null || $price > $artPrice['price']) {
+                if ($item['price'] === null || $item['price'] > $artPrice['price']) {
                     $item['price'] = $artPrice['price'];
                 }
             }

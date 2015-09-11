@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class Shopware_Controllers_Api_Ycarticles
+ */
 class Shopware_Controllers_Api_Ycarticles extends Shopware_Controllers_Api_Rest
 {
 
@@ -29,6 +32,7 @@ class Shopware_Controllers_Api_Ycarticles extends Shopware_Controllers_Api_Rest
                 $this->View()->assign('success', true);
             }
         } catch (Exception $e) {
+            $this->Response()->setHttpResponseCode(400);
             $this->View()->assign(array('message' => $e->getMessage()));
             $this->View()->assign('success', false);
         }
