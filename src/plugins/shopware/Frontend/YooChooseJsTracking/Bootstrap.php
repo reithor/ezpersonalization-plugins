@@ -6,7 +6,7 @@ use Shopware\Components\YoochooseHelper;
  * Class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap
  *
  * @package Yoochoose Plugin
- * @version 1.0.0
+ * @version 2.0.1
  *
  */
 class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_Components_Plugin_Bootstrap
@@ -54,7 +54,7 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
      */
     public function getVersion()
     {
-        return '2.0.0';
+        return '2.0.1';
     }
 
     /**
@@ -86,7 +86,7 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
     {
         $img = base64_encode(file_get_contents(dirname(__FILE__) . '/logo.png'));
 
-        return [
+        return array(
             'version' => $this->getVersion(),
             'author' => $this->getAuthor(),
             'copyright' => $this->getAuthor(),
@@ -94,7 +94,7 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
             'support' => 'support@yoochoose.com',
             'link' => 'http://www.yoochoose.com/',
             'description' => '<p><img src="data:image/png;base64,' . $img . '" /></p>'
-        ];
+        );
     }
 
     /**
@@ -186,6 +186,7 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
         $this->registerController('Api', 'Ycsubscribers');
         $this->registerController('Api', 'Ycarticles');
         $this->registerController('Api', 'Yccategories');
+        $this->registerController('Api', 'Ycstorelocals');
     }
 
     private function createDatabase()

@@ -76,8 +76,8 @@ echo '<h1> Subscribers export with limit(1) and start(2)</h1>';
 echo '<pre>' . print_r($data, true) . '</pre><hr />';
 
 $params = array();
-$data = $client->get('shops', $params);
-echo '<h1> Shops export with default params (start(0), limit(1000))</h1>';
+$data = $client->get('ycstorelocals', $params);
+echo '<h1> Shop locals export with default params (start(0), limit(1000))</h1>';
 echo '<pre>' . print_r($data, true) . '</pre><hr />';
 
 $params = array(

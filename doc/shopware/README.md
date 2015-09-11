@@ -16,83 +16,85 @@
 ```
 
 ### Response example
-```json
-{  
-   "data":[  
-      {  
-         "id":4,
-         "customerId":3,
-         "newsletterGroupId":1
-      },
-      {  
-         "id":5,
-         "customerId":5,
-         "newsletterGroupId":0
-      }
-   ],
-   "total":3,
-   "success":true
+```javascript
+{
+    "data":[
+        {
+            "id":4,
+            "customerId":3,
+            "newsletterGroupId":1
+        },
+        {
+            "id":5,
+            "customerId":5,
+            "newsletterGroupId":0
+        }
+    ],
+    "total":3,
+    "success":true
 }
 ```
-## Shops Export
+## Store Locals Export
 
 ### Parameters
 * limit - (Integer) Number of results
 * offset - (Integer) Start from this offset
-* sort - (String) Sorting order
-* filter - (String) Filter parameters
 
 ### Call example
 ```php
     $params = array();
-    $response = $client->get('shops', $params);
+    $response = $client->get('ycstorelocals', $params);
 ```
 
 ### Response example
 ```json
-{  
-   "data":[  
-      {  
-         "id":1,
-         "mainId":null,
-         "categoryId":39,
-         "name":"English",
-         "title":null,
-         "position":0,
-         "host":null,
-         "basePath":null,
-         "baseUrl":null,
-         "hosts":"",
-         "secure":false,
-         "alwaysSecure":false,
-         "secureHost":null,
-         "secureBasePath":null,
-         "default":true,
-         "active":true,
-         "customerScope":false
-      },
-      {  
-         "id":2,
-         "mainId":1,
-         "categoryId":3,
-         "name":"Deutsch",
-         "title":"Deutsch",
-         "position":0,
-         "host":null,
-         "basePath":null,
-         "baseUrl":null,
-         "hosts":"",
-         "secure":false,
-         "alwaysSecure":false,
-         "secureHost":null,
-         "secureBasePath":null,
-         "default":false,
-         "active":true,
-         "customerScope":false
-      }
-   ],
-   "total":2,
-   "success":true
+{
+    "data": [
+        {
+            "id": 1,
+            "mainId": null,
+            "categoryId": 39,
+            "name": "English",
+            "title": null,
+            "position": 0,
+            "host": null,
+            "basePath": null,
+            "baseUrl": null,
+            "hosts": "",
+            "secure": false,
+            "alwaysSecure": false,
+            "secureHost": null,
+            "secureBasePath": null,
+            "default": true,
+            "active": true,
+            "customerScope": false,
+            "language": "English",
+            "localeCode": "en_GB"
+        },
+        {
+            "id": 2,
+            "mainId": 1,
+            "categoryId": 3,
+            "name": "Deutsch",
+            "title": "Deutsch",
+            "position": 0,
+            "host": null,
+            "basePath": null,
+            "baseUrl": null,
+            "hosts": "",
+            "secure": false,
+            "alwaysSecure": false,
+            "secureHost": null,
+            "secureBasePath": null,
+            "default": false,
+            "active": true,
+            "customerScope": false,
+            "language": "German",
+            "localeCode": "de_DE"
+        }
+    ],
+    "total": 2,
+    "success": true
 }
 ```
 ## Categories Export
