@@ -1,12 +1,12 @@
 var YC_CUSTOMER_ID = 907,
     YC_RECO_TEMPLATES = {
         related: {
-            html_template: "<div class='viewlast'><h2 class='heading'>{{{title}}}</h2><ul " +
-                ">{{#each rows}}{{#each columns}}<li class='rendered-related lastview_rule_last'><a " + 
-                "id='{{id}}' href='{{link}}' rel='nofollow' class='article_image' " +
-                "style='background: #fff url({{image}}) no-repeat center center'></a>" + 
-                "<a rel='nofollow' class='article_description' title='{{title}}' href='{{link}}'>" + 
-                "{{title}}</a></li>{{/each}}{{/each}}</ul></div>",
+            html_template: "<div><h2 class='heading'>{{{title}}}</h2>{{#each rows}}{{#each columns}}" +
+            "<div class='article-element'><div class='artbox rendered-related' style='height: 250px;'><div class='inner'>" +
+            "<a href='{{link}}' title='{{{title}}}' style='text-align: center;'><img src='{{image}}' width='157' height='160' />" +
+            "</a><a href='{{url}}' class='title' title='{{{title}}}' style='width: 157px;'>{{{title}}}</a><p>" +
+            "<span class='price'>{{{price}}}</span></p><div class='actions'><a href='{{link}}' class='more'>See details</a></div>" +
+            "</div></div></div>{{/each}}{{/each}}</div>",
             target: '.container_20',
             title: 'Cross Rate',
             priority: 0,
@@ -16,12 +16,12 @@ var YC_CUSTOMER_ID = 907,
             enabled : true
         },
         crossselling: {
-            html_template: "<div class='viewlast'><h2 class='heading'>{{{title}}}</h2><ul " +
-                ">{{#each rows}}{{#each columns}}<li class='rendered-crossselling lastview_rule_last'><a " + 
-                "id='{{id}}' href='{{link}}' rel='nofollow' class='article_image' " +
-                "style='background: #fff url({{image}}) no-repeat center center'></a>" + 
-                "<a rel='nofollow' class='article_description' title='{{title}}' href='{{link}}'>" + 
-                "{{title}}</a></li>{{/each}}{{/each}}</ul></div>",
+            html_template: "<div><h2 class='heading'>{{{title}}}</h2>{{#each rows}}{{#each columns}}" +
+            "<div class='article-element'><div class='artbox rendered-crossselling' style='height: 250px;'><div class='inner'>" +
+            "<a href='{{link}}' title='{{{title}}}' style='text-align: center;'><img src='{{image}}' width='157' height='160' />" +
+            "</a><a href='{{url}}' class='title' title='{{{title}}}' style='width: 157px;'>{{{title}}}</a><p>" +
+            "<span class='price'>{{{price}}}</span></p><div class='actions'><a href='{{link}}' class='more'>See details</a></div>" +
+            "</div></div></div>{{/each}}{{/each}}</div>",
             target: '.container_20',
             priority: 0,
             rows: 1,
@@ -31,12 +31,12 @@ var YC_CUSTOMER_ID = 907,
             enabled : true
         },
         personal : {
-            html_template: "<div class='viewlast'><h2 class='heading'>{{{title}}}</h2><ul " +
-                ">{{#each rows}}{{#each columns}}<li class='rendered-personal lastview_rule_last'><a " + 
-                "id='{{id}}' href='{{link}}' rel='nofollow' class='article_image' " +
-                "style='background: #fff url({{image}}) no-repeat center center'></a>" + 
-                "<a rel='nofollow' class='article_description' title='{{title}}' href='{{link}}'>" + 
-                "{{title}}</a></li>{{/each}}{{/each}}</ul></div>",
+            html_template: "<div><h2 class='heading'>{{{title}}}</h2>{{#each rows}}{{#each columns}}" +
+            "<div class='article-element'><div class='artbox rendered-personal' style='height: 250px;'><div class='inner'>" +
+            "<a href='{{link}}' title='{{{title}}}' style='text-align: center;'><img src='{{image}}' width='157' height='160' />" +
+            "</a><a href='{{url}}' class='title' title='{{{title}}}' style='width: 157px;'>{{{title}}}</a><p>" +
+            "<span class='price'>{{{price}}}</span></p><div class='actions'><a href='{{link}}' class='more'>See details</a></div>" +
+            "</div></div></div>{{/each}}{{/each}}</div>",
             target: '.container_20',
             priority: 0,
             title: 'Personalized',
@@ -46,12 +46,12 @@ var YC_CUSTOMER_ID = 907,
             enabled : true
         },
         upselling: {
-            html_template:  "<div class='viewlast'><h2 class='heading'>{{{title}}}</h2><ul " +
-                ">{{#each rows}}{{#each columns}}<li class='rendered-upselling lastview_rule_last'><a " + 
-                "id='{{id}}' href='{{link}}' rel='nofollow' class='article_image' " +
-                "style='background: #fff url({{image}}) no-repeat center center'></a>" + 
-                "<a rel='nofollow' class='article_description' title='{{title}}' href='{{link}}'>" + 
-                "{{title}}</a></li>{{/each}}{{/each}}</ul></div>",
+            html_template: "<div><h2 class='heading'>{{{title}}}</h2>{{#each rows}}{{#each columns}}" +
+            "<div class='article-element'><div class='artbox rendered-upselling' style='height: 250px;'><div class='inner'>" +
+            "<a href='{{link}}' title='{{{title}}}' style='text-align: center;'><img src='{{image}}' width='157' height='160' />" +
+            "</a><a href='{{url}}' class='title' title='{{{title}}}' style='width: 157px;'>{{{title}}}</a><p>" +
+            "<span class='price'>{{{price}}}</span></p><div class='actions'><a href='{{link}}' class='more'>See details</a></div>" +
+            "</div></div></div>{{/each}}{{/each}}</div>",
             target: '.container_20',
             priority: 1,
             rows: 1,
@@ -61,12 +61,12 @@ var YC_CUSTOMER_ID = 907,
             enabled : true
         },
         bestseller: {
-            html_template:  "<div class='viewlast'><h2 class='heading'>{{{title}}}</h2><ul " +
-                ">{{#each rows}}{{#each columns}}<li class='rendered-bestseller lastview_rule_last'><a " + 
-                "id='{{id}}' href='{{link}}' rel='nofollow' class='article_image' " +
-                "style='background: #fff url({{image}}) no-repeat center center'></a>" + 
-                "<a rel='nofollow' class='article_description' title='{{title}}' href='{{link}}'>" + 
-                "{{title}}</a></li>{{/each}}{{/each}}</ul></div>",
+            html_template: "<div><h2 class='heading'>{{{title}}}</h2>{{#each rows}}{{#each columns}}" +
+            "<div class='article-element'><div class='artbox rendered-bestseller' style='height: 250px;'><div class='inner'>" +
+            "<a href='{{link}}' title='{{{title}}}' style='text-align: center;'><img src='{{image}}' width='157' height='160' />" +
+            "</a><a href='{{url}}' class='title' title='{{{title}}}' style='width: 157px;'>{{{title}}}</a><p>" +
+            "<span class='price'>{{{price}}}</span></p><div class='actions'><a href='{{link}}' class='more'>See details</a></div>" +
+            "</div></div></div>{{/each}}{{/each}}</div>",
             target: '.container_20',
             priority: 1,
             rows: 1,
@@ -76,12 +76,12 @@ var YC_CUSTOMER_ID = 907,
             enabled : true
         },
         category_page: {
-            html_template:  "<div class='viewlast'><h2 class='heading'>{{{title}}}</h2><ul " +
-                ">{{#each rows}}{{#each columns}}<li class='rendered-category_page lastview_rule_last'><a " + 
-                "id='{{id}}' href='{{link}}' rel='nofollow' class='article_image' " +
-                "style='background: #fff url({{image}}) no-repeat center center'></a>" + 
-                "<a rel='nofollow' class='article_description' title='{{title}}' href='{{link}}'>" + 
-                "{{title}}</a></li>{{/each}}{{/each}}</ul></div>",
+            html_template: "<div><h2 class='heading'>{{{title}}}</h2>{{#each rows}}{{#each columns}}" +
+            "<div class='article-element'><div class='artbox rendered-category_page' style='height: 250px;'><div class='inner'>" +
+            "<a href='{{link}}' title='{{{title}}}' style='text-align: center;'><img src='{{image}}' width='157' height='160' />" +
+            "</a><a href='{{url}}' class='title' title='{{{title}}}' style='width: 157px;'>{{{title}}}</a><p>" +
+            "<span class='price'>{{{price}}}</span></p><div class='actions'><a href='{{link}}' class='more'>See details</a></div>" +
+            "</div></div></div>{{/each}}{{/each}}</div>",
             target: '.container_20',
             priority: 0,
             rows: 1,
