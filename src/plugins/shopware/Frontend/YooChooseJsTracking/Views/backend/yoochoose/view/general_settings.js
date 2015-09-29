@@ -75,7 +75,6 @@ Ext.define('Shopware.apps.Yoochoose.view.GeneralSettings', {
                 allowBlank: false,
                 blankText: 'This field is required',
                 required: true,
-                helpText: 'Type plugin name, required field',
                 supportText: 'You can find you license key and detailed statistics on the\n\
                              <a id="yoochoose-admin-link" href=" https://admin.yoochoose.net' + customerLink + '" target="_blank">Yoochoose Configuration Backend</a>',
                 value: data.licenseKey
@@ -85,7 +84,7 @@ Ext.define('Shopware.apps.Yoochoose.view.GeneralSettings', {
                 fieldLabel: 'Plugin ID',
                 minWidth: 250,
                 allowBlank: true,
-                supportText: '(optional) if all you shop views have the same design leave it blank.',
+                supportText: 'Optional field. If you have only one shop, please leave this field blank.',
                 value: data.pluginId
             }),
             Ext.create('Ext.form.field.Text', {
@@ -96,7 +95,7 @@ Ext.define('Shopware.apps.Yoochoose.view.GeneralSettings', {
                 blankText: 'This field is required',
                 required: false,
                 readOnly: true,
-                helpText: 'Type http://',
+                helpText: 'Your shop must be accessible from the Internet. This field is read-only here. The value can be changed in Basic settings -> Shop settings',
                 value: data.endpoint
             }),
             Ext.create('Ext.form.field.Text', {
@@ -107,7 +106,7 @@ Ext.define('Shopware.apps.Yoochoose.view.GeneralSettings', {
                 blankText: 'This field is required',
                 required: false,
                 readOnly: true,
-                helpText: 'Type plugin name, required field',
+                helpText: 'Read-only field.',
                 supportText: 'We will try a design template for your shop.\n\
                               Please read <a href="https://doc.yoochoose.net/display/PUBDOC/Shopware+Plugin+2.0+Tutorial" target="_blank">Shopware Connect Extension Tutorial</a>,\n\
                               if you need to customize the design of the recommendations.',

@@ -61,7 +61,6 @@ Ext.define('Shopware.apps.Yoochoose.view.ScriptSettings', {
                 allowBlank: true,
                 blankText: 'This field is required',
                 required: false,
-                helpText: 'Type plugin name, required field',
                 supportText: 'Attention! See the <a href="https://doc.yoochoose.net/display/PUBDOC/Shopware+Plugin+Tutorial" target="_blank">extension manual</a>,\n\
                               if you about to use this property',
                 value: data.scriptUrl,
