@@ -1,5 +1,5 @@
 # Upload script to Webspace
-Upload javascript file to Webspace in js directory of your layout e.g. layout / stonepattern / js
+Upload javascript and css files to Webspace in js directory of your layout e.g. layout / stonepattern / js
 
 Webspace can be found in CMS menu.
 
@@ -34,4 +34,25 @@ Web design page can be found in CMS menu.
     };
 </script>
 <script src="/layout/<your_theme_name>/js/yc-tracking.js" type="text/javascript"></script>
+<link href="/layout/callisto/css/yc-tracking.css" rel="stylesheet" type="text/css"></link>
+```
+
+# Search Suggestion Template Recommendation
+
+You should use this classes and attributes so the script would work properly
+* yc-data-title : attribute for every search suggestion item
+* yc-hover : class when search suggestions are navigated with keyboard arrows (up, down)
+
+```
+ITEM: {
+        html_template: "<h2 class='heading'>{{const.title}}</h2><ul>{{#each results}}<li class='yc-search-result-item' yc-data-title='{{{title}}}'>" +
+        "<a href='{{url}}'><span class='yc-search-title'>{{{title}}}</span><span class='yc-search-price'>{{{price}}}" +
+        "</span></a></li>{{else}}<span class='yc-no-results'>No item results</span>{{/each}}</ul>",
+        amount: 10,
+        enabled: true,
+        priority: 1,
+        consts: {
+            "title": {'': 'Recommended Products', 'de': 'Empfohlene Produkte'}
+        }
+    }
 ```

@@ -46,7 +46,16 @@ function initYcTrackingCore(context) {
              * @readonly
              * @type {string}
              */
-            recommendationHost = YC_RECO_RECOM_HOST_V2 + customerId,
+            recommendationHost = YC_RECO_RECOM_HOST + 'v2/' + customerId,
+
+            /**
+             * Holds path to search recommendations api with customer id.
+             *
+             * @private
+             * @readonly
+             * @type {string}
+             */
+            searchRecommendationHost = YC_RECO_RECOM_HOST + 'v4/search/' + customerId + '/get_suggestions.jsonp?',
 
             /**
              * Duration of session in minutes.
@@ -214,6 +223,168 @@ function initYcTrackingCore(context) {
                 // event tracking is using pixel method because server does not support JSONP response
                 var img = new Image(1, 1);
                 img.src = eventHost + url;
+            },
+
+            /**
+             * Executes call to remote server by placing script tag.
+             *
+             * @private
+             * @param {string} url - Url to call.
+             */
+            _executeJsonpCall = function (url) {
+                var script = document.createElement('script');
+                script.src = url;
+                document.head.appendChild(script);
+            },
+
+            /**
+             * Creates jsonp handler function that processes and renders search suggestion data
+             *
+             * @param {object} searchNode
+             * @param {string} language
+             * @returns {Function}
+             */
+            _createJsonpSearchResponseHandler = function (searchNode, language) {
+                return function (data, statusCode) {
+                    var property,
+                        searchResults = [];
+
+                    if (statusCode !== 200) {
+                        return;
+                    }
+
+                    // Formatting data
+                    for (property in data) {
+                        if (data.hasOwnProperty(property)) {
+                            data[property].sort(function (a, b) {
+                                return a.yc_score - b.yc_score;
+                            });
+
+                            searchResults.push({
+                                name: property.toLowerCase(),
+                                template: YC_SEARCH_TEMPLATES[property],
+                                results: data[property].slice(0, YC_SEARCH_TEMPLATES[property].amount),
+                                priority: YC_SEARCH_TEMPLATES[property].priority
+                            });
+                        }
+                    }
+
+                    // Sorting by priority
+                    searchResults.sort(function (a, b) {
+                        return a.priority - b.priority;
+                    });
+
+                    searchNode.view.innerHTML = '';
+                    searchResults.forEach(function (elem) {
+                        var compiled = Handlebars.compile(elem.template.html_template),
+                            wrapper = document.createElement('div'),
+                            view = searchNode.view;
+
+                        elem.const = searchNode.const;
+
+                        //reformat prices
+                        elem.results.forEach(function (item) {
+                            var priceValue;
+                            if (item.price) {
+                                priceValue = item.price.replace(YC_CONSTS.currency, '').replace('.', YC_DECIMAL_SEPARATOR);
+
+                                item.price = YC_RENDER_PRICE_FORMAT.replace('{price}', priceValue)
+                                    .replace('{currencySign}', YC_CONSTS.currencySign)
+                                    .replace('{currency}', YC_CONSTS.currency);
+                            }
+                        });
+
+                        wrapper.innerHTML = compiled(elem);
+                        view.appendChild(wrapper);
+                        view.style.display = 'block';
+                    });
+                }
+            },
+
+            /**
+             * Method for fetching search results for given query string.
+             * Generates JSONP call to server.
+             *
+             * @param {object} config - This object contains all paramaters needed to make API call
+             * @returns {YcTracking} This object's instance.
+             */
+            _callFetchSearchResults = function  (config) {
+                var url = searchRecommendationHost,
+                    parameters = [];
+
+                for (var key in config) {
+                    if (config.hasOwnProperty(key)) {
+                        if (key !== 'attribute') {
+                            parameters.push(key + '=' + encodeURIComponent(config[key]));
+                        } else {
+                            config[key].forEach(function (attr) {
+                                parameters.push(key + '=' + encodeURIComponent(attr));
+                            });
+                        }
+                    }
+                }
+
+                _executeJsonpCall(url + parameters.join('&'));
+            },
+
+            /**
+             *
+             * @param {number} direction
+             * @param {object} searchInput
+             * @param {string} searchText
+             * @param {string} viewId
+             * @private
+             */
+            _markAsSelected = function (direction, searchInput, searchText, viewId) {
+                var allElements = document.querySelectorAll('#' + viewId + YC_SEARCH_ALL_RESULTS_SELECTOR),
+                    current = document.querySelector('#' + viewId + YC_SEARCH_SELECTED_SELECTOR),
+                    next,
+                    i = 0;
+
+                if (current) {
+                    current.className = current.className.replace('yc-hover', '');
+                    for (; i < allElements.length; i++) {
+                        if (allElements[i] == current) {
+                            break;
+                        }
+                    }
+
+                    next = allElements[i + direction];
+                    if (!next) {
+                        searchInput.value = searchText;
+                    } else {
+                        next.className += ' yc-hover';
+                        searchInput.value = next.attributes['yc-data-title'].value;
+                    }
+                } else {
+                    next = (direction === 1) ? allElements[0] : allElements[allElements.length - 1];
+                    next.className += ' yc-hover';
+                    searchInput.value = next.attributes['yc-data-title'].value;
+                }
+
+            },
+
+            /**
+             * Extracts constants from source with given language and adds them to destination object
+             *
+             * @param {object} source
+             * @param {object} destination
+             * @param {string} language
+             * @private
+             */
+            _extractConstants = function (source, destination, language) {
+                var prop;
+
+                destination.const = {};
+                for (prop in source) {
+                    if (source.hasOwnProperty(prop)) {
+                        if (typeof(source[prop]) === 'object') {
+                            destination.const[prop] = source[prop][language] ? source[prop][language] : source[prop][''];
+                        } else {
+                            destination.const[prop] = source[prop];
+                        }
+                    }
+                }
             };
 
         /**
@@ -231,16 +402,6 @@ function initYcTrackingCore(context) {
         this.getUserId = function () {
             return _userId();
         };
-
-        /**
-         * Method for tracking Click event.
-         *
-         * @param {number} itemTypeId
-         * @param {string} itemId
-         * @param {string} [categoryPath] The forward slash separated path of categories of the item.
-         * @param {string} language
-         * @return {YcTracking} This object's instance.
-         */
 
         /**
          * Method for tracking Click event.
@@ -415,8 +576,7 @@ function initYcTrackingCore(context) {
          * @returns {YcTracking} This object's instance.
          */
         this.callFetchRecommendedProducts = function (config) {
-            var script = document.createElement('script'),
-                url = recommendationHost + '/' + _userId() + '/' + config.scenario +
+            var url = recommendationHost + '/' + _userId() + '/' + config.scenario +
                         '.jsonp?numrecs=' + (config.count * 2) + '&outputtypeid=' + config.itemTypeId +
                         '&jsonpcallback=' + config.callback;
 
@@ -437,9 +597,7 @@ function initYcTrackingCore(context) {
                 }
             }
 
-            script.src = url;
-            document.getElementsByTagName('head')[0].appendChild(script);
-
+            _executeJsonpCall(url);
             return this;
         };
 
@@ -447,8 +605,9 @@ function initYcTrackingCore(context) {
          * Renders recommendation boxes and displays them on frontend page.
          * 
          * @param {object} box
+         * @param {string} lang
          */
-        this.renderRecommendation = function(box) {
+        this.renderRecommendation = function(box, lang) {
             var template = box.template,
                 section = template.html_template,
                 num = 0,
@@ -461,6 +620,8 @@ function initYcTrackingCore(context) {
             if (!box.products || !box.products.length || !elem) {
                 return;
             }
+
+            _extractConstants(template.consts, box, lang);
 
             box.products.forEach(function (product) {
                num++;
@@ -478,6 +639,107 @@ function initYcTrackingCore(context) {
             compiled = Handlebars.compile(section);
             wrapper.innerHTML = compiled(box);
             elem.appendChild(wrapper);
+        };
+
+        /**
+         * Hooks search suggestion engine to every search box
+         *
+         * @param {string} language
+         */
+        this.hookSearchingHandler = function (language) {
+            YC_SEARCH_FIELDS.forEach(function (elem, index) {
+                var searchInput = document.querySelector(elem.target),
+                    newNode,
+                    functionName,
+                    parameters = {
+                        lang: language,
+                        itemtype: 1,
+                        attribute: YC_PRODUCT_ATTRIBUTES
+                    },
+                    property,
+                    searchText = '';
+
+                if (!searchInput) {
+                    return;
+                }
+
+                // Check if language code is in correct format
+                if (!language.match(/^[a-z]{2}(\-[a-z]{2})?$/i)) {
+                    console.log('Language code (' + language + ') is not in correct format, see http://www.rfc-editor.org/rfc/bcp/bcp47.txt for more info.');
+                    parameters.lang = '';
+                }
+
+                parameters.lang = 'en';
+                // Creating and appending searchResult div
+                elem.view = document.createElement('div');
+                elem.view.id = 'ycSearchResult' + index;
+                elem.view.className = 'yc-search-result';
+
+                // Cloning the node so previous events are hooked off
+                newNode = searchInput.cloneNode(true);
+                newNode.onkeyup = null;
+                searchInput.parentNode.replaceChild(newNode, searchInput);
+                elem.searchElement = newNode;
+                newNode.parentNode.appendChild(elem.view);
+
+                // Create jsonp response handler function for this search box
+                functionName = 'ycSearchResponseHandler' + index;
+                context[functionName] = _createJsonpSearchResponseHandler(elem, language);
+
+                // Adding parameters
+                parameters.jsonpCallback = functionName;
+                for (property in YC_SEARCH_TEMPLATES) {
+                    if (YC_SEARCH_TEMPLATES.hasOwnProperty(property) && YC_SEARCH_TEMPLATES[property].enabled) {
+                        parameters[property.toLowerCase()] = YC_SEARCH_TEMPLATES[property].amount;
+
+                        // add template constants
+                        _extractConstants(YC_SEARCH_TEMPLATES[property].consts, elem, language);
+                    }
+                }
+
+                // Hooking new event
+                newNode.addEventListener('keyup', function (e) {
+                    var me = this;
+
+                    switch (e.keyCode) {
+                        case 27: // escape
+                            elem.view.style.display = 'none';
+                            elem.view.innerHTML = '';
+                            break;
+                        case 38: // arrow up
+                            _markAsSelected(-1, me, searchText, elem.view.id);
+                            e.preventDefault();
+                            return false;
+                        case 40: // arrow down
+                            _markAsSelected(1, me, searchText, elem.view.id);
+                            e.preventDefault();
+                            return false;
+                    }
+
+                    if (me.value.length < 2) {
+                        elem.view.style.display = 'none';
+                        return;
+                    }
+
+                    parameters.q = searchText = me.value;
+                    _callFetchSearchResults(parameters);
+                }, false);
+
+                newNode.addEventListener('blur', function () {
+                    setTimeout(function () {
+                        elem.view.style.display = 'none';
+                    }, 100);
+
+                }, false);
+
+                newNode.addEventListener('focus', function () {
+                    if (this.value.length < 2) {
+                        return;
+                    }
+
+                    elem.view.style.display = 'block';
+                }, false);
+            });
         };
 
         return this;

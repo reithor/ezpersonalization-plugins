@@ -22,6 +22,7 @@ module.exports = function (grunt) {
 
         if (newCoreVersion) {
             result[3] = sub('src/%s.core.v2.js');
+            result.splice(2, 0, sub('src/%s.defaults.' + module + '.js'));
         }
 
         return result;

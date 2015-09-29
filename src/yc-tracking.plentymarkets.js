@@ -166,7 +166,7 @@ function initYcTrackingModule(context) {
         }
     }
 
-    function fetchRecommendations (products, category) {
+    function fetchRecommendations(products, category) {
         allBoxes.forEach(function (box) {
             var tpl = box.template,
                 fncName;
@@ -181,7 +181,7 @@ function initYcTrackingModule(context) {
 
             if (tpl.display) {
                 box.priority = tpl.priority;
-                box.title = tpl.title;
+
                 box.trackFollowEvent = trackFollowEvent;
                 fncName = 'YcTracking_jsonpCallback' + box.id;
                 window[fncName] = fetchRecommendedProducts(box);
@@ -268,14 +268,14 @@ function initYcTrackingModule(context) {
                     });
 
                     YcTracking.trackRendered(1, renderedHandles, box.template.scenario);
-                    YcTracking.renderRecommendation(box);
+                    YcTracking.renderRecommendation(box, lang);
                     attachFollowEvents(box);
                 });
             }
         };
     }
 
-    function attachFollowEvents(box){
+    function attachFollowEvents(box) {
         var elem = document.getElementsByClassName('rendered-' + box.id), i;
 
         for (i = 0; i < elem.length; i++) {
@@ -308,7 +308,7 @@ function initYcTrackingModule(context) {
         if (!context['Handlebars']) {
             script = document.createElement('script');
             script.src = 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.2/handlebars.min.js';
-            document.getElementsByTagName('head')[0].appendChild(script);
+            document.head.appendChild(script);
         }
 
         YcTracking.trackLogin(trackid);
@@ -316,6 +316,7 @@ function initYcTrackingModule(context) {
         hookBasketEvent();
         trackBuyHandle();
         logoutHandler(trackid);
+        YcTracking.hookSearchingHandler(lang);
         processRecommendationBoxes();
     };
 }
