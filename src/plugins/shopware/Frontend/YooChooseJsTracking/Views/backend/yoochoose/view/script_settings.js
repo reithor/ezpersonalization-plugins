@@ -49,8 +49,8 @@ Ext.define('Shopware.apps.Yoochoose.view.ScriptSettings', {
                 store: Ext.create('Ext.data.Store', {
                     fields: ['id', 'name'],
                     data: [
-                        { id: 1, name: 'Load scripts from the Amazon content delivery network (CDN)' },
-                        { id: 2, name: 'Load scripts directly from Yoochoose server' }
+                        { id: 1, name: 'Load scripts directly from Yoochoose server' },
+                        { id: 2, name: 'Load scripts from the Amazon content delivery network (CDN)' }
                     ]
                 })
             }),
