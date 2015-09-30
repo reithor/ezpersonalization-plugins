@@ -169,7 +169,7 @@ class Shopware_Controllers_Backend_Yoochoose extends Shopware_Controllers_Backen
             CURLOPT_CUSTOMREQUEST => "POST",
             CURLOPT_RETURNTRANSFER => TRUE,
             CURLOPT_FOLLOWLOCATION => TRUE,
-            CURLOPT_TIMEOUT => 2,
+            CURLOPT_TIMEOUT => 10,
             CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
             CURLOPT_USERPWD => "$customerId:$licenceKey",
             CURLOPT_SSL_VERIFYPEER => FALSE,

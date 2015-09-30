@@ -33,6 +33,7 @@ class Shopware_Controllers_Api_Ycstorelocals extends Shopware_Controllers_Api_Re
         } catch(Exception $e) {
             $this->Response()->setHttpResponseCode(400);
             $this->View()->assign(array('message' => $e->getMessage()));
+            $this->View()->assign(array('code' => $e->getCode()));
             $this->View()->assign('success', false);
         }
     }
