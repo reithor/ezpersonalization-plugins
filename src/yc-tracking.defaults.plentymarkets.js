@@ -1,6 +1,6 @@
 
 // {id} will be changed with current product id
-var YC_BREADCRUMBS_SELECTOR = 'breadcrumbs',
+var YC_BREADCRUMBS_SELECTOR = '.breadcrumbs',
     YC_ADD_BASKET_BUTTON_SELECTOR = '[data-plenty="addBasketItemButton"]',
     YC_ARTICLE_ID_SELECTOR = 'ArticleID',
     YC_ARTICLE_PRICE_SELECTOR = '#price_dynamic_0_{id}',

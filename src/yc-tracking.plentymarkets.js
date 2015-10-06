@@ -13,7 +13,7 @@ function initYcTrackingModule(context) {
         allBoxes = [];
 
     function getCategory() {
-        var breadcrumbs = document.getElementsByClassName(YC_BREADCRUMBS_SELECTOR)[0],
+        var breadcrumbs = document.querySelector(YC_BREADCRUMBS_SELECTOR),
             crumbs,
             categories = [],
             i = 1;
@@ -172,8 +172,6 @@ function initYcTrackingModule(context) {
                 fncName;
 
             if (!tpl) {
-                document.getElementsByTagName('body')[0].innerHTML +=
-                    '<!-- Yoochoose: Template for ' + box.id + ' recommendation box is not found! -->';
                 console.log('Template for ' + box.id + ' recommendation box is not found!');
                 box.priority = 999;
                 return;
@@ -185,7 +183,7 @@ function initYcTrackingModule(context) {
                 box.trackFollowEvent = trackFollowEvent;
                 fncName = 'YcTracking_jsonpCallback' + box.id;
                 window[fncName] = fetchRecommendedProducts(box);
-                YcTracking.callFetchRecommendedProducts({
+                YcTracking.callFetchRecommendedProductsV2({
                     itemTypeId: 1,
                     scenario: tpl.scenario,
                     count: tpl.rows * tpl.columns,
@@ -302,8 +300,8 @@ function initYcTrackingModule(context) {
 
         lang = ycObject ? ycObject.lang : null;
         currentPage = ycObject ? ycObject.page : null;
-        currency = ycObject ? ycObject.currency : null;
-        currencySign = ycObject ? ycObject.currencySign : null;
+        YC_CONSTS.currency = currency = ycObject ? ycObject.currency : null;
+        YC_CONSTS.currencySign = currencySign = ycObject ? ycObject.currencySign : null;
 
         if (!context['Handlebars']) {
             script = document.createElement('script');
