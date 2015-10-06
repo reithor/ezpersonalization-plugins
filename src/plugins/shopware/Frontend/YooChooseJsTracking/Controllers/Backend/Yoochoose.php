@@ -39,6 +39,9 @@ class Shopware_Controllers_Backend_Yoochoose extends Shopware_Controllers_Backen
         $this->View()->loadTemplate('backend/yoochoose/app.js');
     }
 
+    /**
+     * Retrieves information for showing Yoochoose configuration window
+     */
     public function getDataAction()
     {
         $data = array();
@@ -51,7 +54,11 @@ class Shopware_Controllers_Backend_Yoochoose extends Shopware_Controllers_Backen
         /* @var $shop \Shopware\Models\Shop\Shop */
         $shop = $this->em->getRepository('Shopware\Models\Shop\Shop');
         if (!$data['design']) {
-            $data['design'] = $shop->getDefault()->getTemplate()->getName();
+            /* @var $template \Shopware\Models\Shop\Template */
+            $template = $shop->getDefault()->getTemplate();
+            $templateName = $template->getName();
+            // if human readable template name is set and not generic then show system template name
+            $data['design'] = $templateName && $templateName !== '__theme_name__' ? $templateName : $template->getTemplate();
         }
 
         if (!$data['locale']) {
@@ -169,7 +176,7 @@ class Shopware_Controllers_Backend_Yoochoose extends Shopware_Controllers_Backen
             CURLOPT_CUSTOMREQUEST => "POST",
             CURLOPT_RETURNTRANSFER => TRUE,
             CURLOPT_FOLLOWLOCATION => TRUE,
-            CURLOPT_TIMEOUT => 2,
+            CURLOPT_TIMEOUT => 10,
             CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
             CURLOPT_USERPWD => "$customerId:$licenceKey",
             CURLOPT_SSL_VERIFYPEER => FALSE,

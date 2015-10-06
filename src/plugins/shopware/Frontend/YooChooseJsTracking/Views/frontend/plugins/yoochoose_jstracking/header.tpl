@@ -1,7 +1,7 @@
 {extends file='parent:frontend/index/header.tpl'}
 
 {block name="frontend_index_header_javascript" append}
-    <link type="text/css" href="{$ycTrackingCsstUrl}" rel="stylesheet" />
+    <link type="text/css" href="{$ycTrackingCssUrl}" rel="stylesheet" />
     <script type="text/javascript" src="{$ycTrackingScriptUrl}"></script>
 {/block}
 

@@ -8,8 +8,6 @@ Ext.define('Shopware.apps.Yoochoose.model.Settings', {
         { name: 'pluginId', type: 'string' },
         { name: 'endpoint', type: 'string' },
         { name: 'design', type: 'string' },
-//        { name: 'locale', type: 'string' },
-        { name: 'useCountry', type: 'boolean' },
         { name: 'performance', type: 'int' },
         { name: 'scriptUrl', type: 'string' }
     ],

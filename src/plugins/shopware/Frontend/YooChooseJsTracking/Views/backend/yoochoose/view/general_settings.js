@@ -111,45 +111,7 @@ Ext.define('Shopware.apps.Yoochoose.view.GeneralSettings', {
                               Please read <a href="https://doc.yoochoose.net/display/PUBDOC/Shopware+Plugin+2.0+Tutorial" target="_blank">Shopware Connect Extension Tutorial</a>,\n\
                               if you need to customize the design of the recommendations.',
                 value: data.design
-            }),
-//            Ext.create('Ext.form.field.ComboBox', {
-//                id: 'locale',
-//                fieldLabel: 'Language',
-//                name: 'language',
-//                typeAhead: false,
-//                transform: 'stateSelect',
-//                width: 135,
-//                forceSelection: false,
-//                queryMode: 'remote',
-//                displayField: 'name',
-//                valueField: 'locale',
-//                editable: true,
-//                required: true,
-//                helpTitle: 'Notification',
-//                allowBlank: false,
-//                store: 'base.Locale',
-//                value: data.locale,
-//                listeners: {
-//                    beforerender: function () {
-//                        this.store.load();
-//                    }
-//                }
-//            }),
-            {
-                xtype: 'checkbox',
-                fieldLabel: 'Include the country code into the language.',
-                inputValue: true,
-                uncheckedValue: false,
-                name: 'useCountry',
-                labelWidth: 260,
-                helpText: 'Include the country code into the language',
-                helpTitle: 'Notification',
-                listeners: {
-                    afterrender: function () {
-                        this.setValue(data.useCountry);
-                    }
-                }
-            }
+            })
         ];
     }
 });

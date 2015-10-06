@@ -220,7 +220,7 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
     private function createMenu()
     {
         $rootNode = $this->Menu()->findOneBy('label', 'Configuration');
-        $item = $this->createMenuItem(array(
+        $this->createMenuItem(array(
             'label' => 'Yoochoose',
             'class' => 'yoochoose_image',
             'active' => 1,
@@ -248,8 +248,15 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
                 case 'listing':
                     return 'category';
             }
-        } else if ($controller === 'checkout' && $action === 'cart') {
-            return 'cart';
+        } else if ($controller === 'checkout') {
+            switch ($action) {
+                case 'cart':
+                    return 'cart';
+                case 'finish':
+                    return 'buyout';
+                default:
+                    return false;
+            }
         }
 
         return false;
@@ -325,15 +332,10 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
     private function getShopLanguage()
     {
         $currentShopId = Shopware()->Front()->Request()->getCookie('shop');
-        $shoprep = Shopware()->Models()->getRepository('Shopware\Models\Shop\Shop');
-        $currentShop = $currentShopId ? $shoprep->find($currentShopId) : $shoprep->getDefault();
+        $shopRepository = Shopware()->Models()->getRepository('Shopware\Models\Shop\Shop');
+        $currentShop = $currentShopId ? $shopRepository->find($currentShopId) : $shopRepository->getDefault();
         $language = $currentShop->getLocale()->getLocale();
 
-        $useCountry = YoochooseHelper::getYoochooseConfig('useCountry');
-
-        if (!$useCountry) {
-            return substr($language, 0, strpos($language, '_'));
-        }
 
         return str_replace('_', '-', $language);
     }

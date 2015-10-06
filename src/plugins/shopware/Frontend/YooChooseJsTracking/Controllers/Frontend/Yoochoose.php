@@ -15,20 +15,23 @@ class Shopware_Controllers_Frontend_Yoochoose extends Enlight_Controller_Action
             $helper = Shopware()->Modules()->Articles();
 
             foreach (explode(',', $productIds) as $id) {
-                $articleNoImages = $helper->sGetArticleById($id);
-                if (!$articleNoImages) {
-                    continue;
+                try {
+                    $article = $helper->sGetArticleById($id);
+                    if (!$article) {
+                        continue;
+                    }
+
+                    $image = $article['image']['source'];
+                    $result[] = array(
+                        'id' => $article['articleID'],
+                        'title' => $article['articleName'],
+                        'link' => $article['linkDetailsRewrited'],
+                        'image' => $image ? $image : $article['image']['src']['original'],
+                        'price' => smarty_modifier_currency($article['price']),
+                    );
+                } catch (\Exception $exc) {
+                    error_log($exc->getMessage() . " ($id)\n", 3, Shopware()->DocPath() . '/logs/yoochoose.log');
                 }
-
-                $article = $helper->sGetConfiguratorImage($articleNoImages);
-
-                $result[] = array(
-                    'id' => $article['articleID'],
-                    'title' => $article['articleName'],
-                    'link' => $article['linkDetailsRewrited'],
-                    'image' => $article['image']['src']['original'],
-                    'price' => smarty_modifier_currency($article['price']),
-                );
             }
         }
 
