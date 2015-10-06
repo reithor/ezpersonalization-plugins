@@ -6,7 +6,7 @@ use Shopware\Components\YoochooseHelper;
  * Class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap
  *
  * @package Yoochoose Plugin
- * @version 2.0.1
+ * @version 2.0.3
  *
  */
 class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_Components_Plugin_Bootstrap
@@ -54,7 +54,7 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
      */
     public function getVersion()
     {
-        return '2.0.2';
+        return '2.0.3';
     }
 
     /**
