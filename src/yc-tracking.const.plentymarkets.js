@@ -29,7 +29,7 @@ var YC_RECO_TEMPLATES = {
             title: {'': 'Personal', de: 'Personal'},
             details: {'': 'View details', de: ' Artikel ansehen'}
         },
-        display: 1
+        enabled: true
     },
     bestseller: {
         html_template: "<div class='col-lg-12'><h3>{{{const.title}}}</h3><div class='categoryView isGridView'>" +
@@ -53,7 +53,7 @@ var YC_RECO_TEMPLATES = {
             title: {'': 'Bestseller', de: 'Bestseller'},
             details: {'': 'View details', de: ' Artikel ansehen'}
         },
-        display: 1
+        enabled: true
     },
     related: {
         html_template: "<div class='col-lg-12'><h3>{{{const.title}}}</h3><div class='categoryView isGridView'>" +
@@ -77,7 +77,7 @@ var YC_RECO_TEMPLATES = {
             title: {'': 'CrossRate', de: 'CrossRate'},
             details: {'': 'View details', de: ' Artikel ansehen'}
         },
-        display: 1
+        enabled: true
     },
     upselling: {
         html_template: "<div class='col-lg-12'><h3>{{{const.title}}}</h3><div class='categoryView isGridView'>" +
@@ -101,7 +101,7 @@ var YC_RECO_TEMPLATES = {
             title: {'': 'Upselling', de: 'Upselling'},
             details: {'': 'View details', de: ' Artikel ansehen'}
         },
-        display: 1
+        enabled: true
     },
     crossselling: {
         html_template: "<div class='col-lg-12'><h3>{{{const.title}}}</h3><div class='categoryView isGridView'>" +
@@ -125,7 +125,7 @@ var YC_RECO_TEMPLATES = {
             title: {'': 'CrossSelling', de: 'CrossSelling'},
             details: {'': ' View details', de: ' Artikel ansehen'}
         },
-        display: 1
+        enabled: true
     },
     category_page: {
         html_template: "<div class='col-lg-12'><h3>{{{const.title}}}</h3><div class='categoryView isGridView'>" +
@@ -149,7 +149,7 @@ var YC_RECO_TEMPLATES = {
             title: {'': 'Category', de: 'Category'},
             details: {'': 'View details', de: ' Artikel ansehen'}
         },
-        display: 1
+        enabled: true
     }
 };
 

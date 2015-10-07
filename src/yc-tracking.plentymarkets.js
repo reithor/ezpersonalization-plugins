@@ -177,7 +177,7 @@ function initYcTrackingModule(context) {
                 return;
             }
 
-            if (tpl.display) {
+            if (tpl.enabled) {
                 box.priority = tpl.priority;
 
                 box.trackFollowEvent = trackFollowEvent;
