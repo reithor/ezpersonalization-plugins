@@ -13,6 +13,7 @@ class YoochooseHelper
      *
      * @param string $name
      * @param mixed $default
+     * @return mixed|string
      */
     public static function getYoochooseConfig($name, $default = '')
     {
@@ -22,6 +23,12 @@ class YoochooseHelper
         return $element ? $element->getValue() : $default;
     }
 
+    /**
+     * Returns url of tracking js, css files
+     *
+     * @param string $type
+     * @return string
+     */
     public static function getTrackingScript($type = '.js')
     {
         $customerId = self::getYoochooseConfig('customerId');
@@ -34,7 +41,7 @@ class YoochooseHelper
             $scriptOverwrite = (!preg_match('/^(http|\/\/)/', $scriptOverwrite) ? '//' : '') . $scriptOverwrite;
             $scriptUrl = preg_replace('(^https?:)', '', $scriptOverwrite);
         } else {
-            $scriptUrl = self::getYoochooseConfig('performance') == 1 ? self::AMAZON_CDN_SCRIPT : self::YOOCHOOSE_CDN_SCRIPT;
+            $scriptUrl = self::getYoochooseConfig('performance') == 2 ? self::AMAZON_CDN_SCRIPT : self::YOOCHOOSE_CDN_SCRIPT;
         }
 
         return rtrim($scriptUrl, '/') . $suffix . $type;
