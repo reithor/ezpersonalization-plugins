@@ -396,12 +396,25 @@ function initYcTrackingCore(context) {
                 var prop;
 
                 destination.const = {};
+
+                // Adding local constants
                 for (prop in source) {
                     if (source.hasOwnProperty(prop)) {
                         if (typeof(source[prop]) === 'object') {
                             destination.const[prop] = source[prop][language] ? source[prop][language] : source[prop][''];
                         } else {
                             destination.const[prop] = source[prop];
+                        }
+                    }
+                }
+
+                // Adding global constants
+                for (prop in YC_CONSTS) {
+                    if (YC_CONSTS.hasOwnProperty(prop) && !destination.const.hasOwnProperty(prop)) {
+                        if (typeof(YC_CONSTS[prop]) === 'object') {
+                            destination.const[prop] = YC_CONSTS[prop][language] ? YC_CONSTS[prop][language] : YC_CONSTS[prop][''];
+                        } else {
+                            destination.const[prop] = YC_CONSTS[prop];
                         }
                     }
                 }

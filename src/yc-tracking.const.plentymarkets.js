@@ -3,7 +3,8 @@ var YC_CUSTOMER_ID = 906;
 
 var YC_CONSTS = {
     "currency" : 'EUR',
-    "currencySign" : '&euro;'
+    "currencySign" : '&euro;',
+    "details" : {'': 'View details', de: ' Artikel ansehen'}
 };
 
 var YC_RECO_TEMPLATES = {
@@ -26,8 +27,7 @@ var YC_RECO_TEMPLATES = {
         columns: 5,
         scenario: 'personalized',
         consts: {
-            title: {'': 'Personal', de: 'Personal'},
-            details: {'': 'View details', de: ' Artikel ansehen'}
+            title: {'': 'Personal', de: 'Personal'}
         },
         enabled: true
     },
@@ -50,8 +50,7 @@ var YC_RECO_TEMPLATES = {
         columns: 5,
         scenario: 'landing_page',
         consts: {
-            title: {'': 'Bestseller', de: 'Bestseller'},
-            details: {'': 'View details', de: ' Artikel ansehen'}
+            title: {'': 'Bestseller', de: 'Bestseller'}
         },
         enabled: true
     },
@@ -74,8 +73,7 @@ var YC_RECO_TEMPLATES = {
         columns: 5,
         scenario: 'cross-rate',
         consts: {
-            title: {'': 'CrossRate', de: 'CrossRate'},
-            details: {'': 'View details', de: ' Artikel ansehen'}
+            title: {'': 'CrossRate', de: 'CrossRate'}
         },
         enabled: true
     },
@@ -98,8 +96,7 @@ var YC_RECO_TEMPLATES = {
         columns: 5,
         scenario: 'ultimately_bought',
         consts: {
-            title: {'': 'Upselling', de: 'Upselling'},
-            details: {'': 'View details', de: ' Artikel ansehen'}
+            title: {'': 'Upselling', de: 'Upselling'}
         },
         enabled: true
     },
@@ -122,8 +119,7 @@ var YC_RECO_TEMPLATES = {
         columns: 5,
         scenario: 'cross_sell',
         consts: {
-            title: {'': 'CrossSelling', de: 'CrossSelling'},
-            details: {'': ' View details', de: ' Artikel ansehen'}
+            title: {'': 'CrossSelling', de: 'CrossSelling'}
         },
         enabled: true
     },
@@ -146,8 +142,7 @@ var YC_RECO_TEMPLATES = {
         columns: 5,
         scenario: 'category_page',
         consts: {
-            title: {'': 'Category', de: 'Category'},
-            details: {'': 'View details', de: ' Artikel ansehen'}
+            title: {'': 'Category', de: 'Category'}
         },
         enabled: true
     }
