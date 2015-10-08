@@ -10,6 +10,7 @@ function initYcTrackingModule(context) {
         language = null,
         responsesCount = 0,
         requestsSent = 0,
+        script,
         templates = YC_RECO_TEMPLATES;
 
     function getCategoriesFromBreadcrumb(left, right) {
@@ -243,9 +244,14 @@ function initYcTrackingModule(context) {
         };
     }
 
+    if (!context['Handlebars']) {
+        script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.2/handlebars.min.js';
+        document.head.appendChild(script);
+    }
+
     context.addEventListener('load' ,function () {
-        var trackLogout,
-            script;
+        var trackLogout;
 
         ycObject = context['yc_config_object'] ? context['yc_config_object'] : null;
         trackId = ycObject ? ycObject.trackid : null;
@@ -258,12 +264,6 @@ function initYcTrackingModule(context) {
 
         if (trackLogout) {
             YcTracking.resetUser();
-        }
-
-        if (!context['Handlebars']) {
-            script = document.createElement('script');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.2/handlebars.min.js';
-            document.head.appendChild(script);
         }
 
         trackClickAndRate();

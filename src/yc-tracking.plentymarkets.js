@@ -10,6 +10,7 @@ function initYcTrackingModule(context) {
         currencySign = null,
         requestsSent = 0,
         responsesCount = 0,
+        script,
         allBoxes = [];
 
     function getCategory() {
@@ -293,21 +294,20 @@ function initYcTrackingModule(context) {
         }
     }
 
-    window.addEventListener('load', function () {
+    if (!context['Handlebars']) {
+        script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.2/handlebars.min.js';
+        document.head.appendChild(script);
+    }
+
+    context.addEventListener('load', function () {
         var ycObject = context['yc_config_object'] ? context['yc_config_object'] : null,
-            trackid = ycObject ? ycObject.trackid : null,
-            script;
+            trackid = ycObject ? ycObject.trackid : null;
 
         lang = ycObject ? ycObject.lang : null;
         currentPage = ycObject ? ycObject.page : null;
         YC_CONSTS.currency = currency = ycObject ? ycObject.currency : null;
         YC_CONSTS.currencySign = currencySign = ycObject ? ycObject.currencySign : null;
-
-        if (!context['Handlebars']) {
-            script = document.createElement('script');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.2/handlebars.min.js';
-            document.head.appendChild(script);
-        }
 
         YcTracking.trackLogin(trackid);
         trackClick();
