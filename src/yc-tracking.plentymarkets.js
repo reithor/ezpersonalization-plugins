@@ -293,7 +293,7 @@ function initYcTrackingModule(context) {
         }
     }
 
-    window.onload = function () {
+    window.addEventListener('load', function () {
         var ycObject = context['yc_config_object'] ? context['yc_config_object'] : null,
             trackid = ycObject ? ycObject.trackid : null,
             script;
@@ -316,5 +316,5 @@ function initYcTrackingModule(context) {
         logoutHandler(trackid);
         YcTracking.hookSearchingHandler(lang);
         processRecommendationBoxes();
-    };
+    });
 }

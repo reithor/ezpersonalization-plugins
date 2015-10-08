@@ -162,7 +162,7 @@ var YC_SEARCH_FIELDS = [
 var YC_SEARCH_TEMPLATES = {
     ITEM: {
         html_template: "<h2 class='heading'>{{const.title}}</h2><ul>{{#each results}}<li class='yc-search-result-item' yc-data-title='{{{title}}}'>" +
-        "<a href='{{url}}'><span class='yc-search-title'>{{{title}}}</span><span class='yc-search-price'>{{{price}}}" +
+        "<a href='{{url}}'><img src='{{image}}' alt='{{{title}}}' title='{{{title}}}'><span class='yc-search-title'>{{{title}}}</span><span class='yc-search-price'>{{{price}}}" +
         "</span></a></li>{{else}}<span class='yc-no-results'>No item results</span>{{/each}}</ul>",
         amount: 10,
         enabled: true,
@@ -173,7 +173,7 @@ var YC_SEARCH_TEMPLATES = {
     },
     CATEGORY: {
         html_template: "<h2 class='heading'>{{const.title}}</h2><ul>{{#each results}}<li class='yc-search-result-item' yc-data-title='{{{title}}}'>" +
-        "<a href='{{url}}'><span class='yc-search-title'>{{{title}}}</span><span class='yc-search-price'>{{{price}}}" +
+        "<a href='{{url}}'><img src='{{image}}' alt='{{{title}}}' title='{{{title}}}'><span class='yc-search-title'>{{{title}}}</span><span class='yc-search-price'>{{{price}}}" +
         "</span></a></li>{{else}}<span class='yc-no-results'>No category results</span>{{/each}}</ul>",
         amount: 5,
         enabled: true,
@@ -184,7 +184,7 @@ var YC_SEARCH_TEMPLATES = {
     },
     VENDOR: {
         html_template: "<h2 class='heading'>{{const.title}}</h2><ul>{{#each results}}<li class='yc-search-result-item' yc-data-title='{{{title}}}'>" +
-        "<a href='{{url}}'><span class='yc-search-title'>{{{title}}}</span><span class='yc-search-price'>{{{price}}}" +
+        "<a href='{{url}}'><img src='{{image}}' alt='{{{title}}}' title='{{{title}}}'><span class='yc-search-title'>{{{title}}}</span><span class='yc-search-price'>{{{price}}}" +
         "</span></a></li>{{else}}<span class='yc-no-results'>No vendor results</span>{{/each}}</ul>",
         amount: 10,
         enabled: false,
