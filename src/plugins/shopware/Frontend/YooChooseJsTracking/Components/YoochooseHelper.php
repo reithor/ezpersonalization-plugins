@@ -32,6 +32,11 @@ class YoochooseHelper
     public static function getTrackingScript($type = '.js')
     {
         $customerId = self::getYoochooseConfig('customerId');
+        $licenceKey = self::getYoochooseConfig('licenseKey');
+        if (empty($customerId) || empty($licenceKey)) {
+            return '';
+        }
+
         $scriptOverwrite = self::getYoochooseConfig('scriptUrl');
         $pluginId = self::getYoochooseConfig('pluginId');
         $plugin = $pluginId ? '/' . $pluginId : '';
