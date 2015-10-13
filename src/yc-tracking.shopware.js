@@ -20,7 +20,7 @@ function initYcTrackingModule(context) {
             category = [];
 
         for (; i < aaa.length - n; i++) {
-            if (aaa[i][YC_BREADCRUMBS_VALUE]) {
+            if (aaa[i][YC_BREADCRUMBS_VALUE] && (ycObject.currentPage !== 'product' || location.href !== aaa[i].href)) {
                 category.push(aaa[i][YC_BREADCRUMBS_VALUE].trim());
             }
         }
@@ -32,22 +32,12 @@ function initYcTrackingModule(context) {
         var itemId = context['yc_articleId'] ? context['yc_articleId'] : null,
             currentPage = ycObject ? ycObject.currentPage : null,
             category,
-            price,
-            link,
-            image,
-            title,
             form,
             rating;
 
         if (currentPage === 'product' && itemId) {
             category = getCategoriesFromBreadcrumb(YC_BC_OFFSETS.product.left, YC_BC_OFFSETS.product.right);
-            price = document.querySelector(YC_ARTICLE_PRICE_SELECTOR)[YC_ARTICLE_PRICE_VALUE].trim() +
-                document.querySelector(YC_ARTICLE_CURRENCY_SELECTOR)[YC_ARTICLE_CURRENCY_VALUE].trim();
-            link = location.href;
-            image = document.querySelector(YC_ARTICLE_IMAGE_SELECTOR)[YC_ARTICLE_IMAGE_VALUE].trim();
-            title = document.querySelector(YC_ARTICLE_TITLE_SELECTOR)[YC_ARTICLE_TITLE_VALUE].trim();
-            YcTracking.trackClick(1, itemId, category, language, title, link, image, price);
-
+            YcTracking.trackClick(1, itemId, category, language);
             // by default, rating is done when user evaluates product
             form = document.querySelector(YC_ARTICLE_RATING_FORM_SELECTOR);
             if (form) {

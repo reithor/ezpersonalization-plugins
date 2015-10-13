@@ -6,7 +6,7 @@ module.exports = function (grunt) {
         return str.replace(/%s/g, LIBRARY_NAME);
     }
 
-    function wrapModule(module) {
+    function wrapModule(module, version) {
         var result = [
             sub('src/%s.intro.js'),
             sub('src/%s.const.js'),
@@ -14,10 +14,12 @@ module.exports = function (grunt) {
             sub('src/%s.init.js'),
             sub('src/%s.outro.js')
         ];
+
+        version = version ? version : '';
         
         if (module) {
             result.splice(2, 0, sub('src/%s.defaults.' + module + '.js'));
-            result.splice(3, 0, sub('src/%s.const.' + module + '.js'));
+            result.splice(3, 0, sub('src/%s.const.' + module + version + '.js'));
             result.splice(5, 0, sub('src/%s.' + module + '.js'));
         }
 
@@ -90,7 +92,7 @@ module.exports = function (grunt) {
                 dest: 'c:/xampp/htdocs/v1/907/tracking.js'
             },
             dev_sw5_vojin: {
-                src: wrapModule('shopware5'),
+                src: wrapModule('shopware', 5),
                 dest: 'c:/xampp/htdocs/v1/907/tracking.js'
             }
         },
