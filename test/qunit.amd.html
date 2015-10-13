@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="qunit/qunit.css" rel="stylesheet" type="text/css"/>
+    <script src="qunit/qunit.js"></script>
+    <script src="../vendor/jquery.js"></script>
+    <!--
+    This RequireJS script is patched to add an undef() method. This allows this test suite to clean up loaded modules after each test.
+    Otherwise, it's not possible to successively load modules with the same name but different paths via multiple require.config() calls.
+
+    Some code borrowed from: https://github.com/jrburke/requirejs/commit/c8a6636f08ca552cbff3843f27eab8825e33fab9
+    -->
+    <script src="../vendor/require-1.0.7+undef.js"></script>
+    <script>
+
+        function requireConfig(path_opts) {
+            var paths = $.extend({
+                ycTracking: '../dist/yc-tracking',
+                ycTrackingMin: '../dist/yc-tracking.min'
+            }, path_opts || {});
+
+            require.config({
+                paths: paths
+            });
+        }
+
+        $(document).ready(function () {
+
+            function randomFloat() {
+                return parseFloat((Math.random() * 100).toFixed(2));
+            }
+
+            function randomInt(max) {
+                max = max || 1000;
+                return parseInt(Math.random() * max);
+            }
+
+            function randomText(max) {
+                max = max || 6;
+                return ((Math.random() * (Math.pow(16, max) - 1)) | 0).toString(16);
+            }
+
+            module('Loading with RequireJS', {
+                teardown: function () {
+                    $('head').find('script[data-requiremodule]').remove();
+                    require.undef('ycTracking');
+                }
+            });
+
+            asyncTest('Can load the minified version of yc-tracking', function () {
+                requireConfig();
+
+                require(['ycTrackingMin'], function (ycTracking) {
+                    ok(ycTracking !== undefined);
+                    start();
+                });
+            });
+
+            asyncTest('Global scope is not polluted by yc-tracking', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    ok(window.YcTracking === undefined);
+                    start();
+                });
+            });
+
+            asyncTest('Cannot load debug methods from the minified version of yc-tracking', function () {
+                requireConfig();
+
+                require(['ycTrackingMin'], function (ycTracking) {
+                    ok(ycTracking.getUserId === undefined);
+                    start();
+                });
+            });
+
+            asyncTest('userId call', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    ok(ycTracking.getUserId() === ycTracking.getUserId());
+                    start();
+                });
+            });
+
+            asyncTest('userDetails call', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    ok(ycTracking.getUserId() === ycTracking.getUserDetails().userId);
+                    start();
+                });
+            });
+
+            asyncTest('_executeEventCall is private.', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    ok(ycTracking._executeEventCall === undefined);
+                    start();
+                });
+            });
+
+            asyncTest('customerId is private.', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    ok(ycTracking.customerId === undefined);
+                    start();
+                });
+            });
+
+            asyncTest('trackClick call', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    ok(ycTracking === ycTracking.trackClick(1, randomInt()));
+                    start();
+                });
+            });
+
+            asyncTest('trackRate call', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    ok(ycTracking === ycTracking.trackRate(1, randomInt(), randomInt(100)));
+                    start();
+                });
+            });
+
+            asyncTest('trackBasket call', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    ok(ycTracking === ycTracking.trackBasket(1, randomInt(), 'cat/subcat'));
+                    start();
+                });
+            });
+
+            asyncTest('trackBuy call', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    ok(ycTracking === ycTracking.trackBuy(1, randomInt(), randomInt(), randomFloat(), 'EUR'));
+                    start();
+                });
+            });
+
+            asyncTest('trackLogin call', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    ok(ycTracking === ycTracking.trackLogin(randomText(12)));
+                    start();
+                });
+            });
+
+            asyncTest('trackRendered call', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    ok(ycTracking === ycTracking.trackRendered(1, [randomInt(), randomInt(), randomInt()]));
+                    start();
+                });
+            });
+
+            asyncTest('trackClickRecommended call', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    ok(ycTracking === ycTracking.trackClickRecommended(1, randomInt(), 'SCENARIO with & chars'));
+                    start();
+                });
+            });
+
+            asyncTest('trackConsume call', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    ok(ycTracking === ycTracking.trackConsume(1, randomInt()));
+                    start();
+                });
+            });
+
+            asyncTest('trackBlacklist call', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    ok(ycTracking === ycTracking.trackBlacklist(1, randomInt()));
+                    start();
+                });
+            });
+
+            asyncTest('trackLogout call', function () {
+                requireConfig();
+
+                require(['ycTracking'], function (ycTracking) {
+                    ok(ycTracking.getUserId() !== ycTracking.resetUser());
+                    start();
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+<h1 id="qunit-header">YC tracking Unit Tests (AMD module)</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture"></div>
+</body>
+</html>
