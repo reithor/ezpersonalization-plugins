@@ -9,6 +9,8 @@ namespace Shopware\Components\Api\Resource;
 class YoochooseArticles extends Resource
 {
 
+    private $version = 4;
+
     /**
      * Retrieves Article Model Repository
      *
@@ -32,15 +34,16 @@ class YoochooseArticles extends Resource
     public function getList($offset, $limit, $language)
     {
         $this->checkPrivilege('read');
+        $this->version = (int)Shopware()->Config()->version;
         $base = Shopware()->Modules()->Core()->sRewriteLink();
         $imagePath = Shopware()->Modules()->System()->sPathArticleImg;
 
         $builder = $this->getRepository()->createQueryBuilder('article');
         $builder->select(array(
-                'article',
-                'mainDetail',
-                'mainDetailPrices',
-            ))
+            'article',
+            'mainDetail',
+            'mainDetailPrices',
+        ))
             ->leftJoin('article.mainDetail', 'mainDetail')
             ->leftJoin('mainDetail.prices', 'mainDetailPrices')
             ->where('article.active = 1');
@@ -55,19 +58,18 @@ class YoochooseArticles extends Resource
         $articles = $paginator->getIterator()->getArrayCopy();
 
         if (!empty($language)) {
-            $locale = $this->findEntityByConditions('Shopware\Models\Shop\Locale', array(
-                array('id' => $language),
-                array('locale' => $language)
-            ));
+            $locale = $this->findEntityByConditions('Shopware\Models\Shop\Locale', array(array('locale' => $language)));
+            // for shopware 5 locale needs to be mapped to shop ID
+            if ($this->version === 5) {
+                $locale = $this->findEntityByConditions('Shopware\Models\Shop\Shop', array(array('locale' => $locale)));
+            }
+
             if (!$locale) {
                 throw new \Exception("Language code '$language' is not recognized, use locales in format as e.g. en_US.");
             }
 
             foreach ($articles as &$article) {
-                $article = $this->translateArticle(
-                    $article,
-                    $locale
-                );
+                $article = $this->translateArticle($article, $locale->getId());
             }
         }
 
@@ -177,19 +179,13 @@ class YoochooseArticles extends Resource
      * Translate the whole article array.
      *
      * @param array $data
-     * @param Locale $locale
+     * @param int $localeId
      * @return array
      */
-    protected function translateArticle(array $data, Locale $locale)
+    protected function translateArticle(array $data, $localeId)
     {
-        $this->getTranslationResource()->setResultMode(
-            self::HYDRATE_ARRAY
-        );
-        $translation = $this->getSingleTranslation(
-            'article',
-            $locale->getId(),
-            $data['id']
-        );
+        $this->getTranslationResource()->setResultMode(self::HYDRATE_ARRAY);
+        $translation = $this->getSingleTranslation('article', $localeId, $data['id']);
 
         if (!empty($translation)) {
             $data = $this->mergeTranslation($data, $translation['data']);
@@ -238,10 +234,11 @@ class YoochooseArticles extends Resource
      */
     protected function getSingleTranslation($type, $localeId, $key)
     {
+        $property = 'translation.' . ($this->version === 4 ? 'localeId' : 'shopId');
         $translation = $this->getTranslationResource()->getList(0, 1, array(
             array('property' => 'translation.type', 'value' => $type),
             array('property' => 'translation.key', 'value' => $key),
-            array('property' => 'translation.localeId', 'value' => $localeId),
+            array('property' => $property, 'value' => $localeId),
         ));
 
         return $translation['data'][0];
