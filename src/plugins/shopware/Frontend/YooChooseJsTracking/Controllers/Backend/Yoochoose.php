@@ -148,6 +148,12 @@ class Shopware_Controllers_Backend_Yoochoose extends Shopware_Controllers_Backen
                 'appKey' => $data['username'],
                 'appSecret' => $data['apiKey'],
             ),
+            'frontend' => array(
+                'design' => $data['design'],
+            ),
+            'search' => array(
+                'design' => $data['design'],
+            ),
         );
 
         $url = self::YOOCHOOSE_LICENSE_URL . $customerId . '/plugin/update?createIfNeeded=true&fallbackDesign=true';
