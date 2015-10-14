@@ -7,7 +7,7 @@ var YC_BREADCRUMBS_SELECTOR = '.breadcrumbs',
     YC_ARTICLE_TITLE_SELECTOR = '.itemTitle',
     YC_ARTICLE_IMAGE_SELECTOR = '#plenty_xl_image_{id}_0',
     YC_CATEGORY_LIST_PRODUCTS = '[name="ArticleID"]',
-    YC_PRODUCT_ATTRIBUTES = ['url', 'title', 'price', 'image'],
+    YC_PRODUCT_ATTRIBUTES = ['url', 'title', 'price', 'image', 'fullsizeImageUrl'],
     YC_RENDER_PRICE_FORMAT = '{price}&thinsp;{currencySign}',
     YC_DECIMAL_SEPARATOR = ',',
     YC_SEARCH_SELECTED_SELECTOR = ' .yc-hover', //it has prefix of the result tag id e.g ('#ycSearchResult0' + YC_SEARCH_SELECTED_SELECTOR)
