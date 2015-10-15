@@ -700,6 +700,7 @@ function initYcTrackingCore(context) {
 
             box.rows = rows;
             compiled = Handlebars.compile(section);
+            wrapper.className = 'yc-recommendation-box';
             wrapper.innerHTML = compiled(box);
             elem.appendChild(wrapper);
         };
