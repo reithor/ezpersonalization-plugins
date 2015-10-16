@@ -830,7 +830,10 @@ function initYcTrackingCore(context) {
 
             variables.forEach(function (variable) {
                 var name = variable.replace(/[{}]/g, '');
-                result.push(name);
+
+                if (['else', 'this', 'log'].indexOf(name) === -1) {
+                    result.push(name);
+                }
             });
 
             return result;
