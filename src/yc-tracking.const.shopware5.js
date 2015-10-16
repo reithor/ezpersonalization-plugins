@@ -64,7 +64,7 @@ var YC_RECO_TEMPLATES = {
             },
             rows: 1,
             columns: 10,
-            scenario: '.personalized',
+            scenario: 'personalized',
             enabled : true
         },
         upselling: {
@@ -142,7 +142,6 @@ var YC_SEARCH_TEMPLATES = {
         "</span></a></li>{{else}}<span class='yc-no-results'>No item results</span>{{/each}}</ul>",
         amount: 10,
         enabled: true,
-        priority: 1,
         consts: {
             "title": {'': 'Recommended Products', 'de': 'Empfohlene Produkte'}
         }
@@ -153,7 +152,6 @@ var YC_SEARCH_TEMPLATES = {
         "</span></a></li>{{else}}<span class='yc-no-results'>No category results</span>{{/each}}</ul>",
         amount: 5,
         enabled: true,
-        priority: 2,
         consts: {
             "title": {'': 'Recommended Category', 'de': 'Empfohlene Category'}
         }
@@ -164,7 +162,6 @@ var YC_SEARCH_TEMPLATES = {
         "</span></a></li>{{else}}<span class='yc-no-results'>No vendor results</span>{{/each}}</ul>",
         amount: 10,
         enabled: false,
-        priority: 3,
         consts: {
             "title": {'': 'Recommended Vendor', 'de': 'Empfohlene Vendor'}
         }
