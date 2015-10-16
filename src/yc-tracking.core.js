@@ -251,9 +251,10 @@ function initYcTrackingCore(context) {
              * Creates jsonp handler function that processes and renders search suggestion data
              *
              * @param {object} searchNode
+             * @param {string} language
              * @returns {Function}
              */
-            _createJsonpSearchResponseHandler = function (searchNode) {
+            _createJsonpSearchResponseHandler = function (searchNode, language) {
                 return function (data, statusCode) {
                     var property,
                         searchResults = [];
@@ -264,7 +265,7 @@ function initYcTrackingCore(context) {
 
                     // Formatting data
                     for (property in data) {
-                        if (data.hasOwnProperty(property)) {
+                        if (data.hasOwnProperty(property) && YC_SEARCH_TEMPLATES.hasOwnProperty(property)) {
                             data[property].sort(function (a, b) {
                                 return a.yc_score - b.yc_score;
                             });
@@ -290,7 +291,7 @@ function initYcTrackingCore(context) {
                             filtered = [],
                             view = searchNode.view;
 
-                        elem.const = searchNode.const;
+                        _extractConstants(elem.template.consts, elem, language);
 
                         //reformat prices
                         elem.results.forEach(function (item) {
@@ -708,6 +709,23 @@ function initYcTrackingCore(context) {
          * @param {string} language
          */
         this.hookSearchingHandler = function (language) {
+            var allAttributes = [],
+                unfiltered,
+                property;
+
+            //get all variables from all suggestion search templates
+            for (property in YC_SEARCH_TEMPLATES) {
+                if (YC_SEARCH_TEMPLATES.hasOwnProperty(property) && YC_SEARCH_TEMPLATES[property].enabled) {
+                    unfiltered = this.extractTemplateVariables(YC_SEARCH_TEMPLATES[property].html_template);
+                    allAttributes = allAttributes.concat(unfiltered);
+                }
+            }
+
+            //remove duplicates
+            allAttributes = allAttributes.filter(function(item, pos) {
+                return allAttributes.indexOf(item) == pos;
+            });
+
             YC_SEARCH_FIELDS.forEach(function (elem, index) {
                 var searchInput = document.querySelector(elem.target),
                     newNode,
@@ -715,7 +733,7 @@ function initYcTrackingCore(context) {
                     parameters = {
                         lang: language,
                         itemtype: 1,
-                        attribute: YC_PRODUCT_ATTRIBUTES
+                        attribute: allAttributes
                     },
                     property,
                     searchText = '';
@@ -745,16 +763,13 @@ function initYcTrackingCore(context) {
 
                 // Create jsonp response handler function for this search box
                 functionName = 'ycSearchResponseHandler' + index;
-                context[functionName] = _createJsonpSearchResponseHandler(elem);
+                context[functionName] = _createJsonpSearchResponseHandler(elem, language);
 
                 // Adding parameters
                 parameters.jsonpCallback = functionName;
                 for (property in YC_SEARCH_TEMPLATES) {
                     if (YC_SEARCH_TEMPLATES.hasOwnProperty(property) && YC_SEARCH_TEMPLATES[property].enabled) {
                         parameters[property.toLowerCase()] = YC_SEARCH_TEMPLATES[property].amount;
-
-                        // add template constants
-                        _extractConstants(YC_SEARCH_TEMPLATES[property].consts, elem, language);
                     }
                 }
 
@@ -793,6 +808,32 @@ function initYcTrackingCore(context) {
 
                 }, false);
             });
+        };
+
+        /**
+         * Extracts variables that are used in template and returns them as array
+         *
+         * @param template
+         * @returns {Array}
+         */
+        this.extractTemplateVariables = function (template) {
+            var variables, result = [];
+
+            variables = template.match(/\{{2,3}([^.\/#{}}]*)\}{2,3}/g);
+            if (!variables || variables.length === 0) {
+                return result;
+            }
+
+            variables = variables.filter(function(item, pos) {
+                return variables.indexOf(item) == pos;
+            });
+
+            variables.forEach(function (variable) {
+                var name = variable.replace(/[{}]/g, '');
+                result.push(name);
+            });
+
+            return result;
         };
 
         return this;
