@@ -5,6 +5,9 @@ use Shopware\Components\YoochooseHelper;
 /**
  * Class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap
  *
+ * SEE SWAG MANUAL FOR MORE INFO TO FORMAT OF THIS FILE:
+ * http://community.shopware.com/Shopware-4-Grundlagen-der-Plugin-Entwicklung_detail_971_867.html
+ *
  * @package Yoochoose Plugin
  * @version 2.0.5
  *
@@ -54,7 +57,7 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
      */
     public function getVersion()
     {
-        return '2.0.5';
+        return '2.0.6';
     }
 
     /**
@@ -64,7 +67,7 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
      */
     public function getLabel()
     {
-        return 'Yoochooose Recommendations';
+        return 'Yoochooose Recommendations and Search';
     }
 
     /**
@@ -93,7 +96,15 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
             'label' => $this->getLabel(),
             'support' => 'support@yoochoose.com',
             'link' => 'http://www.yoochoose.com/',
-            'description' => '<p><img src="data:image/png;base64,' . $img . '" /></p>'
+            'description' =>
+'<p><img style="float: right" src="data:image/png;base64,' . $img . '" />With our integrated personalization solution consisting of product recommendations,'.
+' an intelligent store search, and personalized communication marketing, we help you to understand your customers and to respond to preferences, interests, '.
+'and needs in real time.<br>'.
+'-	Create a personalized shopping experience for your customers across all channels<br>'.
+'-	Optimize conversion rates<br>'.
+'-	Improve customer retention<br>'.
+'-	Increase your sales<br>'.
+'-	Make visitors into buyers and buyers into regular customers</p>'
         );
     }
 
