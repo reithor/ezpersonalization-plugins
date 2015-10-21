@@ -394,11 +394,11 @@ function initYcTrackingCore(context) {
              *
              * @param {object} source
              * @param {object} destination
-             * @param {string} language
+             * @param {string} locale
              * @private
              */
-            _extractConstants = function (source, destination, language) {
-                var prop;
+            _extractConstants = function (source, destination, locale) {
+                var prop, language = locale.substr(0, locale.indexOf('-'));
 
                 destination.const = {};
 
@@ -406,7 +406,8 @@ function initYcTrackingCore(context) {
                 for (prop in source) {
                     if (source.hasOwnProperty(prop)) {
                         if (typeof(source[prop]) === 'object') {
-                            destination.const[prop] = source[prop][language] ? source[prop][language] : source[prop][''];
+                            destination.const[prop] = source[prop][locale] ? source[prop][locale] :
+                                source[prop][language] ? source[prop][language] : source[prop][''];
                         } else {
                             destination.const[prop] = source[prop];
                         }
@@ -417,7 +418,8 @@ function initYcTrackingCore(context) {
                 for (prop in YC_CONSTS) {
                     if (YC_CONSTS.hasOwnProperty(prop) && !destination.const.hasOwnProperty(prop)) {
                         if (typeof(YC_CONSTS[prop]) === 'object') {
-                            destination.const[prop] = YC_CONSTS[prop][language] ? YC_CONSTS[prop][language] : YC_CONSTS[prop][''];
+                            destination.const[prop] = YC_CONSTS[prop][locale] ? YC_CONSTS[prop][locale] :
+                                YC_CONSTS[prop][language] ? YC_CONSTS[prop][language] : YC_CONSTS[prop][''];
                         } else {
                             destination.const[prop] = YC_CONSTS[prop];
                         }
