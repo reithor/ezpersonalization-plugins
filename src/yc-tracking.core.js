@@ -398,7 +398,9 @@ function initYcTrackingCore(context) {
              * @private
              */
             _extractConstants = function (source, destination, locale) {
-                var prop, language = locale.substr(0, locale.indexOf('-'));
+                var prop,
+                    language = locale.substr(0, locale.indexOf('-')),
+                    properyNames;
 
                 destination.const = {};
 
@@ -406,8 +408,15 @@ function initYcTrackingCore(context) {
                 for (prop in source) {
                     if (source.hasOwnProperty(prop)) {
                         if (typeof(source[prop]) === 'object') {
-                            destination.const[prop] = source[prop][locale] ? source[prop][locale] :
-                                source[prop][language] ? source[prop][language] : source[prop][''];
+                            properyNames = Object.getOwnPropertyNames(source[prop]);
+                            if (properyNames.length) {
+                                destination.const[prop] = source[prop][locale] ? source[prop][locale] :
+                                    source[prop][language] ? source[prop][language] :
+                                        source[prop][''] ? source[prop][''] : source[prop][properyNames[0]];
+                            } else {
+                                destination.const[prop] = '';
+                                console.log('Error: No translation found. Constant "' + prop + '" is an empty object!');
+                            }
                         } else {
                             destination.const[prop] = source[prop];
                         }
@@ -418,8 +427,15 @@ function initYcTrackingCore(context) {
                 for (prop in YC_CONSTS) {
                     if (YC_CONSTS.hasOwnProperty(prop) && !destination.const.hasOwnProperty(prop)) {
                         if (typeof(YC_CONSTS[prop]) === 'object') {
-                            destination.const[prop] = YC_CONSTS[prop][locale] ? YC_CONSTS[prop][locale] :
-                                YC_CONSTS[prop][language] ? YC_CONSTS[prop][language] : YC_CONSTS[prop][''];
+                            properyNames = Object.getOwnPropertyNames(source[prop]);
+                            if (properyNames.length) {
+                                destination.const[prop] = YC_CONSTS[prop][locale] ? YC_CONSTS[prop][locale] :
+                                    YC_CONSTS[prop][language] ? YC_CONSTS[prop][language] :
+                                        YC_CONSTS[prop][''] ? YC_CONSTS[prop][''] : YC_CONSTS[prop][properyNames[0]];
+                            } else {
+                                destination.const[prop] = '';
+                                console.log('Error: No translation found. Constant "' + prop + '" is an empty object!');
+                            }
                         } else {
                             destination.const[prop] = YC_CONSTS[prop];
                         }
