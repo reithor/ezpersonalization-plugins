@@ -260,6 +260,7 @@ function initYcTrackingModule(context) {
             var xmlHttp,
                 ycObject = window['yc_config_object'] ? window['yc_config_object'] : null,
                 itemType = ycObject && ycObject.hasOwnProperty('itemType') ? ycObject.itemType : 1,
+                language = ycObject ? ycObject.language : '',
                 productIds = [];
 
             if (!response.hasOwnProperty('recommendationResponseList')) {
@@ -315,7 +316,7 @@ function initYcTrackingModule(context) {
                                 });
 
                                 YcTracking.trackRendered(itemType, renderedIds);
-                                YcTracking.renderRecommendation(box);
+                                YcTracking.renderRecommendation(box, language);
                                 attachFollowEvents(box);
                             });
                         }
