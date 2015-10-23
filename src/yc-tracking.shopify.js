@@ -233,7 +233,7 @@ function initYcTrackingModule(context) {
                                 });
 
                                 YcTracking.trackRendered(1, renderedHandles);
-                                YcTracking.renderRecommendation(box);
+                                YcTracking.renderRecommendation(box, language);
                                 attachFollowEvents(box);
                             });
                         }
@@ -262,6 +262,7 @@ function initYcTrackingModule(context) {
         document.getElementsByTagName('head')[0].appendChild(script);
     }
 
+    language = language ? language : '';
     YcTracking.trackLogin(trackid);
     trackClickAndRate();
     hookBasketHandlers();

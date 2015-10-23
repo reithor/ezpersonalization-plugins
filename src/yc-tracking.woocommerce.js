@@ -162,6 +162,7 @@ function initYcTrackingModule(context) {
      * @returns {function} Callback function
      */
     function fetchRecommendedProducts(box, url) {
+        var language = ycObject ? ycObject.lang : '';
         return function (response) {
             var xmlHttp,
                 productIds = [];
@@ -219,7 +220,7 @@ function initYcTrackingModule(context) {
                                 });
 
                                 YcTracking.trackRendered(1, renderedIds);
-                                YcTracking.renderRecommendation(box);
+                                YcTracking.renderRecommendation(box, language);
                                 attachFollowEvents(box);
                             });
                         }
