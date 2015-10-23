@@ -41,10 +41,10 @@ function initYcTrackingModule(context) {
             // by default, rating is done when user evaluates product
             form = document.querySelector(YC_ARTICLE_RATING_FORM_SELECTOR);
             if (form) {
-                rating = form.getElementsByTagName('select');
-                if (rating && rating[0].name === 'sVoteStars') {
+                rating = form.querySelector(YC_ARTICLE_RATING_FIELD_SELECTOR);
+                if (rating) {
                     form.addEventListener('submit', function () {
-                        YcTracking.trackRate(1, itemId, rating[0].value * 10, language);
+                        YcTracking.trackRate(1, itemId, rating.value * 10, language);
                     }, false);
                 }
             }
