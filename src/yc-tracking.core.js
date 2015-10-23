@@ -700,6 +700,7 @@ function initYcTrackingCore(context) {
                 return;
             }
 
+            lang = typeof(lang) === 'string' ? lang : '';
             _extractConstants(template.consts, box, lang);
 
             box.products.forEach(function (product) {
