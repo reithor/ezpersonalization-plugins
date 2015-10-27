@@ -148,9 +148,9 @@ class YoochooseSettings
             $url = self::YOOCHOOSE_LICENSE_URL . $customerId . '/plugin/create?recheckType=true&fallbackDesign=true';
             $this->executeCall($url, $body, $customerId, $licenseKey);
             $logger = new WC_Logger();
-            $logger->add('yoochoose.log', 'Plugin registrated successfully');
+            $logger->add('yoochoose.log', 'Plugin registered successfully');
             $this->tossMessages[] = array(
-                'message' => 'Plugin registrated successfully',
+                'message' => 'Plugin registered successfully',
                 'type' => 'success',
             );
         } catch (Exception $ex) {

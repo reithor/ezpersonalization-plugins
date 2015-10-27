@@ -197,7 +197,7 @@ final class Yoochoose
 
         $this->loadPluginTextDomain();
 
-        require_once '/admin/settings.php';
+        require_once __DIR__.'/admin/settings.php';
         YoochooseSettings::run();
 
         add_action('wp_head', array($this, 'insertJsData'));
