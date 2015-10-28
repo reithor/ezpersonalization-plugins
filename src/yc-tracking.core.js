@@ -427,7 +427,7 @@ function initYcTrackingCore(context) {
                 for (prop in YC_CONSTS) {
                     if (YC_CONSTS.hasOwnProperty(prop) && !destination.const.hasOwnProperty(prop)) {
                         if (typeof(YC_CONSTS[prop]) === 'object') {
-                            properyNames = Object.getOwnPropertyNames(source[prop]);
+                            properyNames = Object.getOwnPropertyNames(YC_CONSTS[prop]);
                             if (properyNames.length) {
                                 destination.const[prop] = YC_CONSTS[prop][locale] ? YC_CONSTS[prop][locale] :
                                     YC_CONSTS[prop][language] ? YC_CONSTS[prop][language] :
