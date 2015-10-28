@@ -162,7 +162,8 @@ function initYcTrackingModule(context) {
      * @returns {function} Callback function
      */
     function fetchRecommendedProducts(box, url) {
-        var language = ycObject ? ycObject.lang : '';
+        var ycObject = context['yc_config_object'] ? context['yc_config_object'] : null,
+            language = ycObject ? ycObject.lang : '';
         return function (response) {
             var xmlHttp,
                 productIds = [];
