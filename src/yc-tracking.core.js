@@ -743,6 +743,7 @@ function initYcTrackingCore(context) {
          */
         this.hookSearchingHandler = function (language) {
             var allAttributes = [],
+                yc_debug = this.getParameterByName('yc_debug'),
                 unfiltered,
                 property;
 
@@ -839,13 +840,27 @@ function initYcTrackingCore(context) {
                     _callFetchSearchResults(parameters);
                 }, false);
 
-                newNode.addEventListener('blur', function () {
-                    setTimeout(function () {
-                        elem.view.style.display = 'none';
-                    }, 100);
+                if (!yc_debug) {
+                    newNode.addEventListener('blur', function () {
+                        setTimeout(function () {
+                            elem.view.style.display = 'none';
+                        }, 100);
 
-                }, false);
+                    }, false);
+                }
             });
+        };
+
+        /**
+         * Retrieves query parameter by name
+         * @param {string} name
+         * @returns {string}
+         */
+        this.getParameterByName = function (name) {
+            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                results = regex.exec(location.search);
+            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
         };
 
         /**
