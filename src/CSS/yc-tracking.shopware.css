@@ -7,8 +7,7 @@
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
     margin-top: 10px;
     padding: 8px 0;
-    z-index: 99999;
-    width: 100%;
+    z-index: 999;
 }
 
 .yc-search-result div {
@@ -65,7 +64,11 @@
 
 .yc-search-result .yc-search-title {
     float: left;
-    margin: 0;
+    margin-right: 10px;
+}
+
+.yc-search-result .yc-search-price {
+    float: right;
 }
 
 .yc-search-result-item {

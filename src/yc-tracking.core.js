@@ -317,6 +317,7 @@ function initYcTrackingCore(context) {
                         elem.results = filtered;
                         wrapper.innerHTML = compiled(elem);
                         view.appendChild(wrapper);
+                        _repositionSearchResults(searchNode.searchElement, view);
                         view.style.display = 'block';
                     });
                 }
@@ -441,6 +442,19 @@ function initYcTrackingCore(context) {
                         }
                     }
                 }
+            },
+
+            /**
+             *
+             * @param {object} searchBox
+             * @param {object} searchResults
+             * @private
+             */
+            _repositionSearchResults = function(searchBox, searchResults){
+                var rect = searchBox.getBoundingClientRect();
+                searchResults.style.top = (rect.top + rect.height) + 'px';
+                searchResults.style.left = rect.left + 'px';
+                searchResults.style.minWidth = rect.width + 'px';
             };
 
         /**
@@ -778,7 +792,8 @@ function initYcTrackingCore(context) {
                 newNode.value = null;
                 searchInput.parentNode.replaceChild(newNode, searchInput);
                 elem.searchElement = newNode;
-                newNode.parentNode.appendChild(elem.view);
+                //newNode.parentNode.appendChild(elem.view);
+                document.body.appendChild(elem.view);
 
                 // Create jsonp response handler function for this search box
                 functionName = 'ycSearchResponseHandler' + index;
@@ -791,6 +806,10 @@ function initYcTrackingCore(context) {
                         parameters[property.toLowerCase()] = YC_SEARCH_TEMPLATES[property].amount;
                     }
                 }
+
+                context.addEventListener('resize', function (e) {
+                    _repositionSearchResults(newNode, elem.view);
+                }, false);
 
                 // Hooking new events
                 newNode.addEventListener('keyup', function (e) {
