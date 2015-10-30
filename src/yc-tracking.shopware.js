@@ -124,6 +124,7 @@ function initYcTrackingModule(context) {
             products = products.join();
         }
 
+        url = url.replace('http:', location.protocol);
         for (i = 0; i < boxes.length; i++) {
             tpl = templates[boxes[i].id];
 
