@@ -37,6 +37,27 @@ Web design page can be found in CMS menu.
 <link href="/layout/callisto/css/yc-tracking.css" rel="stylesheet" type="text/css"></link>
 ```
 
+# Item View Page
+
+Add this at the beginning of ItemViewSingleItem template
+Enter your licence key to $_licenceKey
+
+```
+{% $_licenceKey = '1234-12345-12345' %}
+{% $_fullCatPath = $CategoryName[Level1] . "\t" . $CategoryName[Level2] . "\t" . $CategoryName[Level3] . "\t"
+		. $CategoryName[Level4] . "\t" . $CategoryName[Level5] . "\t" . $CategoryName[Level6] %}
+{% $_currentTimestamp = date('c') %}
+{% $_itemPrice = str_replace(',', '.', str_replace('.', '', $BasePrice)) . $Currency %}
+
+{% $_DataToSign = '1&' . $ID . '&' . $_licenceKey . '&categorypath=' . str_replace("\t", '/', trim($_fullCatPath)) . '&image=' . substr($BaseURL4Links, 0, -1)
+		. $MiddleSizeImageURL[1] . '&lang=' . $Lang . '&overridetimestamp=' . $_currentTimestamp . '&price=' . $_itemPrice . '&title=' . $Name[1] . '&url=' . Link_Item($ID) %}
+
+<script>
+	yc_config_object.timestamp = '$_currentTimestamp';
+	yc_config_object.signature = '{% md5($_DataToSign) %}';
+</script>
+```
+
 # Search Suggestion Template Recommendation
 
 Item search settings can be found in Settings > Client > Standard > Item search.
@@ -59,3 +80,4 @@ ITEM: {
         }
     }
 ```
+
