@@ -173,12 +173,14 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
      */
     public function onBackendPostDispatch(Enlight_Event_EventArgs $args)
     {
+        $this->registerCustomModels();
          /**@var $view Enlight_View_Default*/
         $view = $args->getSubject()->View();
          // Add template directory
         $view->addTemplateDir($this->Path() . 'Views/');
         if ($args->getRequest()->getActionName() === 'index') {
            $view->extendsTemplate('backend/plugin/base/header.tpl');
+            $view->assign('ycAdminUrl', YoochooseHelper::YOOCHOOSE_ADMIN_URL);
         }
     }
 
