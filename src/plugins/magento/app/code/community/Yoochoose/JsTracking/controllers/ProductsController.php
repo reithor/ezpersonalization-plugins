@@ -40,6 +40,8 @@ class Yoochoose_JsTracking_ProductsController extends Mage_Core_Controller_Front
         $productIds = $this->getRequest()->getParam('productIds');
 
         $helper = Mage::getModel('catalog/product_media_config');
+        $thumbnailPlaceholder = Mage::getStoreConfig("catalog/placeholder/thumbnail_placeholder");
+        $placeholderFullPath = $helper->getBaseMediaUrl(). '/placeholder/' . $thumbnailPlaceholder;
         $storeUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
         $priceHelper = Mage::helper('core');
         $storeId = Mage::app()->getStore()->getStoreId();
@@ -56,8 +58,9 @@ class Yoochoose_JsTracking_ProductsController extends Mage_Core_Controller_Front
         foreach ($products as &$product) {
             unset($product['stock_item']);
             $product['url_path'] = $storeUrl . $product['url_path'];
-            $product['thumbnail'] = $helper->getMediaUrl($product['thumbnail']);
             $product['price'] = $priceHelper->currency($product['price'], true, false);
+            $product['thumbnail'] = ($product['thumbnail'] ? $helper->getMediaUrl($product['thumbnail']) :
+                ($thumbnailPlaceholder ? $placeholderFullPath : null));
         }
 
         header('Content-Type: application/json;');
