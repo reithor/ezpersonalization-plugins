@@ -55,7 +55,7 @@ var YC_RECO_TEMPLATES = {
             },
             rows: 1,
             columns: 10,
-            scenario: '.personalized',
+            scenario: 'personalized',
             enabled : true
         },
         upselling: {

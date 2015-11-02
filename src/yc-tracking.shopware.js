@@ -162,6 +162,10 @@ function initYcTrackingModule(context) {
                 productIds.push(product.itemId);
             });
 
+            if (productIds.length === 0) {
+                return;
+            }
+
             url += '?productIds=' + productIds.join();
             if (context.XMLHttpRequest) {
                 xmlHttp = new XMLHttpRequest();
