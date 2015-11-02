@@ -294,12 +294,12 @@ final class Yoochoose
         switch ($page) {
             case 'product':
                 $result[] = array(
-                    'id' => 'product_upsell',
+                    'id' => 'upselling',
                     'title' => $boxes['upselling']['title'],
                     'display' => $boxes['upselling']['render'],
                 );
                 $result[] = array(
-                    'id' => 'product_crosssell',
+                    'id' => 'related',
                     'title' => $boxes['related']['title'],
                     'display' => $boxes['related']['render'],
                 );
@@ -307,12 +307,12 @@ final class Yoochoose
                 break;
             case 'home':
                 $result[] = array(
-                    'id' => 'home_bestseller',
+                    'id' => 'bestseller',
                     'title' => $boxes['bestseller']['title'],
                     'display' => $boxes['bestseller']['render'],
                 );
                 $result[] = array(
-                    'id' => 'home_personal',
+                    'id' => 'personal',
                     'title' => $boxes['personal']['title'],
                     'display' => $boxes['personal']['render'],
                 );
@@ -320,7 +320,7 @@ final class Yoochoose
                 break;
             case 'cart':
                 $result[] = array(
-                    'id' => 'basket_crosssell',
+                    'id' => 'crossselling',
                     'title' => $boxes['crossselling']['title'],
                     'display' => $boxes['crossselling']['render'],
                 );
@@ -328,7 +328,7 @@ final class Yoochoose
                 break;
             case 'category':
                 $result[] = array(
-                    'id' => 'category_bestseller',
+                    'id' => 'category_page',
                     'title' => $boxes['category_page']['title'],
                     'display' => $boxes['category_page']['render'],
                 );
