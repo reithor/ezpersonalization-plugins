@@ -222,8 +222,8 @@ function initYcTrackingModule(context) {
             if (boxes[i].display) {
                 tpl = templates[boxes[i].id];
                 if (!tpl) {
-                    document.getElementsByTagName('body')[0].innerHTML += 
-                            '<!-- Yoochoose: Template for ' + boxes[i].id + ' recommendation box is not found! -->';
+                    document.body.appendChild(document.createComment(
+                        'Yoochoose: Template for ' + boxes[i].id + ' recommendation box is not found!'));
                     console.log('Template for ' + boxes[i].id + ' recommendation box is not found!');
                     boxes[i].priority = 999;
                     continue;
@@ -270,6 +270,10 @@ function initYcTrackingModule(context) {
             response.recommendationResponseList.forEach(function (product) {
                 productIds.push(product.itemId);
             });
+
+            if (productIds.length === 0) {
+                return;
+            }
 
             url += productIds.join();
             if (window.XMLHttpRequest) {
