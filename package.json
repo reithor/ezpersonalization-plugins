@@ -11,7 +11,8 @@
     "url": "https://soprex-yc@bitbucket.org/yoochoose/tracking"
   },
   "devDependencies": {
-    "grunt": "~0.4.0",
+    "grunt": "^0.4.0",
+    "grunt-cli": "^0.1.13",
     "grunt-contrib-concat": "~0.1.3",
     "grunt-contrib-jshint": "~0.1.1",
     "grunt-contrib-qunit": "~0.1.1",

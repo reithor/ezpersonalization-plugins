@@ -18,6 +18,7 @@ var YC_RECO_TEMPLATES = {
         target: '#main',
         priority: 0,
         consts: {},
+        enabled: true,
         rows: 2,
         columns: 5,
         scenario: 'cross-rate'
@@ -34,6 +35,7 @@ var YC_RECO_TEMPLATES = {
         target: '#main',
         priority: 0,
         consts: {},
+        enabled: true,
         rows: 2,
         columns: 5,
         scenario: 'cross_sell'
@@ -50,6 +52,7 @@ var YC_RECO_TEMPLATES = {
         target: '#main',
         priority: 0,
         consts: {},
+        enabled: true,
         rows: 2,
         columns: 5,
         scenario: 'personalized'
@@ -66,6 +69,7 @@ var YC_RECO_TEMPLATES = {
         target: '#main',
         priority: 1,
         consts: {},
+        enabled: true,
         rows: 2,
         columns: 5,
         scenario: 'ultimately_bought'
@@ -82,6 +86,7 @@ var YC_RECO_TEMPLATES = {
         target: '#main',
         priority: 1,
         consts: {},
+        enabled: true,
         rows: 2,
         columns: 5,
         scenario: 'landing_page'
@@ -98,6 +103,7 @@ var YC_RECO_TEMPLATES = {
         target: '#main',
         priority: 0,
         consts: {},
+        enabled: true,
         rows: 2,
         columns: 5,
         scenario: 'category_page'
