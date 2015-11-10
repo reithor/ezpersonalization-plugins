@@ -8,10 +8,6 @@ Ext.define('Shopware.apps.Yoochoose.controller.Main', {
         me.control({
             'yoochoose-main-window': {
                 saveForm: me.onSaveForm
-            },
-            'general-settings': {
-                registerNewUser: me.onRegisterNewUser,
-                configureYoochoose: me.onConfigureYoochoose
             }
         });
 
@@ -82,25 +78,6 @@ Ext.define('Shopware.apps.Yoochoose.controller.Main', {
                 Shopware.Notification.createGrowlMessage('Error!', message, 'new message');
             }
         });
-    },
-    onRegisterNewUser: function () {
-        var form = document.createElement('form'),
-            lang = Ext.editorLang.split('_')[0];
-
-            form.method = 'get';
-            form.action = 'https://admin.yoochoose.net/login.html?product=shopware_Direct&lang=' + lang;
-            form.target = '_blank';
-
-            form.submit();
-    },
-    onConfigureYoochoose: function (customerId) {
-        var form = document.createElement('form');
-
-            form.method = 'get';
-            form.action = 'https://admin.yoochoose.net/?customer_id=<customer_id>';
-            form.target = '_blank';
-
-            form.submit();
     }
 });
 //{/block}

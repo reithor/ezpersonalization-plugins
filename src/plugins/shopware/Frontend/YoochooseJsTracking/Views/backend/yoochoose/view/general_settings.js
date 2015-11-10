@@ -22,17 +22,8 @@ Ext.define('Shopware.apps.Yoochoose.view.GeneralSettings', {
 
         me.title = me.snippets.title;
         me.items = me.createForm();
-        me.registerEvents();
 
         me.callParent(arguments);
-    },
-    registerEvents: function () {
-        this.addEvents(
-                'registerNewUser'
-                );
-        this.addEvents(
-                'configureYoochoose'
-                );
     },
     createForm: function () {
         var me = this,
@@ -46,7 +37,10 @@ Ext.define('Shopware.apps.Yoochoose.view.GeneralSettings', {
                 text: 'Click here to register new Yoochoose account',
                 style: 'margin-bottom: 5px',
                 handler: function () {
-                    me.fireEvent('registerNewUser');
+                    var url = yoochooseAdminUrl + 'login.html?product=shopware_Direct&lang=' + Ext.editorLang.split('_')[0],
+                        win = window.open(url, '_blank');
+
+                    win.focus();
                 }
             },
             Ext.create('Ext.form.field.Text', {

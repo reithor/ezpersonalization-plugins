@@ -108,6 +108,10 @@ module.exports = function (grunt) {
             dev_sw5_vojin: {
                 src: wrapModule('shopware', 5),
                 dest: 'c:/xampp/htdocs/v1/907/tracking.js'
+            },
+            dev_oxid_vojin: {
+                src: wrapModule('oxid'),
+                dest: 'c:/xampp/htdocs/v1/908/tracking.js'
             }
         },
         uglify: {
@@ -183,5 +187,8 @@ module.exports = function (grunt) {
     ]);
     grunt.registerTask('build-shopware5-vojin', [
         'concat:dev_sw5_vojin'
+    ]);
+    grunt.registerTask('build-oxid-vojin', [
+        'concat:dev_oxid_vojin'
     ]);
 };

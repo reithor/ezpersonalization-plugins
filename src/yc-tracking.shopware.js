@@ -124,6 +124,7 @@ function initYcTrackingModule(context) {
             products = products.join();
         }
 
+        url = url.replace('http:', location.protocol);
         for (i = 0; i < boxes.length; i++) {
             tpl = templates[boxes[i].id];
 
@@ -160,6 +161,10 @@ function initYcTrackingModule(context) {
             response.recommendationResponseList.forEach(function (product) {
                 productIds.push(product.itemId);
             });
+
+            if (productIds.length === 0) {
+                return;
+            }
 
             url += '?productIds=' + productIds.join();
             if (context.XMLHttpRequest) {

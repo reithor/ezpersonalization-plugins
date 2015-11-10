@@ -7,6 +7,7 @@ class YoochooseHelper
 
     const YOOCHOOSE_CDN_SCRIPT = '//event.yoochoose.net/cdn';
     const AMAZON_CDN_SCRIPT = '//cdn.yoochoose.net';
+    const YOOCHOOSE_ADMIN_URL = '//admin.yoochoose.net/';
 
     /**
      * Fetches yoochoose config data
