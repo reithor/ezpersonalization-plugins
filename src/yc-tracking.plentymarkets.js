@@ -14,23 +14,22 @@ function initYcTrackingModule(context) {
         allBoxes = [];
 
     function getCategory() {
-        var breadcrumbs = document.querySelector(YC_BREADCRUMBS_SELECTOR),
-            crumbs,
+        var breadcrumbs = document.querySelectorAll(YC_BREADCRUMBS_SELECTOR),
             categories = [],
             i = 1;
 
-        if (breadcrumbs) {
-            crumbs = breadcrumbs.getElementsByTagName('a');
-            for (; i < crumbs.length; i++) {
-                categories.push(crumbs[i].text);
-            }
+        for (; breadcrumbs && i < breadcrumbs.length; i++) {
+            categories.push(breadcrumbs[i].text);
         }
 
         return categories.join('/');
     }
 
     function trackClick() {
-        var product = document.getElementsByName(YC_ARTICLE_ID_SELECTOR)[0],
+        var product = document.querySelector(YC_ARTICLE_ID_SELECTOR),
+            ycObject = context['yc_config_object'] ? context['yc_config_object'] : null,
+            timestamp = ycObject ? ycObject.timestamp : null,
+            signature = ycObject ? ycObject.signature : null,
             url = location.href,
             image = '',
             price = '',
@@ -38,39 +37,40 @@ function initYcTrackingModule(context) {
             category = '';
 
         if (currentPage === 'product' && product) {
-            price = document.querySelector(YC_ARTICLE_PRICE_SELECTOR.replace('{id}', product.value)).innerHTML + currency;
-            title = document.querySelector(YC_ARTICLE_TITLE_SELECTOR.replace('{id}', product.value)).innerHTML;
-            image = document.querySelector(YC_ARTICLE_IMAGE_SELECTOR.replace('{id}', product.value)).src;
+            price = document.querySelector(YC_ARTICLE_PRICE_SELECTOR.replace('{id}', product.value))[YC_ARTICLE_PRICE_VALUE] + currency;
+            title = document.querySelector(YC_ARTICLE_TITLE_SELECTOR.replace('{id}', product.value))[YC_ARTICLE_TITLE_VALUE];
+            image = document.querySelector(YC_ARTICLE_IMAGE_SELECTOR.replace('{id}', product.value))[YC_ARTICLE_IMAGE_VALUE];
             category = getCategory();
-            YcTracking.trackClick(1, product.value, category, lang, title, url, image, price);
+            YcTracking.trackClick(1, product[YC_ARTICLE_ID_VALUE], category, lang, title, url, image, price, timestamp, signature);
         }
     }
 
     function hookBasketEvent() {
         var buttons = document.querySelectorAll(YC_ADD_BASKET_BUTTON_SELECTOR),
+            productId,
+            productButton,
             i = 0,
-            category,
+            category = getCategory(),
             hookClickEvent = function (button) {
-                var oldFunction = button.onclick,
-                    productId,
+                var productId,
                     form = button.form;
 
-                productId = form.elements[YC_ARTICLE_ID_SELECTOR].value;
-
-                button.onclick = function (e) {
+                productId = form.querySelector(YC_ARTICLE_ID_SELECTOR)[YC_ARTICLE_ID_VALUE];
+                button.addEventListener('click', function (e) {
                     YcTracking.trackBasket(1, productId, category, lang);
-                    // we want to preserve old behaviour
-                    if (oldFunction) {
-                        oldFunction.call(this, e);
-                    }
-                }
+                }, false);
             };
 
-        if (buttons) {
-            category = getCategory();
-            for (; i < buttons.length; i++) {
-                hookClickEvent(buttons[i]);
-            }
+        for (; buttons && i < buttons.length; i++) {
+            hookClickEvent(buttons[i]);
+        }
+
+        if (currentPage === 'product') {
+            productId = document.querySelector(YC_ARTICLE_ID_SELECTOR)[YC_ARTICLE_ID_VALUE];
+            productButton = document.querySelector(YC_ARTICLE_BASKET_SELECTOR);
+            productButton.addEventListener('click', function (e) {
+                YcTracking.trackBasket(1, productId, category, lang);
+            }, false);
         }
     }
 

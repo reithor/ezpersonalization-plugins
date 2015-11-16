@@ -6,6 +6,11 @@ function initYcTrackingModule(context) {
 
     var YcTracking = context.YcTracking,
         templates = YC_RECO_TEMPLATES,
+        ycObject,
+        currentPage,
+        itemType,
+        script,
+        language,
         requestsSent = 0,
         responsesCount = 0;
     
@@ -28,10 +33,6 @@ function initYcTrackingModule(context) {
 
     function trackClickAndRate() {
         var addToCartForm = document.getElementById('product_addtocart_form'),
-            ycObject = window['yc_config_object'] ? window['yc_config_object'] : null,
-            itemType = ycObject ? ycObject.itemType : null,
-            language = ycObject ? ycObject.language : null,
-            currentPage = ycObject ? ycObject.currentPage : null,
             itemId = ycObject ? ycObject.products : null,
             category = '',
             reviewForm = document.getElementById('review-form');
@@ -76,10 +77,7 @@ function initYcTrackingModule(context) {
     }
 
     function hookBasketHandlers() {
-        var addToCartForm = document.getElementById('product_addtocart_form'),
-            ycObject = window['yc_config_object'] ? window['yc_config_object'] : null,
-            itemType = ycObject ? ycObject.itemType : null,
-            language = ycObject ? ycObject.language : null;
+        var addToCartForm = document.getElementById('product_addtocart_form');
 
         override('setLocation');
         override('setPLocation');
@@ -170,10 +168,7 @@ function initYcTrackingModule(context) {
     }
 
     function trackBuy() {
-        var ycObject = window['yc_config_object'] ? window['yc_config_object'] : null,
-            itemType = ycObject ? ycObject.itemType : null,
-            language = ycObject ? ycObject.language : null,
-            orders = ycObject ? ycObject.orderData : null,
+        var orders = ycObject ? ycObject.orderData : null,
             order, i;
 
         if (orders) {
@@ -194,10 +189,7 @@ function initYcTrackingModule(context) {
     }
 
     function fetchRecommendations() {
-        var ycObject = window['yc_config_object'] ? window['yc_config_object'] : null,
-            itemType = ycObject ? ycObject.itemType : null,
-            boxes = ycObject ? ycObject.boxes : null,
-            currentPage = ycObject ? ycObject.currentPage : null,
+        var boxes = ycObject ? ycObject.boxes : null,
             tpl,
             url = location.origin + Mage.Cookies.path,
             fncName,
@@ -222,8 +214,8 @@ function initYcTrackingModule(context) {
             if (boxes[i].display) {
                 tpl = templates[boxes[i].id];
                 if (!tpl) {
-                    document.getElementsByTagName('body')[0].innerHTML += 
-                            '<!-- Yoochoose: Template for ' + boxes[i].id + ' recommendation box is not found! -->';
+                    document.body.appendChild(document.createComment(
+                        'Yoochoose: Template for ' + boxes[i].id + ' recommendation box is not found!'));
                     console.log('Template for ' + boxes[i].id + ' recommendation box is not found!');
                     boxes[i].priority = 999;
                     continue;
@@ -239,8 +231,7 @@ function initYcTrackingModule(context) {
     }
 
     function trackFollowEvent(product, scenario) {
-        var ycObject = window['yc_config_object'] ? window['yc_config_object'] : null,
-            itemType = ycObject ? ycObject.itemType : null; 
+        var itemType = ycObject ? ycObject.itemType : null;
 
         return function () {
             YcTracking.trackClickRecommended(itemType, product.entity_id, scenario);
@@ -258,9 +249,6 @@ function initYcTrackingModule(context) {
     function fetchRecommendedProducts(box, url) {
         return function (response) {
             var xmlHttp,
-                ycObject = window['yc_config_object'] ? window['yc_config_object'] : null,
-                itemType = ycObject && ycObject.hasOwnProperty('itemType') ? ycObject.itemType : 1,
-                language = ycObject ? ycObject.language : '',
                 productIds = [];
 
             if (!response.hasOwnProperty('recommendationResponseList')) {
@@ -270,6 +258,10 @@ function initYcTrackingModule(context) {
             response.recommendationResponseList.forEach(function (product) {
                 productIds.push(product.itemId);
             });
+
+            if (productIds.length === 0) {
+                return;
+            }
 
             url += productIds.join();
             if (window.XMLHttpRequest) {
@@ -338,22 +330,27 @@ function initYcTrackingModule(context) {
         }
     }
 
-    window.onload = function () {
-        var ycObject = window['yc_config_object'] ? window['yc_config_object'] : null,
-            trackid = ycObject ? ycObject.trackid : null,
-            script;
+    if (!window['Handlebars']) {
+        script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.2/handlebars.min.js';
+        document.head.appendChild(script);
+    }
 
-        if (!window['Handlebars']) {
-            script = document.createElement('script');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.2/handlebars.min.js';
-            document.getElementsByTagName('head')[0].appendChild(script);
-        }
+    context.addEventListener('load', function () {
+        var trackid;
+
+        ycObject = context['yc_config_object'] ? context['yc_config_object'] : null;
+        trackid = ycObject ? ycObject.trackid : null;
+        language = ycObject ? ycObject.language : null;
+        itemType = ycObject ? ycObject.itemType : null;
+        currentPage = ycObject ? ycObject.currentPage : null;
 
         YcTracking.trackLogin(trackid);
         trackClickAndRate();
         hookBasketHandlers();
         hookLogoutHandler(trackid);
         trackBuy();
+        YcTracking.hookSearchingHandler(language);
         fetchRecommendations();
-    };
+    }, false);
 }
