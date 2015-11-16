@@ -9,7 +9,7 @@ use Shopware\Components\YoochooseHelper;
  * http://community.shopware.com/Shopware-4-Grundlagen-der-Plugin-Entwicklung_detail_971_867.html
  *
  * @package Yoochoose Plugin
- * @version 2.0.5
+ * @version 2.0.7
  *
  */
 class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_Components_Plugin_Bootstrap
@@ -57,7 +57,7 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
      */
     public function getVersion()
     {
-        return '2.0.6';
+        return '2.0.7';
     }
 
     /**
