@@ -11,11 +11,12 @@ class Yoochoose_JsTracking_Helper_Data extends Mage_Core_Helper_Abstract
             CURLOPT_HEADER => 0,
             CURLOPT_CUSTOMREQUEST => "POST",
             CURLOPT_RETURNTRANSFER => TRUE,
-            CURLOPT_FOLLOWLOCATION => TRUE,
+//            CURLOPT_FOLLOWLOCATION => TRUE, DO NOT ENABLE ME. CURL has problems with this flag and it is useles here. POST request cannot be followed.
             CURLOPT_TIMEOUT => 10,
             CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
             CURLOPT_USERPWD => "$customerId:$licenceKey",
             CURLOPT_SSL_VERIFYPEER => FALSE,
+            CURLINFO_HEADER_OUT  => TRUE,
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
                 'Content-Length: ' . strlen($bodyString),
@@ -25,7 +26,15 @@ class Yoochoose_JsTracking_Helper_Data extends Mage_Core_Helper_Abstract
 
         $cURL = curl_init();
         curl_setopt_array($cURL, $options);
+
+        Mage::log("Requesting ".$url."...", Zend_Log::INFO, 'yoochoose.log');
+
         $response = curl_exec($cURL);
+
+        Mage::log("Request headers dump:\n ".curl_getinfo($cURL, CURLINFO_HEADER_OUT), Zend_Log::DEBUG, 'yoochoose.log');
+
+        Mage::log("Response body:\n ".$response, Zend_Log::DEBUG, 'yoochoose.log');
+
         $result = json_decode($response, true);
 
         $eno = curl_errno($cURL);
