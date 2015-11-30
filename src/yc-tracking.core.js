@@ -242,9 +242,9 @@ function initYcTrackingCore(context) {
              */
             _executeJsonpCall = function (url) {
                 // recommendations use JSONP call
-                var script = document.createElement('script');
+                var script = GLOBAL.document.createElement('script');
                 script.src = url;
-                document.head.appendChild(script);
+                GLOBAL.document.head.appendChild(script);
             },
 
             /**
@@ -287,7 +287,7 @@ function initYcTrackingCore(context) {
                     searchNode.view.innerHTML = '';
                     searchResults.forEach(function (elem) {
                         var compiled = Handlebars.compile(elem.template.html_template),
-                            wrapper = document.createElement('div'),
+                            wrapper = GLOBAL.document.createElement('div'),
                             filtered = [],
                             view = searchNode.view;
 
@@ -358,8 +358,8 @@ function initYcTrackingCore(context) {
              * @private
              */
             _markAsSelected = function (direction, searchInput, searchText, viewId) {
-                var allElements = document.querySelectorAll('#' + viewId + YC_SEARCH_ALL_RESULTS_SELECTOR),
-                    current = document.querySelector('#' + viewId + YC_SEARCH_SELECTED_SELECTOR),
+                var allElements = GLOBAL.document.querySelectorAll('#' + viewId + YC_SEARCH_ALL_RESULTS_SELECTOR),
+                    current = GLOBAL.document.querySelector('#' + viewId + YC_SEARCH_SELECTED_SELECTOR),
                     next,
                     i = 0;
 
@@ -416,7 +416,7 @@ function initYcTrackingCore(context) {
                                         source[prop][''] ? source[prop][''] : source[prop][properyNames[0]];
                             } else {
                                 destination.const[prop] = '';
-                                console.log('Error: No translation found. Constant "' + prop + '" is an empty object!');
+                                GLOBAL.console.log('Error: No translation found. Constant "' + prop + '" is an empty object!');
                             }
                         } else {
                             destination.const[prop] = source[prop];
@@ -435,7 +435,7 @@ function initYcTrackingCore(context) {
                                         YC_CONSTS[prop][''] ? YC_CONSTS[prop][''] : YC_CONSTS[prop][properyNames[0]];
                             } else {
                                 destination.const[prop] = '';
-                                console.log('Error: No translation found. Constant "' + prop + '" is an empty object!');
+                                GLOBAL.console.log('Error: No translation found. Constant "' + prop + '" is an empty object!');
                             }
                         } else {
                             destination.const[prop] = YC_CONSTS[prop];
@@ -705,17 +705,17 @@ function initYcTrackingCore(context) {
          * @param {string} lang
          */
         this.renderRecommendation = function(box, lang) {
-            var template = box.template,
-                section = template.html_template,
+            var template = box ? box.template : null,
+                section = template ? template.html_template : null,
                 num = 0,
                 compiled,
-                wrapper = document.createElement('div'),
+                wrapper = GLOBAL.document.createElement('div'),
                 rows = [],
                 columns = [],
-                elem = document.querySelector(template.target);
+                elem = template ? GLOBAL.document.querySelector(template.target) : null;
 
-            if (!box.products || !box.products.length || !elem) {
-                return;
+            if (!box || !box.products || !box.products.length || !elem) {
+                return null;
             }
 
             lang = typeof(lang) === 'string' ? lang : '';
@@ -738,6 +738,8 @@ function initYcTrackingCore(context) {
             wrapper.className = 'yc-recommendation-box';
             wrapper.innerHTML = compiled(box);
             elem.appendChild(wrapper);
+
+            return this;
         };
 
         /**
@@ -765,7 +767,7 @@ function initYcTrackingCore(context) {
             });
 
             YC_SEARCH_FIELDS.forEach(function (elem, index) {
-                var searchInput = document.querySelector(elem.target),
+                var searchInput = GLOBAL.document.querySelector(elem.target),
                     newNode,
                     functionName,
                     parameters = {
@@ -782,12 +784,12 @@ function initYcTrackingCore(context) {
 
                 // Check if language code is in correct format
                 if (!language.match(/^[a-z]{2}(\-[a-z]{2})?$/i)) {
-                    console.log('Language code (' + language + ') is not in correct format, see http://www.rfc-editor.org/rfc/bcp/bcp47.txt for more info.');
+                    GLOBAL.console.log('Language code (' + language + ') is not in correct format, see http://www.rfc-editor.org/rfc/bcp/bcp47.txt for more info.');
                     parameters.lang = '';
                 }
 
                 // Creating and appending searchResult div
-                elem.view = document.createElement('div');
+                elem.view = GLOBAL.document.createElement('div');
                 elem.view.id = 'ycSearchResult' + index;
                 elem.view.className = 'yc-search-result';
 
@@ -798,7 +800,7 @@ function initYcTrackingCore(context) {
                 searchInput.parentNode.replaceChild(newNode, searchInput);
                 elem.searchElement = newNode;
                 //newNode.parentNode.appendChild(elem.view);
-                document.body.appendChild(elem.view);
+                GLOBAL.document.body.appendChild(elem.view);
 
                 // Create jsonp response handler function for this search box
                 functionName = 'ycSearchResponseHandler' + index;
@@ -812,7 +814,7 @@ function initYcTrackingCore(context) {
                     }
                 }
 
-                context.addEventListener('resize', function (e) {
+                context.addEventListener('resize', function () {
                     _repositionSearchResults(newNode, elem.view);
                 }, false);
 
@@ -853,6 +855,8 @@ function initYcTrackingCore(context) {
                     }, false);
                 }
             });
+
+            return this;
         };
 
         /**
@@ -876,7 +880,7 @@ function initYcTrackingCore(context) {
         this.extractTemplateVariables = function (template) {
             var variables, result = [];
 
-            variables = template.match(/\{{2,3}([^.\/#{}}]*)\}{2,3}/g);
+            variables = template.match(/\{{2,3}([^.\/#{}]*)\}{2,3}/g);
             if (!variables || variables.length === 0) {
                 return result;
             }

@@ -5,6 +5,7 @@ function initYcTrackingModule(context) {
     'use strict';
 
     var YcTracking = context.YcTracking,
+        document = context.document,
         templates = YC_RECO_TEMPLATES,
         ycObject,
         currentPage,
@@ -52,7 +53,7 @@ function initYcTrackingModule(context) {
             YcTracking.trackClick(itemType, itemId, category, language);
 
             if (reviewForm) {
-                reviewForm.onsubmit = function (e) {
+                reviewForm.onsubmit = function () {
                     var getRatings = function (elements, sub) {
                             for (var i = 0; i < elements.length; i++) {
                                 if (elements[i].checked) {
@@ -82,17 +83,17 @@ function initYcTrackingModule(context) {
         override('setLocation');
         override('setPLocation');
 
-        if (window['addWItemToCart']) {
-            var oldAddWItemToCart = window.addWItemToCart;
-            window.addWItemToCart = function (itemId) {
+        if (context['addWItemToCart']) {
+            var oldAddWItemToCart = context.addWItemToCart;
+            context.addWItemToCart = function (itemId) {
                 YcTracking.trackBasket(itemType, itemId, document.location.pathname, language);
                 oldAddWItemToCart(itemId);
             };
         }
 
-        if (window['addAllWItemsToCart']) {
-            var oldAddAllWItemsToCart = window.addAllWItemsToCart;
-            window.addAllWItemsToCart = function () {
+        if (context['addAllWItemsToCart']) {
+            var oldAddAllWItemsToCart = context.addAllWItemsToCart;
+            context.addAllWItemsToCart = function () {
                 var items, field, i;
                 oldAddAllWItemsToCart();
                 field = document.getElementById('qty');
@@ -113,14 +114,14 @@ function initYcTrackingModule(context) {
             attachSubmitAddToCartForm(addToCartForm);
         }
 
-        if (window['productAddToCartForm']) {
-            attachSubmitAddToCartForm(window['productAddToCartForm'].form);
+        if (context['productAddToCartForm']) {
+            attachSubmitAddToCartForm(context['productAddToCartForm'].form);
         }
 
         function override(func) {
-            if (window[func]) {
-                var oldFunc = window[func];
-                window[func] = function (url) {
+            if (context[func]) {
+                var oldFunc = context[func];
+                context[func] = function (url) {
                     trackBasketFromUrl(url);
                     oldFunc(url);
                 };
@@ -191,7 +192,7 @@ function initYcTrackingModule(context) {
     function fetchRecommendations() {
         var boxes = ycObject ? ycObject.boxes : null,
             tpl,
-            url = location.origin + Mage.Cookies.path,
+            url = document.location.origin + (Mage ? Mage.Cookies.path : ''),
             fncName,
             category = null;
 
@@ -199,7 +200,7 @@ function initYcTrackingModule(context) {
             return;
         }
 
-        url = (url.endsWith('/') ? url.slice(0, -1) : url) + '/yoochoose/products/index/?productIds=';
+        url = ((url[url.length - 1] === '/') ? url.slice(0, -1) : url) + '/yoochoose/products/index/?productIds=';
         if (currentPage === 'product' || currentPage === 'category') {
             category = categoryFromBreadcrumb();
         } else if (currentPage === 'cart') {
@@ -216,7 +217,7 @@ function initYcTrackingModule(context) {
                 if (!tpl) {
                     document.body.appendChild(document.createComment(
                         'Yoochoose: Template for ' + boxes[i].id + ' recommendation box is not found!'));
-                    console.log('Template for ' + boxes[i].id + ' recommendation box is not found!');
+                    context.console.log('Template for ' + boxes[i].id + ' recommendation box is not found!');
                     boxes[i].priority = 999;
                     continue;
                 }
@@ -224,7 +225,7 @@ function initYcTrackingModule(context) {
                 boxes[i].template = tpl;
                 boxes[i].priority = tpl.priority;
                 fncName = 'YcTracking_jsonpCallback' + boxes[i].id;
-                window[fncName] = fetchRecommendedProducts(boxes[i], url);
+                context[fncName] = fetchRecommendedProducts(boxes[i], url);
                 YcTracking.callFetchRecommendedProducts(itemType, tpl.scenario, tpl.rows * tpl.columns, ycObject.products, category, fncName);
             }
         }
@@ -264,7 +265,7 @@ function initYcTrackingModule(context) {
             }
 
             url += productIds.join();
-            if (window.XMLHttpRequest) {
+            if (context.XMLHttpRequest) {
                 xmlHttp = new XMLHttpRequest();
             } else {
                 xmlHttp = new ActiveXObject('Microsoft.XMLHTTP');
@@ -330,7 +331,7 @@ function initYcTrackingModule(context) {
         }
     }
 
-    if (!window['Handlebars']) {
+    if (!context['Handlebars']) {
         script = document.createElement('script');
         script.src = 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.2/handlebars.min.js';
         document.head.appendChild(script);
