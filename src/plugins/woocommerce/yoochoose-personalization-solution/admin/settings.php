@@ -226,15 +226,16 @@ class YoochooseSettings
         $response = curl_exec($cURL);
         $result = json_decode($response, true);
 
+        $status = curl_getinfo($cURL, CURLINFO_HTTP_CODE);
+        $header = curl_getinfo($cURL, CURLINFO_HEADER_OUT);
+        self::log($url, $status, $response, $header);
+
         $eno = curl_errno($cURL);
         if ($eno && $eno != 22) {
             $msg = 'I/O error requesting [' . $url . ']. Code: ' . $eno . ". " . curl_error($cURL);
             throw new Exception($msg);
         }
 
-        $status = curl_getinfo($cURL, CURLINFO_HTTP_CODE);
-        $header = curl_getinfo($cURL, CURLINFO_HEADER_OUT);
-        self::log($url, $status, $response, $header);
         switch ($status) {
             case 200:
                 break;

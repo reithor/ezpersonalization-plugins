@@ -107,15 +107,16 @@ class Yoochoosemodel extends oxUBase
         $response = curl_exec($cURL);
         $result = json_decode($response, true);
 
+        $headers = curl_getinfo($cURL, CURLINFO_HEADER_OUT);
+        $status = curl_getinfo($cURL, CURLINFO_HTTP_CODE);
+        self::log($url,$status, $response, $headers);
+
         $eno = curl_errno($cURL);
         if ($eno && $eno != 22) {
             $msg = 'I/O error requesting [' . $url . ']. Code: ' . $eno . ". " . curl_error($cURL);
             throw new Exception($msg);
         }
 
-        $headers = curl_getinfo($cURL, CURLINFO_HEADER_OUT);
-        $status = curl_getinfo($cURL, CURLINFO_HTTP_CODE);
-        self::log($url,$status, $response, $headers);
         switch ($status) {
             case 200:
                 break;
