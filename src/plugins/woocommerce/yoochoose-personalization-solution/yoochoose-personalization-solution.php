@@ -4,7 +4,7 @@
  * Plugin Name: Yoochoose
  * Plugin URI: http://www.yoochoose.net/
  * Description: An e-commerce tool-kit that tracks activity on the shop and creates recommendation boxes based on that data
- * Version: 1.0.0
+ * Version: 1.1.0
  * Author: Yoochoose
  * Author URI: http://www.yoochoose.net/
  *

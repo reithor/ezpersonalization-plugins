@@ -26,8 +26,13 @@ class Yoochoose_JsTracking_Helper_Data extends Mage_Core_Helper_Abstract
 
         $cURL = curl_init();
         curl_setopt_array($cURL, $options);
+
         $response = curl_exec($cURL);
         $result = json_decode($response, true);
+
+        $headers = curl_getinfo($cURL, CURLINFO_HEADER_OUT);
+        $status = curl_getinfo($cURL, CURLINFO_HTTP_CODE);
+        Mage::helper('yoochoose_jstracking/logger')->log($url, $status, $response, $headers);
 
         $eno = curl_errno($cURL);
         if ($eno && $eno != 22) {
@@ -35,9 +40,6 @@ class Yoochoose_JsTracking_Helper_Data extends Mage_Core_Helper_Abstract
             throw new Exception($msg);
         }
 
-        $headers = curl_getinfo($cURL, CURLINFO_HEADER_OUT);
-        $status = curl_getinfo($cURL, CURLINFO_HTTP_CODE);
-        Mage::helper('yoochoose_jstracking/logger')->log($url, $status, $response, $headers);
         switch ($status) {
             case 200:
                 break;
