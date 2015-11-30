@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="../qunit/qunit.css" rel="stylesheet" type="text/css"/>
+    <script src="../qunit/qunit.js"></script>
+
+    <script src="../../dist/yc-tracking.js"></script>
+
+    <script type="text/javascript">
+        var Mage = {
+            Cookies: {
+                path: '/'
+            }
+        };
+        var yc_config_object = {
+            "trackid": "147",
+            "orderData": null,
+            "itemType": "1",
+            "language": "en-US",
+            "currentPage": "cart",
+            "products": "380,549",
+            "boxes": [{
+                "id": "crossselling",
+                "title": "You may also be interested in the following products",
+                "display": true
+            }]
+        };
+    </script>
+</head>
+<body>
+
+<div class="magento-test-structure" style="display: none;">
+    <div class="main"></div>
+</div>
+
+<h1 id="qunit-header">YC tracking Unit Tests</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture"></div>
+<script>
+    if (!String.prototype.startsWith) {
+        String.prototype.startsWith = function(searchString, position) {
+            position = position || 0;
+            return this.indexOf(searchString, position) === position;
+        };
+    }
+
+    (function (open) {
+        XMLHttpRequest.prototype.open = function (method, url, async, user, pass) {
+            if (url.startsWith(location.origin + '/yoochoose/')) {
+                url = location.origin + '/yoochoose/js-tracking/test/magento/plugin.response.mock.json';
+            }
+            open.call(this, method, url, async, user, pass);
+        };
+    })(XMLHttpRequest.prototype.open);
+    (function () {
+
+        function randomInt(max) {
+            max = max || 1000;
+            return parseInt(Math.random() * max);
+        }
+
+        module('Shop Cart Page');
+
+        window.addEventListener('load', function () {
+
+            test('rating tracking hooked', function () {
+                var func = document.getElementById('review-form').onsubmit;
+                ok(typeof(func) === "function", 'Rating tracking is hooked!');
+            });
+
+            test('rating tracking hooked', function () {
+                var func = document.getElementById('review-form').onsubmit;
+                ok(typeof(func) === "function", 'Rating tracking is hooked!');
+            });
+
+        });
+
+    }());
+</script>
+</body>
+</html>
