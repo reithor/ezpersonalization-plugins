@@ -1,6 +1,13 @@
 # JS-Tracking Documentation
 For specific module use README.md files in module's directory.
 
+## Log files can be found in
+
+* Magento : /var/log/yoochoose.log
+* Shopware: /logs/yoochoose.log
+* OXID: /log/yoochoose.log
+* WooCommerce: /wp-content/uploads/wc-logs/yoochoose.log
+
 ## Handlebars template property names
 * rows - array of columns
 * columns - array of products
