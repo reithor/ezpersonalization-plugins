@@ -36,7 +36,6 @@ class Yoochoose_JsTracking_Model_Api2_YCProducts_Rest_Admin_V1 extends Yoochoose
         }
 
         foreach ($collection as $product) {
-            $product->getMediaGalleryImages();
             $id = $product->getId();
             $manufacturer = $product->getAttributeText('manufacturer');
             $temp = array(
