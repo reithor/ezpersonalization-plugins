@@ -54,29 +54,24 @@ class Yoochoosemodel extends oxUBase
             return false;
         }
 
-        try {
-            $body = array(
-                'base'     => array(
-                    'type'      => 'OXID',
-                    'pluginId'  => $param['ycPluginId'],
-                    'endpoint'  => $param['ycEndpoint'],
-                    'appKey'    => $customerId,
-                    'appSecret' => md5($licenseKey),
-                ),
-                'frontend' => array(
-                    'design' => $view->getActiveTheme(),
-                ),
-                'search'   => array(
-                    'design' => $view->getActiveTheme(),
-                ),
-            );
+        $body = array(
+            'base'     => array(
+                'type'      => 'OXID',
+                'pluginId'  => $param['ycPluginId'],
+                'endpoint'  => $param['ycEndpoint'],
+                'appKey'    => $customerId,
+                'appSecret' => md5($licenseKey),
+            ),
+            'frontend' => array(
+                'design' => $view->getActiveTheme(),
+            ),
+            'search'   => array(
+                'design' => $view->getActiveTheme(),
+            ),
+        );
 
-            $url = self::YOOCHOOSE_LICENSE_URL . $customerId . '/plugin/update?createIfNeeded=true&fallbackDesign=true';
-
-            $this->getHttpPage($url, $body, $customerId, $licenseKey);
-        } catch (Exception $ex) {
-            return false;
-        }
+        $url = self::YOOCHOOSE_LICENSE_URL . $customerId . '/plugin/update?createIfNeeded=true&fallbackDesign=true';
+        $this->getHttpPage($url, $body, $customerId, $licenseKey);
 
         return true;
     }
@@ -112,11 +107,14 @@ class Yoochoosemodel extends oxUBase
         self::log($url,$status, $response, $headers);
 
         $eno = curl_errno($cURL);
+
         if ($eno && $eno != 22) {
             $msg = 'I/O error requesting [' . $url . ']. Code: ' . $eno . ". " . curl_error($cURL);
+            curl_close($cURL);
             throw new Exception($msg);
         }
 
+        curl_close($cURL);
         switch ($status) {
             case 200:
                 break;
@@ -128,8 +126,6 @@ class Yoochoosemodel extends oxUBase
                 $msg = $result['faultMessage'] . ' With status code: ' . $status;
                 throw new Exception($msg);
         }
-
-        curl_close($cURL);
 
         return $result;
     }

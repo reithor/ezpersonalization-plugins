@@ -29,20 +29,20 @@ class Yoochoose extends Module_Config
         $this->_aViewData["obj"] = $this->getYoochooseRegistration();
 
         $performanceOptions = array(
-            'YOOCHOOSE_SCRIPT_CDN' => 1,
+            'YOOCHOOSE_SCRIPT_CDN'    => 1,
             'YOOCHOOSE_SCRIPT_SERVER' => 0,
         );
 
         $this->_aViewData['performanceOptions'] = $performanceOptions;
         $vars = array(
             'performance' => 'ycPerformance',
-            'customerId' => 'ycCustomerId',
-            'licenseKey' => 'ycLicenseKey',
-            'pluginId' => 'ycPluginId',
-            'endpoint' => 'ycEndpoint',
-            'design' => 'ycDesign',
-            'itemType' => 'ycItemType',
-            'overwrite' => 'ycOverwrite',
+            'customerId'  => 'ycCustomerId',
+            'licenseKey'  => 'ycLicenseKey',
+            'pluginId'    => 'ycPluginId',
+            'endpoint'    => 'ycEndpoint',
+            'design'      => 'ycDesign',
+            'itemType'    => 'ycItemType',
+            'overwrite'   => 'ycOverwrite',
             'logSeverity' => 'ycLogSeverity',
         );
 
@@ -78,37 +78,44 @@ class Yoochoose extends Module_Config
 
     public function saveConfigForm()
     {
-        $config = $this->getConfig();
-        $this->_sModuleId = $this->getEditObjectId();
-        $sModuleId = $this->_getModuleForConfigVars();
-        /** @var Yoochoosemodel $model */
-        $model = oxNew('yoochoosemodel');
-        $validation = $this->validation();
-        $parameters = $config->getRequestParameter('confstrs');
+        try {
+            $config = $this->getConfig();
+            $this->_sModuleId = $this->getEditObjectId();
+            $sModuleId = $this->_getModuleForConfigVars();
+            /** @var Yoochoosemodel $model */
+            $model = oxNew('yoochoosemodel');
+            $validation = $this->validation();
+            $parameters = $config->getRequestParameter('confstrs');
 
-        if (sizeof($validation) > 0) {
-            foreach ($validation as $key => $value) {
-                $this->_aViewData['errors'][$key] = $value;
+            if (sizeof($validation) > 0) {
+                foreach ($validation as $key => $value) {
+                    $this->_aViewData['errors'][$key] = $value;
+                }
+
+                return;
             }
 
-            return;
-        }
-
-        foreach ($parameters as $key => $val) {
-            $serializedValue = $this->_serializeConfVar('str', $key, trim($val));
-            if ($key != 'ycCustomerId' && $key != 'ycLicenseKey') {
-                $config->saveShopConfVar('str', $key, $serializedValue, $config->getShopId(), $sModuleId);
-            } else {
-                foreach (oxRegistry::getConfig()->getShopIds() as $shopId) {
-                    $config->saveShopConfVar('str', $key, $serializedValue, $shopId, $sModuleId);
+            foreach ($parameters as $key => $val) {
+                $serializedValue = $this->_serializeConfVar('str', $key, trim($val));
+                if ($key != 'ycCustomerId' && $key != 'ycLicenseKey') {
+                    $config->saveShopConfVar('str', $key, $serializedValue, $config->getShopId(), $sModuleId);
+                } else {
+                    foreach (oxRegistry::getConfig()->getShopIds() as $shopId) {
+                        $config->saveShopConfVar('str', $key, $serializedValue, $shopId, $sModuleId);
+                    }
                 }
             }
-        }
 
-        if ($model->adminSystemConfigChangedSectionYoochoose()) {
-            $this->_aViewData['ycSuccessMessage'] = true;
-        } else {
+
+            if ($model->adminSystemConfigChangedSectionYoochoose()) {
+                $this->_aViewData['ycSuccessMessage'] = true;
+            } else {
+                $this->_aViewData['ycErrorMessage'] = true;
+            }
+        } catch (Exception $exc) {
             $this->_aViewData['ycErrorMessage'] = true;
+            $this->_aViewData['ycErrorMessageText'] = $exc->getMessage();
+
         }
     }
 
@@ -118,6 +125,7 @@ class Yoochoose extends Module_Config
         $user = $this->getUser();
         $conf = $this->getConfig();
         $oLangObj = oxNew('oxLang');
+        $languagesArray = $oLangObj->getLanguageArray();
 
         $model = oxNew('yoochoosemodel');
 
@@ -125,7 +133,7 @@ class Yoochoose extends Module_Config
         $data['account.lastName'] = $data['billing.lastName'] = $user->oxuser__oxlname->value;
         $data['account.email'] = $data['billing.email'] = $user->oxuser__oxusername->value;
         $data['booking.website'] = $conf->getShopUrl();
-        $data['booking.lang'] = $oLangObj->getLanguageArray()[$conf->getConfigParam('ycLanguage')]->abbr;
+        $data['booking.lang'] = $languagesArray[$conf->getConfigParam('ycLanguage')]->abbr;
         $data['billing.countryCode'] = $model->getCountryCode()->fields['OXISOALPHA2'];
         $data['billing.company'] = $user->oxuser__oxcompany->value;
         $data['billing.zip'] = $user->oxuser__oxzip->value;
@@ -137,6 +145,7 @@ class Yoochoose extends Module_Config
     public function getYoochooseLink()
     {
         $oLangObj = oxNew('oxviewconfig');
+
         return Ycfrontmodel::YOOCHOOSE_ADMIN_URL . 'login.html?product=oxid_Direct&lang=' . $oLangObj->getActLanguageAbbr();
     }
 

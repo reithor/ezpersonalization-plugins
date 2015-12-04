@@ -69,11 +69,14 @@
 </form>
 
 <div id="ycMessages">
-    [{if $ycSuccessMessage }]
+    [{if isset($ycSuccessMessage) }]
         <h2 style="color: forestgreen;">[{ oxmultilang ident="YOOCHOOSE_SUCCESS" }]</h2>
     [{/if}]
-    [{if $ycErrorMessage }]
+    [{if isset($ycErrorMessage) }]
         <h2 style="color: firebrick;">[{ oxmultilang ident="YOOCHOOSE_ERROR" }]</h2>
+        [{if isset($ycErrorMessageText) }]
+            <h2 style="color: firebrick;">[{$ycErrorMessageText}]</h2>
+        [{/if}]
     [{/if}]
 </div>
 
@@ -176,7 +179,7 @@
                             <input type="number" class="editinput js-oxValidate js-oxValidate_notEmpty" size="6" min="0" name="confstrs[ycItemType]" value="[{$itemType}]" required>
 
                             [{foreach from=$errors key=k item=t}]
-                            [{ if $k=='ycItemType'}][{$t}][{/if}]
+                            [{if $k=='ycItemType'}][{$t}][{/if}]
                             [{/foreach}]
                             <br />
                             <small>[{ oxmultilang ident="YOOCHOOSE_TYPEID_TIP1" }]
@@ -190,9 +193,9 @@
                         </td>
                         <td class="edittext">
                             <select name="confstrs[ycLogSeverity]">
-                                <option value="1" [{ if $logSeverity == 1}]SELECTED[{/if}]>[{ oxmultilang
+                                <option value="1" [{if $logSeverity == 1}]SELECTED[{/if}]>[{ oxmultilang
                                     ident="YOOCHOOSE_CONFIG_LOG_INFO" }]</option>
-                                <option value="2" [{ if $logSeverity == 2}]SELECTED[{/if}]>[{ oxmultilang
+                                <option value="2" [{if $logSeverity == 2}]SELECTED[{/if}]>[{ oxmultilang
                                     ident="YOOCHOOSE_CONFIG_LOG_DEBUG" }]</option>
                             </select>
                         </td>
@@ -230,7 +233,7 @@
 
                         <select name="confstrs[ycPerformance]" class="saveinnewlanginput">
                             [{foreach from=$performanceOptions key=key item=val}]
-                            <option value="[{ $val }]" [{ if $val==$performance}]SELECTED[{/if}]>[{ oxmultilang
+                            <option value="[{ $val }]" [{if $val==$performance}]SELECTED[{/if}]>[{ oxmultilang
                                 ident=$key }]
                             </option>
                             [{/foreach}]
@@ -247,7 +250,7 @@
                         <input type="text" class="editinput" size="50" name="confstrs[ycOverwrite]"
                                value="[{$overwrite}]">
                         [{foreach from=$errors key=k item=t}]
-                        [{ if $k=='ycOverwrite'}][{$t}][{/if}]
+                        [{if $k=='ycOverwrite'}][{$t}][{/if}]
                         [{/foreach}]
                         <br />
                         <small><span style="color: firebrick;">[{ oxmultilang ident="YOOCHOOSE_ATTENTION" }]</span>[{ oxmultilang ident="YOOCHOOSE_OVERWRITE_TIP1" }]
