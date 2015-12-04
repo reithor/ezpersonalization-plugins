@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="../qunit/qunit.css" rel="stylesheet" type="text/css"/>
+    <script src="../qunit/qunit.js"></script>
+
+    <script src="../../dist/yc-tracking.js"></script>
+
+    <script type="text/javascript">
+        var yc_articleId = '';
+        var yc_config_object = {
+            "trackLogout": false,
+            "lang": "en-GB",
+            "trackid": 0,
+            "currentPage": "category",
+            "boxes": [{"id": "category_page"}]
+        };
+        yc_config_object.url = 'http://shopware5.dev.soprex.com/yoochoose';
+    </script>
+</head>
+<body>
+
+<div class="shopware-test-structure" style="display: none;">
+    <div class="main">
+        <ul class="breadcrumb--list" role="menu">
+            <li class="breadcrumb--entry" role="menuitem" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                <a class="breadcrumb--link" href="http://shopware5.dev.soprex.com/kochlust-und-provence/" title="Kochlust &amp; Provence" itemprop="url">
+                    <span class="breadcrumb--title" itemprop="title">Kochlust &amp; Provence</span>
+                </a>
+            </li>
+            <li class="breadcrumb--separator">
+                <i class="icon--arrow-right"></i>
+            </li>
+            <li class="breadcrumb--entry" role="menuitem" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                <a class="breadcrumb--link" href="http://shopware5.dev.soprex.com/kochlust-und-provence/trinken/" title="Trinken" itemprop="url">
+                    <span class="breadcrumb--title" itemprop="title">Trinken</span>
+                </a>
+            </li>
+            <li class="breadcrumb--separator">
+                <i class="icon--arrow-right"></i>
+            </li>
+            <li class="breadcrumb--entry is--active" role="menuitem" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                <a class="breadcrumb--link" href="http://shopware5.dev.soprex.com/kochlust-und-provence/trinken/kaffee/" title="Kaffee" itemprop="url">
+                    <span class="breadcrumb--title" itemprop="title">Kaffee</span>
+                </a>
+            </li>
+        </ul>
+        <div class="content listing--content"></div>
+    </div>
+
+</div>
+
+<h1 id="qunit-header">YC tracking Unit Tests</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture"></div>
+<script>
+    (function (open) {
+        XMLHttpRequest.prototype.open = function (method, url, async, user, pass) {
+            if (url.indexOf(location.origin + '/yoochoose/') === 0) {
+                url = location.origin + '/yoochoose/js-tracking/test/shopware/plugin.response.mock.json';
+            }
+            open.call(this, method, url, async, user, pass);
+        };
+    })(XMLHttpRequest.prototype.open);
+
+    (function () {
+        module('Shop Category Page');
+    }());
+</script>
+</body>
+</html>

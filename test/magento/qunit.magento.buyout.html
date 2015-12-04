@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="../qunit/qunit.css" rel="stylesheet" type="text/css"/>
+    <script src="../qunit/qunit.js"></script>
+
+    <script src="../../dist/yc-tracking.js"></script>
+
+    <script type="text/javascript">
+        var Mage = {
+            Cookies: {
+                path: '/'
+            }
+        };
+        var yc_config_object = {
+            "trackid": "148",
+            "orderData": [
+                {
+                    "id": "421",
+                    "price": "210.0000",
+                    "quantity": "1.0000",
+                    "currency": "EUR"
+                },
+                {
+                    "id": "445",
+                    "price": "650.0000",
+                    "quantity": "2.0000",
+                    "currency": "EUR"
+                }
+            ],
+            "itemType": "1",
+            "language": "en-US",
+            "currentPage": false,
+            "products": "",
+            "boxes": false
+        };
+    </script>
+</head>
+<body>
+
+<div class="magento-test-structure" style="display: none;">
+    <div class="main"></div>
+</div>
+
+<h1 id="qunit-header">YC tracking Unit Tests</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture"></div>
+<script>
+    (function () {
+        module('Shop Cart Page');
+    })();
+</script>
+</body>
+</html>

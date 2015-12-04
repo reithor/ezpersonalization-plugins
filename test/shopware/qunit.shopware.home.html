@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="../qunit/qunit.css" rel="stylesheet" type="text/css"/>
+    <script src="../qunit/qunit.js"></script>
+
+    <script src="../../dist/yc-tracking.js"></script>
+
+    <script type="text/javascript">
+        var yc_articleId = '';
+        var yc_config_object = {
+            "trackLogout": false,
+            "lang": "en-GB",
+            "trackid": 0,
+            "currentPage": "home",
+            "boxes": [{"id": "personal"}, {"id": "bestseller"}]
+        };
+        yc_config_object.url = 'http://shopware5.dev.soprex.com/yoochoose';
+    </script>
+</head>
+<body>
+
+<div class="shopware-test-structure" style="display: none;">
+    <div class="content--wrapper"></div>
+</div>
+
+<h1 id="qunit-header">YC tracking Unit Tests</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture"></div>
+<script>
+
+    (function (open) {
+        XMLHttpRequest.prototype.open = function (method, url, async, user, pass) {
+            if (url.indexOf(location.origin + '/yoochoose/') === 0) {
+                url = location.origin + '/yoochoose/js-tracking/test/shopware/plugin.response.mock.json';
+            }
+
+            open.call(this, method, url, async, user, pass);
+        };
+    })(XMLHttpRequest.prototype.open);
+
+    (function () {
+        function randomInt(max) {
+            max = max || 1000;
+            return parseInt(Math.random() * max);
+        }
+
+        yc_config_object.trackid = randomInt(50) + 100;
+        module('Shop Home Page');
+
+        window.addEventListener('load', function () {
+
+        });
+
+    }());
+</script>
+</body>
+</html>

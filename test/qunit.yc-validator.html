@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="qunit/qunit.css" rel="stylesheet" type="text/css"/>
+    <script src="qunit/qunit.js"></script>
+
+    <script src="../dist/yc-tracking.js"></script>
+</head>
+<body>
+<h1 id="qunit-header">YC Validator Unit Tests</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture"></div>
+<script>
+    (function () {
+
+        module('Public API');
+
+        test('validate int', function () {
+            equal(YcValidator.validateInt(0), true);
+            equal(YcValidator.validateInt('0'), true);
+            equal(YcValidator.validateInt(1), true);
+            equal(YcValidator.validateInt('1'), true);
+            equal(YcValidator.validateInt(-1), true);
+            equal(YcValidator.validateInt('-1'), true);
+            equal(YcValidator.validateInt(1345676654), true);
+            equal(YcValidator.validateInt('1345676654'), true);
+            equal(YcValidator.validateInt(-1345676654), true);
+            equal(YcValidator.validateInt('-1345676654'), true);
+            equal(YcValidator.validateInt(12.2), false);
+            equal(YcValidator.validateInt(-1.1), false);
+            equal(YcValidator.validateInt('-1.1'), false);
+            equal(YcValidator.validateInt(-0.00002), false);
+            equal(YcValidator.validateInt(), false);
+            equal(YcValidator.validateInt('O'), false);
+            equal(YcValidator.validateInt('sdfg'), false);
+        });
+
+        test('validate float', function () {
+            equal(YcValidator.validateFloat(0), true);
+            equal(YcValidator.validateFloat('0'), true);
+            equal(YcValidator.validateFloat(1), true);
+            equal(YcValidator.validateFloat('1'), true);
+            equal(YcValidator.validateFloat(-1), true);
+            equal(YcValidator.validateFloat('-1'), true);
+            equal(YcValidator.validateFloat(1345676654), true);
+            equal(YcValidator.validateFloat('1345676654'), true);
+            equal(YcValidator.validateFloat(-1345676654), true);
+            equal(YcValidator.validateFloat('-1345676654'), true);
+            equal(YcValidator.validateFloat(0.0), true);
+            equal(YcValidator.validateFloat('0.0'), true);
+            equal(YcValidator.validateFloat(1.32), true);
+            equal(YcValidator.validateFloat('1.32'), true);
+            equal(YcValidator.validateFloat(.32), true);
+            equal(YcValidator.validateFloat('.32'), true);
+            equal(YcValidator.validateFloat(-1.32), true);
+            equal(YcValidator.validateFloat('-1.32'), true);
+            equal(YcValidator.validateFloat(-.32), true);
+            equal(YcValidator.validateFloat('-.32'), true);
+            equal(YcValidator.validateFloat(13456.76654), true);
+            equal(YcValidator.validateFloat('13456.76654'), true);
+            equal(YcValidator.validateFloat(-13456.76654), true);
+            equal(YcValidator.validateFloat('-13456.76654'), true);
+            equal(YcValidator.validateFloat(), false);
+            equal(YcValidator.validateFloat('O'), false);
+            equal(YcValidator.validateFloat('sdfg'), false);
+        });
+    }());
+</script>
+</body>
+</html>
