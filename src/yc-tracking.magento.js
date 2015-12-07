@@ -310,7 +310,7 @@ function initYcTrackingModule(context) {
                                 });
 
                                 YcTracking.trackRendered(itemType, renderedIds);
-                                YcTracking.renderRecommendation(box, language, trackFollowEvent);
+                                YcTracking.renderRecommendation(box, language, trackFollowEvent, 'url_path');
                             });
                         }
                     }

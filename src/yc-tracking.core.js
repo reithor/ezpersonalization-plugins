@@ -704,8 +704,9 @@ function initYcTrackingCore(context) {
          * @param {object} box
          * @param {string} lang
          * @param {function} trackFunction
+         * @param {string} linkProperty
          */
-        this.renderRecommendation = function(box, lang, trackFunction) {
+        this.renderRecommendation = function(box, lang, trackFunction, linkProperty) {
             var template = box ? box.template : null,
                 section = template ? template.html_template : null,
                 num = 0,
@@ -740,8 +741,9 @@ function initYcTrackingCore(context) {
             wrapper.innerHTML = compiled(box);
             elem.appendChild(wrapper);
 
+            linkProperty = (linkProperty ? linkProperty : 'link');
             box.products.forEach(function (product) {
-                var myTags = GLOBAL.document.querySelectorAll('a[href="' + product.link + '"]'),
+                var myTags = wrapper.querySelectorAll('a[href="' + product[linkProperty] + '"]'),
                     i;
 
                 for (i = 0; i < myTags.length; i++) {
