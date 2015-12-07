@@ -266,7 +266,7 @@ function initYcTrackingModule(context) {
                     });
 
                     YcTracking.trackRendered(1, renderedHandles, box.template.scenario);
-                    YcTracking.renderRecommendation(box, lang, trackFollowEvent);
+                    YcTracking.renderRecommendation(box, lang, trackFollowEvent, 'url');
                 });
             }
         };
