@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="qunit/qunit.css" rel="stylesheet" type="text/css"/>
+    <script src="qunit/qunit.js"></script>
+
+    <script src="../dist/yc-tracking.js"></script>
+</head>
+<body>
+<h1 id="qunit-header">YC tracking Unit Tests</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture"></div>
+<script>
+
+    (function () {
+
+        function randomFloat() {
+            return parseFloat((Math.random() * 100).toFixed(2));
+        }
+
+        function randomInt(max) {
+            max = max || 1000;
+            return parseInt(Math.random() * max);
+        }
+
+        function randomText(max) {
+            max = max || 6;
+            return ((Math.random() * (Math.pow(16, max) - 1)) | 0).toString(16);
+        }
+
+
+
+        module('Public API');
+
+        test('private function call', function () {
+            equal(YcTracking._executeEventCall, undefined, '_executeEventCall is exposed publicly!');
+        });
+
+        test('private variable', function () {
+            equal(YcTracking.customerId, undefined, 'customerId is exposed publicly!');
+        });
+
+        test('trackClick call', function () {
+            equal(YcTracking, YcTracking.trackClick(1, randomInt(), randomText() + '/' + randomText(), 'en'), 'trackClick not called properly.');
+        });
+
+        test('trackRate call', function () {
+            equal(YcTracking, YcTracking.trackRate(1, randomInt(), randomInt(100), 'en'), 'trackRate not called properly.');
+        });
+
+        test('trackBasket call', function () {
+            equal(YcTracking, YcTracking.trackBasket(1, randomInt(), randomText() + '/' + randomText(), 'en'), 'trackBasket not called properly.');
+        });
+
+        test('trackBuy call', function () {
+            equal(YcTracking, YcTracking.trackBuy(1, randomInt(), randomInt(), randomFloat(), 'EUR', 'en'), 'trackBuy not called properly.');
+        });
+
+        test('trackLogin call', function () {
+            equal(YcTracking, YcTracking.trackLogin(randomText(12)), 'trackLogin not called properly.');
+        });
+
+        test('trackRendered call', function () {
+            equal(YcTracking, YcTracking.trackRendered(1, [randomInt(), randomInt(), randomInt()]), 'trackRendered not called properly.');
+        });
+
+        test('trackClickRecommended call', function () {
+            equal(YcTracking, YcTracking.trackClickRecommended(1, randomInt(), 'SCENARIO with & chars'), 'trackClickRecommended not called properly.');
+        });
+
+        test('trackConsume call', function () {
+            equal(YcTracking, YcTracking.trackConsume(1, randomInt()), 'trackConsume not called properly.');
+        });
+
+        test('trackBlacklist call', function () {
+            equal(YcTracking, YcTracking.trackBlacklist(1, randomInt()), 'trackBlacklist not called properly.');
+        });
+
+        test('method chaining (trackClick) call', function () {
+            equal(YcTracking, YcTracking.trackClick(1, randomInt(), null, 'en').trackClick(1, randomInt(), null, 'en'), 'chaining not supported.');
+        });
+
+        test('trackLogout call', function () {
+            notEqual(YcTracking.resetUser(), YcTracking.resetUser(), 'userID didn\'t change on logout.');
+        });
+
+        test('trackSearchHook call', function () {
+            equal(YcTracking, YcTracking.hookSearchingHandler(), 'hookSearchingHandler not called properly.');
+        });
+
+        test('renderRecommendation call', function () {
+            equal(null, YcTracking.renderRecommendation({}, 'en'), 'renderRecommendation not called properly.');
+        });
+
+        test('extractTemplateVariables with correct template call', function () {
+            var template = "<h2 class='heading'>{{const.title}}</h2><ul>{{#each results}}<li class='yc-search-result-item' yc-data-title='{{{title}}}'>" +
+                    "<a href='{{url}}'><img src='{{image}}' alt='{{{title}}}' title='{{{title}}}'><span class='yc-search-title'>{{{title}}}</span><span class='yc-search-price'>{{{price}}}" +
+                    "</span></a></li>{{else}}<span class='yc-no-results'>No category results</span>{{/each}}</ul>";
+
+            var variables = YcTracking.extractTemplateVariables(template);
+
+            equal(4, variables.length, 'extractTemplateVariables returns ' + variables.length + ' variables and expected is 4');
+        });
+
+        test('extractTemplateVariables with empty template call', function () {
+            var template = "";
+            var variables = YcTracking.extractTemplateVariables(template);
+
+            equal(0, variables.length, 'extractTemplateVariables returns ' + variables.length + ' variables and expected is 0');
+        });
+
+        test('getParameterByName call', function () {
+            var result;
+
+            if (!location.search) {
+                window.history.pushState({}, "", location.href + '?param=thisPage');
+            }
+
+            result = YcTracking.getParameterByName('param');
+            equal('thisPage', result, 'getParameterByName returns "' + result + '" and should return "thisPage"');
+        });
+
+    }());
+</script>
+</body>
+</html>

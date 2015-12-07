@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="../qunit/qunit.css" rel="stylesheet" type="text/css"/>
+    <script src="../qunit/qunit.js"></script>
+
+    <script src="../../dist/yc-tracking.js"></script>
+
+    <script type="text/javascript">
+        var yc_articleId = '';
+        var yc_config_object = {
+            "trackLogout": false,
+            "lang": "en-GB",
+            "trackid": "5",
+            "currentPage": "buyout",
+            "boxes": []
+        };
+        yc_config_object.url = 'http://shopware5.dev.soprex.com/yoochoose';
+    </script>
+</head>
+<body>
+
+<div class="shopware-test-structure" style="display: none;">
+    <div id="yc-buy-items" style="display:none;">
+        <div class="yc-item-summary">
+            <input type="hidden" name="ordernumber" value="122">
+            <input type="hidden" name="quantity" value="1">
+            <input type="hidden" name="price" value="139,95">
+            <input type="hidden" name="currency" value="EUR">
+        </div>
+        <div class="yc-item-summary">
+            <input type="hidden" name="ordernumber" value="76">
+            <input type="hidden" name="quantity" value="2">
+            <input type="hidden" name="price" value="124,95">
+            <input type="hidden" name="currency" value="EUR">
+        </div>
+        <div class="yc-item-summary">
+            <input type="hidden" name="ordernumber" value="81">
+            <input type="hidden" name="quantity" value="3">
+            <input type="hidden" name="price" value="24,90">
+            <input type="hidden" name="currency" value="EUR">
+        </div>
+    </div>
+</div>
+
+<h1 id="qunit-header">YC tracking Unit Tests</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture"></div>
+<script>
+    (function () {
+        module('Shop Cart Page');
+    })();
+</script>
+</body>
+</html>
