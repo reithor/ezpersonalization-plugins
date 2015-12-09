@@ -62,7 +62,7 @@
 
 </div>
 
-<h1 id="qunit-header">YC tracking Unit Tests</h1>
+<h1 id="qunit-header">Article</h1>
 
 <h2 id="qunit-banner"></h2>
 
@@ -83,11 +83,6 @@
         module('Shop Article Page');
 
         window.addEventListener('load', function() {
-
-            test('rating tracking hooked', function () {
-                var func = document.getElementById('review-form').onsubmit;
-                ok(typeof(func) === "function", 'Rating tracking is hooked!');
-            });
 
             test('rating tracking hooked', function () {
                 var func = document.getElementById('review-form').onsubmit;
