@@ -18,7 +18,8 @@ class Yoochoosecategories extends Yoochooseapi
     protected function getCategories()
     {
         $categories = array();
-        $sql = 'SELECT OXID FROM oxcategories WHERE OXACTIVE=1' . $this->getLimitSQL() ;
+        $shopId = $this->getShopId();
+        $sql = "SELECT OXID FROM oxcategories WHERE OXACTIVE=1 AND OXSHOPID='$shopId' " . $this->getLimitSQL();
         $result = oxDb::getDb(oxDb::FETCH_MODE_ASSOC)->getAll($sql);
 
         foreach ($result as $val) {

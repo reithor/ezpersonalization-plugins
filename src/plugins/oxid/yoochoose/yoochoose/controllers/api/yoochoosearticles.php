@@ -19,7 +19,8 @@ class Yoochoosearticles extends Yoochooseapi
     {
         $lang = oxnew('oxlang');
         $abbr = $lang->getLanguageAbbr();
-        $sql = 'SELECT * FROM oxv_oxarticles_' . $abbr . ' WHERE OXPARENTID=""' . $this->getLimitSQL();
+        $shopId = $this->getShopId();
+        $sql = "SELECT * FROM oxv_oxarticles_$abbr WHERE OXPARENTID='' AND OXSHOPID='$shopId' " . $this->getLimitSQL();
 
         $result = oxDb::getDb(oxDb::FETCH_MODE_ASSOC)->getAll($sql);
         $articles = array();

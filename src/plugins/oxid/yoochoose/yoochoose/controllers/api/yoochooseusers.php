@@ -18,11 +18,13 @@ class Yoochooseusers extends Yoochooseapi
     protected function getUsers()
     {
         $users = array();
-        $sql = 'SELECT * FROM oxuser' . $this->getLimitSQL();
+        $shopId = $this->getShopId();
+        $sql = "SELECT * FROM oxuser WHERE OXSHOPID='$shopId' " . $this->getLimitSQL();
         $result = oxDb::getDb(oxDb::FETCH_MODE_ASSOC)->getAll($sql);
 
         foreach ($result as $val) {
             $id = $val['OXID'];
+            /** @var oxUser $user */
             $user = oxNew('oxuser');
             $user->load($id);
             if ($user->hasAccount()) {

@@ -10,7 +10,7 @@ class yoochooseEvents
     public static $endpoints = array(
         'Yoochoose/' => 'index.php?cl=ycproductexport',
         'Yoochoose/Articles/' => 'index.php?cl=yoochoosearticles',
-        'Yoochoose/Stores/' => 'index.php?cl=yoochoosestoreview',
+        'Yoochoose/Shops/' => 'index.php?cl=yoochooseshops',
         'Yoochoose/Categories/' => 'index.php?cl=yoochoosecategories',
         'Yoochoose/Users/' => 'index.php?cl=yoochooseusers',
     );

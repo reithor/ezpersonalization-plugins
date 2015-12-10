@@ -1,6 +1,6 @@
 <?php
 
-class Yoochoosestoreview extends Yoochooseapi
+class Yoochooseshops extends Yoochooseapi
 {
 
     public function init()

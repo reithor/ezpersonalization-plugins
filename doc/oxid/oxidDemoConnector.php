@@ -55,8 +55,8 @@ class OXIDApiClient
 
 $apiClient = new OXIDApiClient(SHOP_URL, APP_SECRET);
 
-$data = $apiClient->execute('Yoochoose/Stores/');
-echo '<h1>Stores export</h1>';
+$data = $apiClient->execute('Yoochoose/Shops/');
+echo '<h1>Shops export</h1>';
 echo '<pre>' . print_r($data, true) . '</pre><hr />';
 
 $params = array(
