@@ -11,8 +11,8 @@
 
 <script type="text/javascript">
     if (top) {
-        top.sMenuItem = "[{ oxmultilang ident="YOOCHOOSE_MENUITEM" }]";
-        top.sMenuSubItem = "[{ oxmultilang ident="YOOCHOOSE_MENUSUBITEM" }]";
+        top.sMenuItem = "[{oxmultilang ident="YOOCHOOSE_MENUITEM" }]";
+        top.sMenuSubItem = "[{oxmultilang ident="YOOCHOOSE_MENUSUBITEM" }]";
         top.sWorkArea = "[{$_act}]";
         top.setTitle();
     }
@@ -61,8 +61,34 @@
     };
 </script>
 
+<style>
+    table tr th {
+        font-family: inherit;
+        font-size: 1.7em;
+        color: firebrick;
+    }
 
-<form name="transfer" id="transfer" action="[{ $oViewConf->getSelfLink() }]" method="post">
+    table tr td  {
+        max-width: 400px;
+    }
+
+    table {
+        border-collapse: collapse !important;
+    }
+
+    td {
+        padding-bottom: 1em !important;
+    }
+
+    .extra-info {
+        font-size: smaller;
+        width: 100%;
+        white-space: normal;
+    }
+</style>
+
+
+<form name="transfer" id="transfer" action="[{$oViewConf->getSelfLink()}]" method="post">
     [{ $oViewConf->getHiddenSid() }]
     <input type="hidden" name="oxid" value="1">
     <input type="hidden" name="cl" value="">
@@ -70,10 +96,10 @@
 
 <div id="ycMessages">
     [{if isset($ycSuccessMessage) }]
-        <h2 style="color: forestgreen;">[{ oxmultilang ident="YOOCHOOSE_SUCCESS" }]</h2>
+        <h2 style="color: forestgreen;">[{oxmultilang ident="YOOCHOOSE_SUCCESS" }]</h2>
     [{/if}]
     [{if isset($ycErrorMessage) }]
-        <h2 style="color: firebrick;">[{ oxmultilang ident="YOOCHOOSE_ERROR" }]</h2>
+        <h2 style="color: firebrick;">[{oxmultilang ident="YOOCHOOSE_ERROR" }]</h2>
         [{if isset($ycErrorMessageText) }]
             <h2 style="color: firebrick;">[{$ycErrorMessageText}]</h2>
         [{/if}]
@@ -84,18 +110,18 @@
 
     <tr>
         <td valign="top" class="edittext">
-            <form name="myedit" id="myedit" action="[{ $oViewConf->getSelfLink() }]" class="js-oxValidate"
+            <form name="myedit" id="myedit" action="[{$oViewConf->getSelfLink()}]" class="js-oxValidate"
                   method="post">
+                [{$oViewConf->getHiddenSid()}]
+                <input type="hidden" name="cl" value="yoochoose">
+                <input type="hidden" name="fnc" value="saveConfigForm">
+                <input type="hidden" name="oxid" value="yoochoose">
+                <input type="hidden" name="editval[oxshops__oxid]" value="">
                 <table cellspacing="0" cellpadding="0" border="0">
-                    [{ $oViewConf->getHiddenSid() }]
-                    <input type="hidden" name="cl" value="yoochoose">
-                    <input type="hidden" name="fnc" value="saveConfigForm">
-                    <input type="hidden" name="oxid" value="yoochoose">
-                    <input type="hidden" name="editval[oxshops__oxid]" value="">
 
                     <tr>
                         <th class="edittext" width="180" height="40">
-                            [{ oxmultilang ident="YOOCHOOSE_GENERAL_SETTINGS_TITLE" }]
+                            [{oxmultilang ident="YOOCHOOSE_GENERAL_SETTINGS_TITLE" }]
                         </th>
                     </tr>
 
@@ -104,7 +130,7 @@
 
                         </td>
                         <td class="edittext">
-                            <button type="button" onclick="javascript:yc_register();">[{ oxmultilang
+                            <button type="button" onclick="yc_register();">[{oxmultilang
                                 ident="YOOCHOOSE_GENERAL_REGISTER_BUTTON" }]
                             </button>
                         </td>
@@ -112,11 +138,12 @@
 
                     <tr>
                         <td class="edittext" width="180" height="40">
-                            [{ oxmultilang ident="YOOCHOOSE_CONFIG_CUSTOMERID" }]
+                            <label for="ycCustomerId">[{oxmultilang ident="YOOCHOOSE_CONFIG_CUSTOMERID"}]</label>
                         </td>
                         <td class="edittext">
-                            <input type="text" class="editinput js-oxValidate js-oxValidate_notEmpty" size="39"
-                                   maxlength="128" name="confstrs[ycCustomerId]" value="[{$customerId}]" onkeyup="javascript:yc_cutomerid_changed(this)" required>
+                            <input type="text" id="ycCustomerId" class="editinput js-oxValidate js-oxValidate_notEmpty" size="39"
+                                   maxlength="128" name="confstrs[ycCustomerId]" value="[{$customerId}]"
+                                   onkeyup="yc_cutomerid_changed(this)" required />
 
                             <p class="oxValidateError">
                                 <span class="js-oxError_notEmpty"></span>
@@ -126,78 +153,131 @@
                     </tr>
                     <tr>
                         <td class="edittext" width="180" height="40">
-                            [{ oxmultilang ident="YOOCHOOSE_CONFIG_LICENSEKEY" }]
+                            <label for="ycLicenseKey">[{oxmultilang ident="YOOCHOOSE_CONFIG_LICENSEKEY"}]</label>
                         </td>
                         <td class="edittext">
-                            <input type="text" class="editinput js-oxValidate js-oxValidate_notEmpty" size="39"
+                            <input type="text" id="ycLicenseKey" class="editinput js-oxValidate js-oxValidate_notEmpty" size="39"
                                    maxlength="128" name="confstrs[ycLicenseKey]" value="[{$licenseKey}]" required>
                             <br />
-                            <small>[{ oxmultilang ident="YOOCHOOSE_GENERAL_LICENSE_TIP1" }]
+                            <span class="extra-info">[{oxmultilang ident="YOOCHOOSE_GENERAL_LICENSE_TIP1"}]
                                 <a id="yoochoose-admin-link" style="color: blue;" href="https://admin.yoochoose.net/?customer_id=[{$customerId}]"
-                                   target="_blank">[{ oxmultilang ident="YOOCHOOSE_GENERAL_LICENSE_TIP2" }]</a></small>
+                                   target="_blank">[{oxmultilang ident="YOOCHOOSE_GENERAL_LICENSE_TIP2"}]</a></span>
                         </td>
                     </tr>
                     <tr>
                         <td class="edittext" width="180" height="40">
-                            [{ oxmultilang ident="YOOCHOOSE_CONFIG_PLUGINID" }]
+                            <label for="ycPluginId">[{oxmultilang ident="YOOCHOOSE_CONFIG_PLUGINID"}]</label>
                         </td>
                         <td class="edittext">
-                            <input type="text" class="editinput" size="39" maxlength="128" name="confstrs[ycPluginId]"
+                            <input type="text" id="ycPluginId" class="editinput" size="39" maxlength="128"
+                                   name="confstrs[ycPluginId]"
                                    value="[{$pluginId}]"><br />
-                            <small>[{ oxmultilang ident="YOOCHOOSE_GENERAL_PLUGINID_TIP" }]</small>
+                            <span class="extra-info">[{oxmultilang ident="YOOCHOOSE_GENERAL_PLUGINID_TIP"}]</span>
                         </td>
                     </tr>
                     <tr>
                         <td class="edittext" width="180" height="40">
-                            [{ oxmultilang ident="YOOCHOOSE_CONFIG_ENDPOINT" }]
+                            <label for="ycEndpoint">[{oxmultilang ident="YOOCHOOSE_CONFIG_ENDPOINT" }]</label>
                         </td>
                         <td class="edittext">
-                            <input class="readonly" type="text" class="editinput" size="39" maxlength="128"
+                            <input class="readonly editinput" id="ycEndpoint" type="text" size="39" maxlength="128"
                                    name="confstrs[ycEndpoint]" value="[{$endpoint}]" readonly required>
 
                         </td>
                     </tr>
                     <tr>
                         <td class="edittext" width="180" height="40">
-                            [{ oxmultilang ident="YOOCHOOSE_CONFIG_DESIGN" }]
+                            <label for="ycDesign">[{oxmultilang ident="YOOCHOOSE_CONFIG_DESIGN"}]</label>
                         </td>
                         <td class="edittext">
-                            <input class="readonly" type="text" class="editinput" size="39" maxlength="128"
+                            <input class="readonly editinput" id="ycDesign" type="text" size="39" maxlength="128"
                                    name="confstrs[ycDesign]" value="[{$design}]" readonly required><br />
-                            <small>[{ oxmultilang ident="YOOCHOOSE_DESIGN_TIP1" }]
+                            <span class="extra-info">[{oxmultilang ident="YOOCHOOSE_DESIGN_TIP1"}]
                                 <a style="color: blue;" href="https://doc.yoochoose.net/display/PUBDOC/OXID+Plugin+2.0+Tutorial" target="_blank">
-                                    [{ oxmultilang ident="YOOCHOOSE_DESIGN_TIP2" }]</a>[{ oxmultilang ident="YOOCHOOSE_DESIGN_TIP1" }]</small>
+                                    [{oxmultilang ident="YOOCHOOSE_DESIGN_TIP2"}]</a>[{oxmultilang
+                                ident="YOOCHOOSE_DESIGN_TIP3"}]</span>
 
                         </td>
                     </tr>
 
                     <tr>
                         <td class="edittext" width="180" height="40">
-                            [{ oxmultilang ident="YOOCHOOSE_CONFIG_ITEMTYPE" }]
+                            <label for="ycItemType">[{oxmultilang ident="YOOCHOOSE_CONFIG_ITEMTYPE"}]</label>
                         </td>
                         <td class="edittext">
-                            <input type="number" class="editinput js-oxValidate js-oxValidate_notEmpty" size="6" min="0" name="confstrs[ycItemType]" value="[{$itemType}]" required>
+                            <input type="number" id="ycItemType" class="editinput js-oxValidate js-oxValidate_notEmpty" size="6"
+                                   min="0" name="confstrs[ycItemType]" value="[{$itemType}]" required>
 
                             [{foreach from=$errors key=k item=t}]
                             [{if $k=='ycItemType'}][{$t}][{/if}]
                             [{/foreach}]
                             <br />
-                            <small>[{ oxmultilang ident="YOOCHOOSE_TYPEID_TIP1" }]
-                                <a style="color: blue;" href="http://doc.yoochoose.net/" target="_blank">[{ oxmultilang ident="YOOCHOOSE_TYPEID_TIP2" }]</a>.</small>
+                            <span class="extra-info">[{ oxmultilang ident="YOOCHOOSE_TYPEID_TIP1" }]
+                                <a style="color: blue;" href="http://doc.yoochoose.net/" target="_blank">[{
+                                    oxmultilang ident="YOOCHOOSE_TYPEID_TIP2" }]</a>.</span>
                         </td>
                     </tr>
 
                     <tr>
                         <td class="edittext" width="180" height="40">
-                            [{ oxmultilang ident="YOOCHOOSE_CONFIG_LOG" }]
+                            <label for="ycLogSeverity">[{oxmultilang ident="YOOCHOOSE_CONFIG_LOG"}]</label>
                         </td>
                         <td class="edittext">
-                            <select name="confstrs[ycLogSeverity]">
-                                <option value="1" [{if $logSeverity == 1}]SELECTED[{/if}]>[{ oxmultilang
-                                    ident="YOOCHOOSE_CONFIG_LOG_INFO" }]</option>
-                                <option value="2" [{if $logSeverity == 2}]SELECTED[{/if}]>[{ oxmultilang
-                                    ident="YOOCHOOSE_CONFIG_LOG_DEBUG" }]</option>
+                            <select id="ycLogSeverity" name="confstrs[ycLogSeverity]">
+                                [{if $logSeverity == 2}]
+                                    <option value="1"> [{oxmultilang ident="YOOCHOOSE_CONFIG_LOG_INFO" }]</option>
+                                    <option value="2" selected> [{oxmultilang ident="YOOCHOOSE_CONFIG_LOG_DEBUG" }]</option>
+                                [{else}]
+                                    <option value="1" selected> [{oxmultilang ident="YOOCHOOSE_CONFIG_LOG_INFO" }]</option>
+                                    <option value="2"> [{oxmultilang ident="YOOCHOOSE_CONFIG_LOG_DEBUG" }]</option>
+                                [{/if}]
                             </select>
+                        </td>
+                    </tr>
+                    <tr></tr>
+
+                    <tr>
+                        <th class="edittext" width="180" height="40">
+                            [{ oxmultilang ident="YOOCHOOSE_SCRIPT_SETTINGS_TITLE" }]
+                        </th>
+                    </tr>
+
+                    <tr>
+
+                        <td class="edittext" width="180" height="40">
+                            <label for="ycPerformance">[{oxmultilang ident="YOOCHOOSE_CONFIG_PERFORMANCE"}]</label>
+                        </td>
+
+                        <td class="edittext">
+
+                            <select id="ycPerformance" name="confstrs[ycPerformance]" class="saveinnewlanginput">
+                                [{foreach from=$performanceOptions key=key item=val}]
+                                    [{if $val == $performance}]
+                                        <option value="[{$val}]" selected>[{oxmultilang ident=$key}]</option>
+                                    [{else}]
+                                        <option value="[{$val}]">[{oxmultilang ident=$key}]</option>
+                                    [{/if}]
+                                [{/foreach}]
+                            </select>
+                            <br />
+                            <span class="extra-info">[{oxmultilang ident="YOOCHOOSE_PERFORMANCE_TIP"}]</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="edittext" width="180" height="40">
+                            <label for="ycOverwrite">[{oxmultilang ident="YOOCHOOSE_CONFIG_OVERWRITE" }]</label>
+                        </td>
+                        <td class="edittext">
+                            <input type="text" id="ycOverwrite" class="editinput" size="50" name="confstrs[ycOverwrite]"
+                                   value="[{$overwrite}]">
+                            [{foreach from=$errors key=k item=t}]
+                            [{if $k=='ycOverwrite'}][{$t}][{/if}]
+                            [{/foreach}]
+                            <br />
+                            <span class="extra-info"><span style="color: firebrick;">[{oxmultilang ident="YOOCHOOSE_ATTENTION"}]</span>[{oxmultilang ident="YOOCHOOSE_OVERWRITE_TIP1"}]
+                                <a style="color: blue;" href="https://doc.yoochoose.net/display/PUBDOC/OXID+Plugin+2.0+Tutorial" target="_blank">
+                                    [{oxmultilang ident="YOOCHOOSE_OVERWRITE_TIP2"}]</a>[{oxmultilang
+                                    ident="YOOCHOOSE_OVERWRITE_TIP3"}]</span>
                         </td>
                     </tr>
 
@@ -206,60 +286,10 @@
                         </td>
                         <td class="edittext">
                             <input type="submit" class="edittext" style="width: 210px;" name="save"
-                                   value="[{ oxmultilang ident="YOOCHOOSE_CONFIG_SAVE" }]" >
+                                   value='[{oxmultilang ident="YOOCHOOSE_CONFIG_SAVE"}]' >
                         </td>
                     </tr>
                 </table>
-
-        </td>
-
-        <td valign="top" class="edittext" align="left">
-
-            <table cellspacing="0" cellpadding="0" border="0">
-
-                <tr>
-                    <th class="edittext" width="180" height="40">
-                        [{ oxmultilang ident="YOOCHOOSE_SCRIPT_SETTINGS_TITLE" }]
-                    </th>
-                </tr>
-
-                <tr>
-
-                    <td class="edittext" width="180" height="40">
-                        [{ oxmultilang ident="YOOCHOOSE_CONFIG_PERFORMANCE" }]
-                    </td>
-
-                    <td class="edittext">
-
-                        <select name="confstrs[ycPerformance]" class="saveinnewlanginput">
-                            [{foreach from=$performanceOptions key=key item=val}]
-                            <option value="[{ $val }]" [{if $val==$performance}]SELECTED[{/if}]>[{ oxmultilang
-                                ident=$key }]
-                            </option>
-                            [{/foreach}]
-                        </select>
-                        <br />
-                        <small>[{ oxmultilang ident="YOOCHOOSE_PERFORMANCE_TIP" }]</small>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="edittext" width="180" height="40">
-                        [{ oxmultilang ident="YOOCHOOSE_CONFIG_OVERWRITE" }]
-                    </td>
-                    <td class="edittext">
-                        <input type="text" class="editinput" size="50" name="confstrs[ycOverwrite]"
-                               value="[{$overwrite}]">
-                        [{foreach from=$errors key=k item=t}]
-                        [{if $k=='ycOverwrite'}][{$t}][{/if}]
-                        [{/foreach}]
-                        <br />
-                        <small><span style="color: firebrick;">[{ oxmultilang ident="YOOCHOOSE_ATTENTION" }]</span>[{ oxmultilang ident="YOOCHOOSE_OVERWRITE_TIP1" }]
-                            <a style="color: blue;" href="https://doc.yoochoose.net/display/PUBDOC/OXID+Plugin+2.0+Tutorial" target="_blank">
-                                [{ oxmultilang ident="YOOCHOOSE_OVERWRITE_TIP2" }]</a>[{ oxmultilang ident="YOOCHOOSE_OVERWRITE_TIP3" }]</small>
-                    </td>
-                </tr>
-            </table>
-            </form>
 
         </td>
 
