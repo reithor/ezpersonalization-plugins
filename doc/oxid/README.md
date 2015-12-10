@@ -9,11 +9,11 @@
 * shop - (String) Shop Id. (optional, if not set, default shop will be used)
 * lang - (Integer) Language Id. (optional, if not set, default language will be used)
 
-## Stores Export
+## Shops Export
 
 ### Call example
 ```php
-    $data = $apiClient->execute('Yoochoose/Stores/');
+    $data = $apiClient->execute('Yoochoose/Shops/');
 ```
 
 ### Response example
