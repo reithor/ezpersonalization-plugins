@@ -3,6 +3,10 @@
 class Yoochoosearticles extends Yoochooseapi
 {
 
+    private $loadedCategories = array();
+    private $shopUrl;
+    private $languageArray;
+
     public function init()
     {
         parent::init();
@@ -17,7 +21,9 @@ class Yoochoosearticles extends Yoochooseapi
 
     protected function getArticles()
     {
-        $lang = oxnew('oxlang');
+        $this->shopUrl = $this->getConfig()->getShopMainUrl();
+        $lang = oxNew('oxlang');
+        $this->languageArray = $lang->getLanguageArray();
         $abbr = $lang->getLanguageAbbr();
         $shopId = $this->getShopId();
         $sql = "SELECT * FROM oxv_oxarticles_$abbr WHERE OXPARENTID='' AND OXSHOPID='$shopId' " . $this->getLimitSQL();
@@ -54,7 +60,7 @@ class Yoochoosearticles extends Yoochooseapi
                     'image_size' => $imageSize,
                     'icon_image' => !empty($gallery['Icons']) ? $gallery['Icons'][1] : $coverPicture,
                     'manufacturer' => $manufacturerLoaded ? $oxManufacturer->getTitle() : null,
-                    'categories' => $this->getCategoryList($categoryIds[0]),
+                    'categories' => $this->getCategoryList($categoryIds),
                     'tags' => $this->getTags($id),
                 );
             }
@@ -63,18 +69,26 @@ class Yoochoosearticles extends Yoochooseapi
         return $articles;
     }
 
-    protected function getCategoryList($catId)
+    protected function getCategoryList($catIds)
     {
-        /* @var $category oxCategory */
-        $category = oxNew('oxcategory');
-        $category->load($catId);
-        $lang = oxNew('oxlang');
-        $temp = str_replace($this->getConfig()->getShopMainUrl(), "", $category->getLink());
-        foreach ($lang->getLanguageArray() as $val) {
-            $temp = str_replace($val->abbr . '/', '', $temp);
+        $categories = array();
+        foreach ($catIds as $catId) {
+            if (!array_key_exists($catId, $this->loadedCategories)) {
+                /* @var $category oxCategory */
+                $category = oxNew('oxcategory');
+                $category->load($catId);
+                $temp = str_replace($this->shopUrl, "", $category->getLink());
+                foreach ($this->languageArray as $val) {
+                    $temp = str_replace($val->abbr . '/', '', $temp);
+                }
+
+                $this->loadedCategories[$catId] = $temp;
+            }
+
+            $categories[] = $this->loadedCategories[$catId];
         }
 
-        return $temp;
+        return $categories;
     }
 
     protected function getTags($id)
