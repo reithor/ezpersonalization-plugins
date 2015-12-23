@@ -84,7 +84,7 @@ class Yoochoosemodel extends oxUBase
             CURLOPT_HEADER         => 0,
             CURLOPT_CUSTOMREQUEST  => "POST",
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_FOLLOWLOCATION => true,
+//            CURLOPT_FOLLOWLOCATION => true,
             CURLINFO_HEADER_OUT    => true,
             CURLOPT_TIMEOUT        => 10,
             CURLOPT_HTTPAUTH       => CURLAUTH_BASIC,
