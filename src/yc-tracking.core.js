@@ -451,9 +451,28 @@ function initYcTrackingCore(context) {
              * @private
              */
             _repositionSearchResults = function(searchBox, searchResults){
-                var rect = searchBox.getBoundingClientRect();
-                searchResults.style.top = (rect.top + rect.height) + 'px';
-                searchResults.style.left = rect.left + 'px';
+                var rect = searchBox.getBoundingClientRect(),
+                    resultsRect = searchResults.getBoundingClientRect(),
+                    body = GLOBAL.document.body,
+                    bodyRect = body.getBoundingClientRect(),
+                    offsetY = rect.top - bodyRect.top,
+                    x = rect.left + rect.width / 2,
+                    y = offsetY + rect.height / 2;
+
+                if (x > body.scrollWidth / 2) {
+                    searchResults.style.removeProperty('left');
+                    searchResults.style.right = Math.round(bodyRect.width - rect.right) + 'px';
+                } else {
+                    searchResults.style.removeProperty('right');
+                    searchResults.style.left = Math.round(rect.left) + 'px';
+                }
+
+                if (y > body.scrollHeight / 2) {
+                    searchResults.style.top = Math.round(offsetY - resultsRect.height - rect.height / 2) + 'px';
+                } else {
+                    searchResults.style.top = Math.round(offsetY + rect.height) + 'px';
+                }
+
                 searchResults.style.minWidth = rect.width + 'px';
             };
 

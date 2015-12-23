@@ -91,14 +91,15 @@ function initYcTrackingModule(context) {
             products = ycObject && ycObject.productIds ? ycObject.productIds : [],
             tpl, i,
             elements,
-            url = context['yoochoose_ajax_script'].ajaxurl + '?action=yoochoose_products&productIds=',
+            url = context['yoochoose_ajax_script'],
             fncName,
             category = null;
 
-        if (!boxes) {
+        if (!boxes || !url) {
             return;
         }
 
+        url = url.ajaxurl + '?action=yoochoose_products&productIds=';
         if (currentPage === 'product') {
             category = categoryFromBreadcrumb(YC_BC_OFFSETS.product.left, YC_BC_OFFSETS.product.right);
         } else if (currentPage === 'category') {

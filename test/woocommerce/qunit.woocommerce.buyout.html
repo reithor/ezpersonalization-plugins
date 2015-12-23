@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="../qunit/qunit.css" rel="stylesheet" type="text/css"/>
+    <script src="../qunit/qunit.js"></script>
+
+    <script src="../../dist/yc-tracking.js"></script>
+
+    <script type="text/javascript">
+        var yoochoose_ajax_script = {"ajaxurl": "http:\/\/localhost\/woocommerce\/wp-admin\/admin-ajax.php"};
+        var yc_config_object = {
+            "lang": "en",
+            "trackid": 1,
+            "currentPage": "buyout",
+            "boxes": [],
+            "productIds": "",
+            "orderData": [
+                {
+                    "id": "56",
+                    "price": "35",
+                    "qty": "1",
+                    "currency": "GBP"
+                },
+                {
+                    "id": "93",
+                    "price": "3",
+                    "qty": "1",
+                    "currency": "GBP"
+                }
+            ]
+        };
+    </script>
+</head>
+<body>
+
+<div class="shopware-test-structure" style="display: none;">
+</div>
+
+<h1 id="qunit-header">Buyout</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture"></div>
+<script>
+    (function () {
+        module('Shop Bouyout Page');
+    })();
+</script>
+</body>
+</html>
