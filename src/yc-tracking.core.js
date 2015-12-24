@@ -877,13 +877,14 @@ function initYcTrackingCore(context) {
                     _callFetchSearchResults(parameters);
                 }, false);
 
-                if (!yc_debug) {
-                    newNode.addEventListener('blur', function () {
-                        setTimeout(function () {
-                            elem.view.style.display = 'none';
-                        }, 100);
+                elem.view.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                });
 
-                    }, false);
+                if (!yc_debug) {
+                    GLOBAL.document.body.addEventListener('click', function () {
+                        elem.view.style.display = 'none';
+                    });
                 }
             });
 
