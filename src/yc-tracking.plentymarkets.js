@@ -37,9 +37,9 @@ function initYcTrackingModule(context) {
             category = '';
 
         if (currentPage === 'product' && product) {
-            price = document.querySelector(YC_ARTICLE_PRICE_SELECTOR.replace('{id}', product.value))[YC_ARTICLE_PRICE_VALUE] + currency;
-            title = document.querySelector(YC_ARTICLE_TITLE_SELECTOR.replace('{id}', product.value))[YC_ARTICLE_TITLE_VALUE];
-            image = document.querySelector(YC_ARTICLE_IMAGE_SELECTOR.replace('{id}', product.value))[YC_ARTICLE_IMAGE_VALUE];
+            price = ycObject.price;
+            title = ycObject.title;
+            image = ycObject.image;
             category = getCategory();
             YcTracking.trackClick(1, product[YC_ARTICLE_ID_VALUE], category, lang, title, url, image, price, timestamp, signature);
         }
@@ -55,10 +55,14 @@ function initYcTrackingModule(context) {
                 var productId,
                     form = button.form;
 
-                productId = form.querySelector(YC_ARTICLE_ID_SELECTOR)[YC_ARTICLE_ID_VALUE];
-                button.addEventListener('click', function (e) {
-                    YcTracking.trackBasket(1, productId, category, lang);
-                }, false);
+                try {
+                    productId = form.querySelector(YC_ARTICLE_ID_SELECTOR)[YC_ARTICLE_ID_VALUE];
+                    button.addEventListener('click', function () {
+                        YcTracking.trackBasket(1, productId, category, lang);
+                    }, false);
+                } catch (e) {
+                    console.log(e);
+                }
             };
 
         for (; buttons && i < buttons.length; i++) {
@@ -66,11 +70,15 @@ function initYcTrackingModule(context) {
         }
 
         if (currentPage === 'product') {
-            productId = document.querySelector(YC_ARTICLE_ID_SELECTOR)[YC_ARTICLE_ID_VALUE];
-            productButton = document.querySelector(YC_ARTICLE_BASKET_SELECTOR);
-            productButton.addEventListener('click', function (e) {
-                YcTracking.trackBasket(1, productId, category, lang);
-            }, false);
+            try {
+                productId = document.querySelector(YC_ARTICLE_ID_SELECTOR)[YC_ARTICLE_ID_VALUE];
+                productButton = document.querySelector(YC_ARTICLE_BASKET_SELECTOR);
+                productButton.addEventListener('click', function () {
+                    YcTracking.trackBasket(1, productId, category, lang);
+                }, false);
+            } catch (e) {
+                console.log(e);
+            }
         }
     }
 
@@ -118,7 +126,7 @@ function initYcTrackingModule(context) {
             case 'product':
                 allBoxes.push({id: 'related', template: templates.related});
                 allBoxes.push({id: 'upselling', template: templates.upselling});
-                product = document.getElementsByName(YC_ARTICLE_ID_SELECTOR)[0];
+                product = document.querySelectorAll(YC_ARTICLE_ID_SELECTOR)[0];
                 if (product) {
                     contextProducts.push(product.value);
                 }
