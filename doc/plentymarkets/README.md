@@ -52,7 +52,10 @@ Enter your licence key to $_licenceKey
 		. $MiddleSizeImageURL[1] . '&lang=' . $Lang . '&price=' . $_itemPrice . '&title=' . $Name[1] . '&url=' . Link_Item($ID) %}
 
 <script>
-    	yc_config_object.signature = '{% md5($_DataToSign) %}';
+        yc_config_object.title = '$Name[1]';
+        yc_config_object.price = '$_itemPrice';
+        yc_config_object.image = '$MiddleSizeImageURL[1]';
+        yc_config_object.signature = '{% md5($_DataToSign) %}';
 </script>
 ```
 
