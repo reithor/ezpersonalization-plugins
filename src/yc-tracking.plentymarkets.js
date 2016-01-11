@@ -28,7 +28,6 @@ function initYcTrackingModule(context) {
     function trackClick() {
         var product = document.querySelector(YC_ARTICLE_ID_SELECTOR),
             ycObject = context['yc_config_object'] ? context['yc_config_object'] : null,
-            timestamp = ycObject ? ycObject.timestamp : null,
             signature = ycObject ? ycObject.signature : null,
             url = location.href,
             image = '',
@@ -41,7 +40,7 @@ function initYcTrackingModule(context) {
             title = ycObject.title;
             image = ycObject.image;
             category = getCategory();
-            YcTracking.trackClick(1, product[YC_ARTICLE_ID_VALUE], category, lang, title, url, image, price, timestamp, signature);
+            YcTracking.trackClick(1, product[YC_ARTICLE_ID_VALUE], category, lang, title, url, image, price, null, signature);
         }
     }
 

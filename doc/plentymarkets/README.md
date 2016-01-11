@@ -50,11 +50,10 @@ Enter your licence key to $_licenceKey
 {% $_itemPrice = str_replace(',', '.', str_replace('.', '', $BasePrice)) . $Currency %}
 
 {% $_DataToSign = '1&' . $ID . '&' . $_licenceKey . '&categorypath=' . str_replace("\t", '/', trim($_fullCatPath)) . '&image=' . substr($BaseURL4Links, 0, -1)
-		. $MiddleSizeImageURL[1] . '&lang=' . $Lang . '&overridetimestamp=' . $_currentTimestamp . '&price=' . $_itemPrice . '&title=' . $Name[1] . '&url=' . Link_Item($ID) %}
+		. $MiddleSizeImageURL[1] . '&lang=' . $Lang . '&price=' . $_itemPrice . '&title=' . $Name[1] . '&url=' . Link_Item($ID) %}
 
 <script>
-	yc_config_object.timestamp = '$_currentTimestamp';
-	yc_config_object.signature = '{% md5($_DataToSign) %}';
+    	yc_config_object.signature = '{% md5($_DataToSign) %}';
 </script>
 ```
 
