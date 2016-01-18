@@ -27,20 +27,10 @@ function initYcTrackingModule(context) {
 
     function trackClick() {
         var product = document.querySelector(YC_ARTICLE_ID_SELECTOR),
-            ycObject = context['yc_config_object'] ? context['yc_config_object'] : null,
-            signature = ycObject ? ycObject.signature : null,
-            url = location.href,
-            image = '',
-            price = '',
-            title = '',
-            category = '';
+            yc = context['yc_config_object'] ? context['yc_config_object'] : null;
 
         if (currentPage === 'product' && product) {
-            price = ycObject.price;
-            title = ycObject.title;
-            image = ycObject.image;
-            category = getCategory();
-            YcTracking.trackClick(1, product[YC_ARTICLE_ID_VALUE], category, lang, title, url, image, price, null, signature);
+            YcTracking.trackClick(1, yc.productId, yc.category, lang, yc.title, yc.url, yc.image, yc.price, null, yc.signature);
         }
     }
 

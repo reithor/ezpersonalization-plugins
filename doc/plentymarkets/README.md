@@ -53,9 +53,12 @@ Enter your licence key to $_licenceKey
     '&image=' . $_imageUrl . '&lang=' . $Lang . '&price=' . $_itemPrice . '&title=' . $Name[1] . '&url=' . Link_Item($ID) %}
 
 <script>
+        yc_config_object.productId = '$ID';
         yc_config_object.title = '$Name[1]';
         yc_config_object.price = '$_itemPrice';
         yc_config_object.image = '$_imageUrl';
+        yc_config_object.category = '{% str_replace("\t", '/', trim($_fullCatPath)) %}';
+        yc_config_object.url = '{% Link_Item($ID) %}';
         yc_config_object.signature = '{% md5($_DataToSign) %}';
 </script>
 ```
