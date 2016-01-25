@@ -1,7 +1,8 @@
-# Upload script to Webspace
-Upload javascript and css files to Webspace in js directory of your layout e.g. layout / stonepattern / js
+Installing the plenty plugin is straightforward. All you need to do is registering an account at 
+https://www.yoochoose.com/Pricing/Performance-Pricing. Go to "Register For Free" and choose Plenty 
+in the dropdown box. After a successful registration you will receive a customerID and a license key. 
+If problems occur just contact us at https://www.yoochoose.com/About-Us/Contact-us.
 
-Webspace can be found in CMS menu.
 
 # Loading script on page
 
@@ -33,8 +34,12 @@ Web design page can be found in CMS menu.
         'currencySign' : '$CurrencySign'
     };
 </script>
-<script src="/layout/<your_theme_name>/js/yc-tracking.js" type="text/javascript"></script>
-<link href="/layout/callisto/css/yc-tracking.css" rel="stylesheet" type="text/css"></link>
+
+<script src="//event.yoochoose.net/cdn/v1/<customerID>/tracking.js" type="text/javascript"></script>
+<link href="//event.yoochoose.net/cdn/v1/<customerID>/tracking.css" rel="stylesheet" type="text/css"></link>
+
+
+
 ```
 
 # Item View Page
@@ -87,3 +92,21 @@ ITEM: {
     }
 ```
 
+
+
+# Performance Optimizations
+
+Instead of unsing the event.yoochoose.net endpoint you can of course put a copy of the .js and .css sources on your local server or use the YC CDN. 
+
+```
+<!-- local file
+<script src="/layout/<your_theme_name>/js/tracking.js" type="text/javascript"></script>
+<link href="/layout/callisto/css/tracking.css" rel="stylesheet" type="text/css"></link>
+-->
+
+<!-- cdn source
+<script src="//cdn.yoochoose.net/cdn/v1/<customerID>/tracking.js" type="text/javascript"></script>
+<link href="//cdn.yoochoose.net/cdn/v1/<customerID>/tracking.css" rel="stylesheet" type="text/css"></link>
+-->
+
+```
