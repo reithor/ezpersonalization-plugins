@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="../qunit/qunit.css" rel="stylesheet" type="text/css"/>
+    <script src="../../dist/yc-tracking.js"></script>
+    <style>
+        .iframe-tests {
+            display: block;
+            width: 90%;
+            margin: auto;
+            padding-bottom: 20px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+<h1 id="qunit-header">YC tracking Magento Unit Tests</h1>
+<iframe class="iframe-tests" src="../qunit.yc-tracking.html" frameborder="0" ></iframe>
+<iframe class="iframe-tests" src="qunit.magento.home.html" frameborder="0" ></iframe>
+<iframe class="iframe-tests" src="qunit.magento.article.html" frameborder="0" ></iframe>
+<iframe class="iframe-tests" src="qunit.magento.category.html" frameborder="0" ></iframe>
+<iframe class="iframe-tests" src="qunit.magento.cart.html" frameborder="0" ></iframe>
+<iframe class="iframe-tests" src="qunit.magento.buyout.html" frameborder="0"></iframe>
+<script>
+    (function () {
+        var elements = document.getElementsByClassName('iframe-tests');
+        [].forEach.call(elements, function (elem) {
+            elem.addEventListener('load', function () {
+                var me = this;
+                this.style.height = this.contentWindow.document.body.scrollHeight + 'px';
+                setTimeout(function () {
+                    me.style.height = me.contentWindow.document.body.scrollHeight + 'px';
+                }, 1000);
+            });
+        });
+    } )();
+</script>
+</body>
+</html>
