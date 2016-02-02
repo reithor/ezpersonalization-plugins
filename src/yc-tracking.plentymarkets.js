@@ -74,7 +74,7 @@ function initYcTrackingModule(context) {
     function trackBuyHandle() {
         var xmlHttp = null;
 
-        if (currentPage === 'buyout') {
+        if (currentPage === 'buyout' || (currentPage === 'cart' && location.href.indexOf('-OrderShowQQMakeOrder') > -1)) {
             if (window.XMLHttpRequest) {
                 xmlHttp = new XMLHttpRequest();
             } else {

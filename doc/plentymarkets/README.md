@@ -23,7 +23,7 @@ Web design page can be found in CMS menu.
 {% if $Request_ToShow == "SingleArticle" %}{% $_CurrentPage = 'product' %}{% endif %}
 {% if $IsWelcomePage %}{% $_CurrentPage = 'home' %}{% endif %}
 {% if $CheckoutCurrentStep %}{% $_CurrentPage = 'cart' %}{% endif %}
-{% if $SCRIPT_URL contains "/-OrderShowQQMakeOrder/" %}{% $_CurrentPage = 'buyout' %}{% endif %}
+{% if $SCRIPT_URL contains "-OrderShowQQMakeOrder" %}{% $_CurrentPage = 'buyout' %}{% endif %}
 {% if $CustomerID %}{% $_TrackId = $CustomerID %}{% else %}{% $_TrackId = 0 %}{% endif %}
 <script>
     yc_config_object = {
