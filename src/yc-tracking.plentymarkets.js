@@ -204,8 +204,8 @@ function initYcTrackingModule(context) {
                 handleHistory = [];
 
             responsesCount++;
-            if (!response.hasOwnProperty('recommendationItems') || !response.recommendationItems.length) {
-                return;
+            if (!response.hasOwnProperty('recommendationItems')) {
+                response.recommendationItems = [];
             }
 
             box.products = [];
