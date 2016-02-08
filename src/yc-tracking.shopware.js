@@ -134,7 +134,7 @@ function initYcTrackingModule(context) {
                 boxes[i].priority = tpl.priority;
                 fncName = 'YcTracking_jsonpCallback' + boxes[i].id;
                 context[fncName] = fetchRecommendedProducts(boxes[i], url);
-                YcTracking.callFetchRecommendedProducts(1, tpl.scenario, tpl.rows * tpl.columns, products, category, fncName);
+                YcTracking.callFetchRecommendedProducts(1, tpl.scenario, tpl.rows * tpl.columns, products, category, fncName, language);
             } else {
                 console.log('Template for ' + boxes[i].id + ' recommendation box is not found!');
                 boxes[i].priority = 999;

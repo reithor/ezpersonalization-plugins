@@ -186,6 +186,7 @@ function initYcTrackingModule(context) {
                     scenario: tpl.scenario,
                     count: tpl.rows * tpl.columns,
                     products: products,
+                    lang: lang,
                     categoryPath: category,
                     callback: fncName,
                     attributes: YcTracking.extractTemplateVariables(tpl.html_template),

@@ -166,7 +166,7 @@ function initYcTrackingModule(context) {
                 box.trackFollowEvent = trackFollowEvent;
                 fncName = 'YcTracking_jsonpCallback' + box.id;
                 window[fncName] = fetchRecommendedProducts(box);
-                YcTracking.callFetchRecommendedProducts(1, tpl.scenario, tpl.rows * tpl.columns, products.join(), category, fncName);
+                YcTracking.callFetchRecommendedProducts(1, tpl.scenario, tpl.rows * tpl.columns, products.join(), category, fncName, language);
             }
         });
     }

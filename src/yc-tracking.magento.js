@@ -227,7 +227,7 @@ function initYcTrackingModule(context) {
                 boxes[i].priority = tpl.priority;
                 fncName = 'YcTracking_jsonpCallback' + boxes[i].id;
                 context[fncName] = fetchRecommendedProducts(boxes[i], url);
-                YcTracking.callFetchRecommendedProducts(itemType, tpl.scenario, tpl.rows * tpl.columns, ycObject.products, category, fncName);
+                YcTracking.callFetchRecommendedProducts(itemType, tpl.scenario, tpl.rows * tpl.columns, ycObject.products, category, fncName, language);
             }
         }
     }

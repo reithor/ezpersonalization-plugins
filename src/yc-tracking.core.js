@@ -668,15 +668,17 @@ function initYcTrackingCore(context) {
          * @param {string} products
          * @param {string} categoryPath
          * @param {string} callback Name of the callback function.
+         * @param {string} lang
          * @returns {YcTracking} This object's instance.
          */
-        this.callFetchRecommendedProducts = function (itemTypeId, scenario, count, products, categoryPath, callback) {
+        this.callFetchRecommendedProducts = function (itemTypeId, scenario, count, products, categoryPath, callback, lang) {
             var url = recommendationHost + '/' + _userId() + '/' + scenario +
                         '.jsonp?numrecs=' + (count * 2) + '&outputtypeid=' + itemTypeId +
                         '&jsonpcallback=' + callback;
 
             url += '&contextitems=' + (products ? encodeURIComponent(products) : '');
             url += '&categorypath=' + (categoryPath ? encodeURIComponent(categoryPath) : '');
+            url += '&lang=' + (lang ? lang : '');
 
             _executeJsonpCall(url);
             return this;
@@ -700,6 +702,7 @@ function initYcTrackingCore(context) {
             url += '&categorypath=' + (config.categoryPath ? encodeURIComponent(config.categoryPath) : '');
             url += '&usecontextcategorypath=' + (config.useContextCategoryPath === true);
             url += '&recommendCategory=' + (config.recommendCategory  === true);
+            url += '&lang=' + (config.lang ? config.lang : '');
 
             config.attributes.forEach(function (attr) {
                 url += '&attribute=' + encodeURIComponent(attr);
