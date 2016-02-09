@@ -503,11 +503,12 @@ function initYcTrackingCore(context) {
          * @param {string} productUrl
          * @param {string} image
          * @param {string} price
+         * @param {string} unitPrice
          * @param {string} timestamp
          * @param {string} signature
          * @returns {YcTracking} This object's instance.
          */
-        this.trackClick = function (itemTypeId, itemId, categoryPath, language, title, productUrl, image, price, timestamp, signature) {
+        this.trackClick = function (itemTypeId, itemId, categoryPath, language, title, productUrl, image, price, unitPrice, timestamp, signature) {
             var url = '/click/' + _userId() + '/' + itemTypeId + '/' + itemId;
 
             url += '?categorypath=' + (categoryPath ? encodeURIComponent(categoryPath) : '');
@@ -516,6 +517,7 @@ function initYcTrackingCore(context) {
             url += productUrl ? '&url=' + encodeURIComponent(productUrl) : '';
             url += image ? '&image=' + encodeURIComponent(image) : '';
             url += price ? '&price=' + encodeURIComponent((price + '').replace(',', '.')) : '';
+            url += unitPrice ? '&unitprice=' + encodeURIComponent(unitPrice) : '';
             url += timestamp ? '&overridetimestamp=' + encodeURIComponent(timestamp) : '';
             url += signature ? '&signature=' + signature : '';
 

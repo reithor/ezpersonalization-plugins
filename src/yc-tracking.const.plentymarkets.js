@@ -17,7 +17,7 @@ var YC_RECO_TEMPLATES = {
         "<a href='{{url}}'><img class='center img-responsive id-{{itemId}}' src='{{image}}' data-original='{{image}}' data-plenty-link='item-{{itemId}}'" +
         " data-plenty-lazyload='fadeIn' style='display: inline-block;' ></a></div></div>" +
         "<a class='name block' href='{{url}}' data-plenty-href='item-{{itemId}}'>{{title}}</a><p class='price bold' data-plenty-link='item-{{itemId}}'>" +
-        "<span class='large linkToItem'>{{{price}}}</span></p><p class='small' data-plenty-link='item-{{itemId}}'>&nbsp;</p>" +
+        "<span class='large linkToItem'>{{{price}}}</span></p><p class='small' data-plenty-link='item-{{itemId}}'>{{{unitprice}}}</p>" +
         "<div class='visible-hover'><div class='basketButtonContainer clearfix'><div class='buttonBox isViewItem'>" +
         "<a class='btn btn-primary' href='{{url}}'><span class='glyphicon glyphicon-eye-open'></span>{{{../../const.details}}}</a>" +
         "</div></div></div></div></li>{{/each}}{{/each}}</ul></div></div>",
@@ -40,7 +40,7 @@ var YC_RECO_TEMPLATES = {
         "<a href='{{url}}'><img class='center img-responsive id-{{itemId}}' src='{{image}}' data-original='{{image}}' data-plenty-link='item-{{itemId}}'" +
         " data-plenty-lazyload='fadeIn' style='display: inline-block;' ></a></div></div>" +
         "<a class='name block' href='{{url}}' data-plenty-href='item-{{itemId}}'>{{title}}</a><p class='price bold' data-plenty-link='item-{{itemId}}'>" +
-        "<span class='large linkToItem'>{{{price}}}</span></p><p class='small' data-plenty-link='item-{{itemId}}'>&nbsp;</p>" +
+        "<span class='large linkToItem'>{{{price}}}</span></p><p class='small' data-plenty-link='item-{{itemId}}'>{{{unitprice}}}</p>" +
         "<div class='visible-hover'><div class='basketButtonContainer clearfix'><div class='buttonBox isViewItem'>" +
         "<a class='btn btn-primary' href='{{url}}'><span class='glyphicon glyphicon-eye-open'></span>{{{../../const.details}}}</a>" +
         "</div></div></div></div></li>{{/each}}{{/each}}</ul></div></div>",
@@ -63,7 +63,7 @@ var YC_RECO_TEMPLATES = {
         "<a href='{{url}}'><img class='center img-responsive id-{{itemId}}' src='{{image}}' data-original='{{image}}' data-plenty-link='item-{{itemId}}'" +
         " data-plenty-lazyload='fadeIn' style='display: inline-block;' ></a></div></div>" +
         "<a class='name block' href='{{url}}' data-plenty-href='item-{{itemId}}'>{{title}}</a><p class='price bold' data-plenty-link='item-{{itemId}}'>" +
-        "<span class='large linkToItem'>{{{price}}}</span></p><p class='small' data-plenty-link='item-{{itemId}}'>&nbsp;</p>" +
+        "<span class='large linkToItem'>{{{price}}}</span></p><p class='small' data-plenty-link='item-{{itemId}}'>{{{unitprice}}}</p>" +
         "<div class='visible-hover'><div class='basketButtonContainer clearfix'><div class='buttonBox isViewItem'>" +
         "<a class='btn btn-primary' href='{{url}}'><span class='glyphicon glyphicon-eye-open'></span>{{{../../const.details}}}</a>" +
         "</div></div></div></div></li>{{/each}}{{/each}}</ul></div></div>",
@@ -86,7 +86,7 @@ var YC_RECO_TEMPLATES = {
         "<a href='{{url}}'><img class='center img-responsive id-{{itemId}}' src='{{image}}' data-original='{{image}}' data-plenty-link='item-{{itemId}}'" +
         " data-plenty-lazyload='fadeIn' style='display: inline-block;' ></a></div></div>" +
         "<a class='name block' href='{{url}}' data-plenty-href='item-{{itemId}}'>{{title}}</a><p class='price bold' data-plenty-link='item-{{itemId}}'>" +
-        "<span class='large linkToItem'>{{{price}}}</span></p><p class='small' data-plenty-link='item-{{itemId}}'>&nbsp;</p>" +
+        "<span class='large linkToItem'>{{{price}}}</span></p><p class='small' data-plenty-link='item-{{itemId}}'>{{{unitprice}}}</p>" +
         "<div class='visible-hover'><div class='basketButtonContainer clearfix'><div class='buttonBox isViewItem'>" +
         "<a class='btn btn-primary' href='{{url}}'><span class='glyphicon glyphicon-eye-open'></span>{{{../../const.details}}}</a>" +
         "</div></div></div></div></li>{{/each}}{{/each}}</ul></div></div>",
@@ -109,7 +109,7 @@ var YC_RECO_TEMPLATES = {
         "<a href='{{url}}'><img class='center img-responsive id-{{itemId}}' src='{{image}}' data-original='{{image}}' data-plenty-link='item-{{itemId}}'" +
         " data-plenty-lazyload='fadeIn' style='display: inline-block;' ></a></div></div>" +
         "<a class='name block' href='{{url}}' data-plenty-href='item-{{itemId}}'>{{title}}</a><p class='price bold' data-plenty-link='item-{{itemId}}'>" +
-        "<span class='large linkToItem'>{{{price}}}</span></p><p class='small' data-plenty-link='item-{{itemId}}'>&nbsp;</p>" +
+        "<span class='large linkToItem'>{{{price}}}</span></p><p class='small' data-plenty-link='item-{{itemId}}'>{{{unitprice}}}</p>" +
         "<div class='visible-hover'><div class='basketButtonContainer clearfix'><div class='buttonBox isViewItem'>" +
         "<a class='btn btn-primary' href='{{url}}'><span class='glyphicon glyphicon-eye-open'></span>{{{../../const.details}}}</a>" +
         "</div></div></div></div></li>{{/each}}{{/each}}</ul></div></div>",
@@ -132,7 +132,7 @@ var YC_RECO_TEMPLATES = {
         "<img class='center img-responsive id-{{itemId}}' src='{{image}}' data-original='{{image}}' data-plenty-link='item-{{itemId}}'" +
         " data-plenty-lazyload='fadeIn' style='display: inline-block;' ></a></div></div><a class='name block' " +
         "href='{{url}}' data-plenty-href='item-{{itemId}}'>{{title}}</a><p class='price bold' data-plenty-link='item-{{itemId}}'>" +
-        "<span class='large linkToItem'>{{{price}}}</span></p><p class='small' data-plenty-link='item-{{itemId}}'>&nbsp;</p>" +
+        "<span class='large linkToItem'>{{{price}}}</span></p><p class='small' data-plenty-link='item-{{itemId}}'>{{{unitprice}}}</p>" +
         "<div class='visible-hover'><div class='basketButtonContainer clearfix'><div class='buttonBox isViewItem'>" +
         "<a class='btn btn-primary' href='{{url}}'><span class='glyphicon glyphicon-eye-open'></span>{{{../../const.details}}}</a>" +
         "</div></div></div></div></li>{{/each}}{{/each}}</ul></div></div>",
