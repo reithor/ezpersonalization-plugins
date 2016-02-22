@@ -52,6 +52,7 @@ Enter your licence key to $_licenceKey
 {% $_fullCatPath = $CategoryName[Level1] . "\t" . $CategoryName[Level2] . "\t" . $CategoryName[Level3] . "\t"
 		. $CategoryName[Level4] . "\t" . $CategoryName[Level5] . "\t" . $CategoryName[Level6] %}
 {% $_itemPrice = str_replace(',', '.', str_replace('.', '', $Price)) . $Currency %}
+{% $_priceBefore = number_format($RRPDecimalSeparatorDot, 2, ".", "") . $Currency %}
 {% $_imageUrl = substr($BaseURL4Links, 0, -1) . $MiddleSizeImageURL[1] %}
 {% $_unitPrice = $BasePrice . ' ' %}
 {% if $BasePriceLot != 1 %}
@@ -61,7 +62,8 @@ Enter your licence key to $_licenceKey
 {% $_itemName = str_replace('&amp;', '&', str_replace('&quot;', '"', str_replace('&copy;', '©', str_replace('&reg;', '®', $Name[1])))) %}
 
 {% $_DataToSign = '1&' . $ID . '&' . $_licenceKey . '&categorypath=' . str_replace("\t", '/', trim($_fullCatPath)) . '&image=' . $_imageUrl . 
-	'&lang=' . $Lang . '&price=' . $_itemPrice . '&title=' . $_itemName . '&unitprice=' . $_unitPrice . '&url=' . Link_Item($ID) %}
+	'&lang=' . $Lang . '&price=' . $_itemPrice . '&pricebefore=' . $_priceBefore . '&rating=' . $Rating . '&title=' . $_itemName . 
+	'&unitprice=' . $_unitPrice . '&url=' . Link_Item($ID) %}
 
 <script>
 	yc_config_object.productId = '$ID';
@@ -69,6 +71,8 @@ Enter your licence key to $_licenceKey
         yc_config_object.title = '$_itemName';
         yc_config_object.price = '$_itemPrice';
         yc_config_object.image = '$_imageUrl';
+        yc_config_object.rating = '$Rating';
+        yc_config_object.priceBefore = '$_priceBefore';
         yc_config_object.category = '{% str_replace("\t", '/', trim($_fullCatPath)) %}';
         yc_config_object.url = '{% Link_Item($ID) %}';
         yc_config_object.signature = '{% md5($_DataToSign) %}';

@@ -504,22 +504,26 @@ function initYcTrackingCore(context) {
          * @param {string} image
          * @param {string} price
          * @param {string} unitPrice
+         * @param {string} oldPrice
+         * @param {string} rating
          * @param {string} timestamp
          * @param {string} signature
          * @returns {YcTracking} This object's instance.
          */
-        this.trackClick = function (itemTypeId, itemId, categoryPath, language, title, productUrl, image, price, unitPrice, timestamp, signature) {
+        this.trackClick = function (itemTypeId, itemId, categoryPath, language, title, productUrl, image, price, unitPrice, oldPrice, rating, timestamp, signature) {
             var url = '/click/' + _userId() + '/' + itemTypeId + '/' + itemId;
 
             url += '?categorypath=' + (categoryPath ? encodeURIComponent(categoryPath) : '');
             url += '&lang=' + language;
-            url += title ? '&title=' + encodeURIComponent(title) : '';
-            url += productUrl ? '&url=' + encodeURIComponent(productUrl) : '';
-            url += image ? '&image=' + encodeURIComponent(image) : '';
-            url += price ? '&price=' + encodeURIComponent((price + '').replace(',', '.')) : '';
-            url += unitPrice ? '&unitprice=' + encodeURIComponent(unitPrice) : '';
+            url += title !== undefined ? '&title=' + encodeURIComponent(title) : '';
+            url += productUrl !== undefined ? '&url=' + encodeURIComponent(productUrl) : '';
+            url += image !== undefined ? '&image=' + encodeURIComponent(image) : '';
+            url += price !== undefined ? '&price=' + encodeURIComponent((price + '').replace(',', '.')) : '';
+            url += unitPrice !== undefined ? '&unitprice=' + encodeURIComponent(unitPrice) : '';
+            url += oldPrice !== undefined ? '&pricebefore=' + encodeURIComponent(oldPrice) : '';
+            url += rating !== undefined ? '&rating=' + encodeURIComponent(rating) : '';
             url += timestamp ? '&overridetimestamp=' + encodeURIComponent(timestamp) : '';
-            url += signature ? '&signature=' + signature : '';
+            url += signature !== undefined ? '&signature=' + signature : '';
 
             _executeEventCall(url);
             return this;
