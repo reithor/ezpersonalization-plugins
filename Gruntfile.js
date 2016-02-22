@@ -85,6 +85,13 @@ module.exports = function (grunt) {
                 src: wrapModule('plentymarkets'),
                 dest: sub('dist/%s.js')
             },
+            dev_mg2: {
+                options: {
+                    banner: BANNER
+                },
+                src: wrapModule('magento2'),
+                dest: sub('dist/%s.js')
+            },
             dev_sw5: {
                 options: {
                     banner: BANNER
@@ -95,6 +102,10 @@ module.exports = function (grunt) {
             dev_mg_vojin: {
                 src: wrapModule('magento'),
                 dest: 'c:/xampp/htdocs/v1/903/tracking.js'
+            },
+            dev_mg2_vojin: {
+                src: wrapModule('magento2'),
+                dest: 'c:/xampp/htdocs/v1/909/tracking.js'
             },
             dev_wc_vojin: {
                 src: wrapModule('woocommerce'),
@@ -162,6 +173,10 @@ module.exports = function (grunt) {
         'concat:dev_mg',
         'uglify:dist'
     ]);
+    grunt.registerTask('build-magento2', [
+        'concat:dev_mg2',
+        'uglify:dist'
+    ]);
     grunt.registerTask('build-shopify', [
         'concat:dev_sy',
         'uglify:dist'
@@ -184,6 +199,9 @@ module.exports = function (grunt) {
     ]);
     grunt.registerTask('build-magento-vojin', [
         'concat:dev_mg_vojin'
+    ]);
+    grunt.registerTask('build-magento2-vojin', [
+        'concat:dev_mg2_vojin'
     ]);
     grunt.registerTask('build-woocommerce-vojin', [
         'concat:dev_wc_vojin'

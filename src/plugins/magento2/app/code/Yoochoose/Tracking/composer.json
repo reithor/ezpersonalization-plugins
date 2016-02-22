@@ -11,12 +11,12 @@
     "php": "~5.5.0|~5.6.0",
     "magento/magento-composer-installer": "*"
   },
-  "extra": {
-    "map": [
-      [
-        "*",
-        "Yoochoose/Tracking"
-      ]
-    ]
+  "autoload": {
+    "files": [
+      "registration.php"
+    ],
+    "psr-4": {
+      "Yoochoose\\Tracking\\": ""
+    }
   }
 }

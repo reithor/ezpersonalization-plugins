@@ -7,9 +7,9 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 class Logger extends \Monolog\Logger
 {
 
-    const YOOCHOOSE_INFO_FORMAT = "%s [%s]:\nURL: %s\nCODE: %s";
+    const YOOCHOOSE_INFO_FORMAT = "\nURL: %s\nCODE: %s";
 
-    const YOOCHOOSE_DEBUG_FORMAT = "%s [%s]:\nURL: %s\nCODE: %s\nRESPONSE BODY: %s\nREQUEST HEADERS: %s";
+    const YOOCHOOSE_DEBUG_FORMAT = "\nURL: %s\nCODE: %s\nRESPONSE BODY: %s\nREQUEST HEADERS: %s";
 
     /**
      * @var ScopeConfigInterface

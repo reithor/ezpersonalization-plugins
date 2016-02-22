@@ -69,6 +69,7 @@ class Head extends Template
         $currentPage = $this->getCurrentPage();
 
         $json = array(
+            'url' => $this->_storeManager->getStore()->getBaseUrl(),
             'trackid' => $customerId,
             'orderData' => $order,
             'itemType' => $itemTypeId,
@@ -96,7 +97,7 @@ class Head extends Template
         /** @var \Magento\Sales\Model\Order\Item $item */
         foreach ($order->getAllVisibleItems() as $item) {
             $result[] = [
-                'id' => $item->getProductId(),
+                'id' => $this->getParentProductId($item->getProduct()),
                 'qty' => $item->getQtyOrdered(),
                 'price' => $item->getBasePrice(),
                 'currency' => $currency,
@@ -123,7 +124,7 @@ class Head extends Template
             case 'catalog':
                 return $registry->registry('current_product') ? 'product' : 'category';
             case 'checkout':
-                return $action === 'index' ? 'cart' : null;
+                return ($action === 'index' ? 'cart' : ($action === 'success' ? 'buyout' : null));
         }
 
         return null;
@@ -141,23 +142,41 @@ class Head extends Template
         $result = [];
 
         if ($currentPage === 'product') {
-            $result[] = $registry->registry('current_product')->getId();
+            $result[] = $this->getParentProductId($registry->registry('current_product'));
         } else if ($currentPage === 'cart') {
             /** @var \Magento\Checkout\Model\Cart $cart */
             $cart = $this->objectManager->get('Magento\Checkout\Model\Cart');
             foreach ($cart->getQuote()->getAllVisibleItems() as $item) {
-                $result[] = $item->getProduct()->getId();
+                $result[] = $this->getParentProductId($item->getProduct());
             }
         } else if ($currentPage === 'category') {
             /** @var \Magento\Catalog\Block\Product\ListProduct $block */
             /** @var \Magento\Catalog\Model\Product $product */
             $block = $this->_layout->getBlock('category.products.list');
             foreach ($block->getLoadedProductCollection() as $product) {
-                $result[] = $product->getId();
+                $result[] = $this->getParentProductId($product);
             }
         }
 
         return implode(',', $result);
     }
 
+    /**
+     * Retrieves parent product id if product is configurable
+     * @param $product
+     * @return mixed
+     */
+    private function getParentProductId($product)
+    {
+        $id = $product->getId();
+        $type = $product->getTypeId();
+        if ($type == 'configurable') {
+            $parents = $this->objectManager->create('Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable')->getParentIdsByChild($id);
+            if (!empty($parents)) {
+                return $parents[0];
+            }
+        }
+
+        return $id;
+    }
 }
