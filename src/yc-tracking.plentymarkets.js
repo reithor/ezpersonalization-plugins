@@ -30,7 +30,8 @@ function initYcTrackingModule(context) {
             yc = context['yc_config_object'] ? context['yc_config_object'] : null;
 
         if (currentPage === 'product' && product) {
-            YcTracking.trackClick(1, yc.productId, yc.category, lang, yc.title, yc.url, yc.image, yc.price, yc.unitPrice, null, yc.signature);
+            YcTracking.trackClick(1, yc.productId, yc.category, lang, yc.title, yc.url,
+                yc.image, yc.price, yc.unitPrice, yc.priceBefore, yc.rating, null, yc.signature);
         }
     }
 

@@ -510,7 +510,8 @@ function initYcTrackingCore(context) {
          * @param {string} signature
          * @returns {YcTracking} This object's instance.
          */
-        this.trackClick = function (itemTypeId, itemId, categoryPath, language, title, productUrl, image, price, unitPrice, oldPrice, rating, timestamp, signature) {
+        this.trackClick = function (itemTypeId, itemId, categoryPath, language, title, productUrl, image, price,
+                                    unitPrice, oldPrice, rating, timestamp, signature) {
             var url = '/click/' + _userId() + '/' + itemTypeId + '/' + itemId;
 
             url += '?categorypath=' + (categoryPath ? encodeURIComponent(categoryPath) : '');
