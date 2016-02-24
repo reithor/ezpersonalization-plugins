@@ -37,10 +37,18 @@ Web design page can be found in CMS menu.
 
 <script src="//event.yoochoose.net/cdn/v1/<customerID>/tracking.js" type="text/javascript"></script>
 <link href="//event.yoochoose.net/cdn/v1/<customerID>/tracking.css" rel="stylesheet" type="text/css"></link>
-
-
-
 ```
+
+# Available template attributes
+
+* itemId - product ID
+* price - current product price
+* pricebefore - price before discount
+* image - product main image
+* title - product title
+* unitprice - price by unit
+* rating - product rating
+* url - product link
 
 # Item View Page
 
@@ -55,9 +63,6 @@ Enter your licence key to $_licenceKey
 {% $_priceBefore = number_format($RRPDecimalSeparatorDot, 2, ".", "") . $Currency %}
 {% $_imageUrl = substr($BaseURL4Links, 0, -1) . $MiddleSizeImageURL[1] %}
 {% $_unitPrice = $BasePrice . ' ' %}
-{% if $BasePriceLot != 1 %}
-	{% $_unitPrice .= $BasePriceLot . ' ' %}
-{% endif %}
 {% $_unitPrice .= $CurrencySign . '/' . $BasePriceUnit  %}
 {% $_itemName = str_replace('&amp;', '&', str_replace('&quot;', '"', str_replace('&copy;', '©', str_replace('&reg;', '®', $Name[1])))) %}
 
@@ -68,14 +73,14 @@ Enter your licence key to $_licenceKey
 <script>
 	yc_config_object.productId = '$ID';
 	yc_config_object.unitPrice = '$_unitPrice';
-        yc_config_object.title = '$_itemName';
-        yc_config_object.price = '$_itemPrice';
-        yc_config_object.image = '$_imageUrl';
-        yc_config_object.rating = '$Rating';
-        yc_config_object.priceBefore = '$_priceBefore';
-        yc_config_object.category = '{% str_replace("\t", '/', trim($_fullCatPath)) %}';
-        yc_config_object.url = '{% Link_Item($ID) %}';
-        yc_config_object.signature = '{% md5($_DataToSign) %}';
+    yc_config_object.title = '$_itemName';
+    yc_config_object.price = '$_itemPrice';
+    yc_config_object.image = '$_imageUrl';
+    yc_config_object.rating = '$Rating';
+    yc_config_object.priceBefore = '$_priceBefore';
+    yc_config_object.category = '{% str_replace("\t", '/', trim($_fullCatPath)) %}';
+    yc_config_object.url = '{% Link_Item($ID) %}';
+    yc_config_object.signature = '{% md5($_DataToSign) %}';
 </script>
 ```
 
