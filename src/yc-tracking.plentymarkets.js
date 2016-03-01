@@ -226,14 +226,14 @@ function initYcTrackingModule(context) {
                             .replace('{currencySign}', currencySign)
                             .replace('{currency}', currency);
                     }
-
-                    if (attribute.key === 'unitprice' && product['unitprice']) {
-                        parts =  product['unitprice'].split(' ');
-                        if (parts[0] == 0) {
-                            product['unitprice'] = null;
-                        }
-                    }
                 });
+
+                if (product.unitprice) {
+                    parts =  product.unitprice.split(' ');
+                    if (parts[0] == 0 || product.price.indexOf(parts[0]) > -1) {
+                        product.unitprice = null;
+                    }
+                }
 
                 product.itemId = item.itemId;
                 if (product.title) {
