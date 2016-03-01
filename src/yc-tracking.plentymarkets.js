@@ -213,7 +213,8 @@ function initYcTrackingModule(context) {
             box.products = [];
             response.recommendationItems.forEach(function (item) {
                 var product = {},
-                    priceValue;
+                    priceValue,
+                    parts;
 
                 item.attributes.forEach(function (attribute) {
                     product[attribute.key] = attribute.values.length ? attribute.values[0] : '';
@@ -224,6 +225,13 @@ function initYcTrackingModule(context) {
                         product['price'] = YC_RENDER_PRICE_FORMAT.replace('{price}', priceValue)
                             .replace('{currencySign}', currencySign)
                             .replace('{currency}', currency);
+                    }
+
+                    if (attribute.key === 'unitprice' && product['unitprice']) {
+                        parts =  product['unitprice'].split(' ');
+                        if (parts[0] == 0) {
+                            product['unitprice'] = null;
+                        }
                     }
                 });
 
