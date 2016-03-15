@@ -73,7 +73,7 @@ function initYcTrackingCore(context) {
              * @readonly
              * @type {number}
              */
-            sessionDuration = 30,
+            sessionDuration = 60 * 24 * 14,
 
             /**
              * Name of local storage store.
