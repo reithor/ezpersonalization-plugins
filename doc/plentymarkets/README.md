@@ -64,7 +64,7 @@ Enter your licence key to $_licenceKey
 {% $_imageUrl = substr($BaseURL4Links, 0, -1) . $MiddleSizeImageURL[1] %}
 {% $_unitPrice = $BasePrice . ' ' %}
 {% $_unitPrice .= $CurrencySign . '/' . $BasePriceUnit  %}
-{% $_itemName = str_replace('&amp;', '&', str_replace('&quot;', '"', str_replace('&copy;', '©', str_replace('&reg;', '®', $Name[1])))) %}
+{% $_itemName = $Name[1] %}
 
 {% $_DataToSign = '1&' . $ID . '&' . $_licenceKey . '&categorypath=' . str_replace("\t", '/', trim($_fullCatPath)) . '&image=' . $_imageUrl . 
 	'&lang=' . $Lang . '&price=' . $_itemPrice . '&pricebefore=' . $_priceBefore . '&rating=' . $Rating . '&title=' . $_itemName . 
@@ -73,7 +73,7 @@ Enter your licence key to $_licenceKey
 <script>
 	yc_config_object.productId = '$ID';
 	yc_config_object.unitPrice = '$_unitPrice';
-    yc_config_object.title = '$_itemName';
+    yc_config_object.title = "$_itemName";
     yc_config_object.price = '$_itemPrice';
     yc_config_object.image = '$_imageUrl';
     yc_config_object.rating = '$Rating';

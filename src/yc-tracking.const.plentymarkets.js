@@ -16,7 +16,7 @@ var YC_RECO_TEMPLATES = {
         "<div class='imageBox h-lg-2 h-md-3 h-sm-2 h-xs-6 adapt-line-height'>" +
         "<a href='{{url}}'><img class='center img-responsive id-{{itemId}}' src='{{image}}' data-original='{{image}}' data-plenty-link='item-{{itemId}}'" +
         " data-plenty-lazyload='fadeIn' style='display: inline-block;' ></a></div></div>" +
-        "<a class='name block' href='{{url}}' data-plenty-href='item-{{itemId}}'>{{title}}</a><p class='price bold' data-plenty-link='item-{{itemId}}'>" +
+        "<a class='name block' href='{{url}}' data-plenty-href='item-{{itemId}}'>{{{title}}}</a><p class='price bold' data-plenty-link='item-{{itemId}}'>" +
         "<span class='large linkToItem'>{{{price}}}</span></p><p class='small' data-plenty-link='item-{{itemId}}'>{{{unitprice}}}</p>" +
         "<div class='visible-hover'><div class='basketButtonContainer clearfix'><div class='buttonBox isViewItem'>" +
         "<a class='btn btn-primary' href='{{url}}'><span class='glyphicon glyphicon-eye-open'></span>{{{../../const.details}}}</a>" +
@@ -39,7 +39,7 @@ var YC_RECO_TEMPLATES = {
         "<div class='imageBox h-lg-2 h-md-3 h-sm-2 h-xs-6 adapt-line-height'>" +
         "<a href='{{url}}'><img class='center img-responsive id-{{itemId}}' src='{{image}}' data-original='{{image}}' data-plenty-link='item-{{itemId}}'" +
         " data-plenty-lazyload='fadeIn' style='display: inline-block;' ></a></div></div>" +
-        "<a class='name block' href='{{url}}' data-plenty-href='item-{{itemId}}'>{{title}}</a><p class='price bold' data-plenty-link='item-{{itemId}}'>" +
+        "<a class='name block' href='{{url}}' data-plenty-href='item-{{itemId}}'>{{{title}}}</a><p class='price bold' data-plenty-link='item-{{itemId}}'>" +
         "<span class='large linkToItem'>{{{price}}}</span></p><p class='small' data-plenty-link='item-{{itemId}}'>{{{unitprice}}}</p>" +
         "<div class='visible-hover'><div class='basketButtonContainer clearfix'><div class='buttonBox isViewItem'>" +
         "<a class='btn btn-primary' href='{{url}}'><span class='glyphicon glyphicon-eye-open'></span>{{{../../const.details}}}</a>" +
@@ -62,7 +62,7 @@ var YC_RECO_TEMPLATES = {
         "<div class='imageBox h-lg-2 h-md-3 h-sm-2 h-xs-6 adapt-line-height'>" +
         "<a href='{{url}}'><img class='center img-responsive id-{{itemId}}' src='{{image}}' data-original='{{image}}' data-plenty-link='item-{{itemId}}'" +
         " data-plenty-lazyload='fadeIn' style='display: inline-block;' ></a></div></div>" +
-        "<a class='name block' href='{{url}}' data-plenty-href='item-{{itemId}}'>{{title}}</a><p class='price bold' data-plenty-link='item-{{itemId}}'>" +
+        "<a class='name block' href='{{url}}' data-plenty-href='item-{{itemId}}'>{{{title}}}</a><p class='price bold' data-plenty-link='item-{{itemId}}'>" +
         "<span class='large linkToItem'>{{{price}}}</span></p><p class='small' data-plenty-link='item-{{itemId}}'>{{{unitprice}}}</p>" +
         "<div class='visible-hover'><div class='basketButtonContainer clearfix'><div class='buttonBox isViewItem'>" +
         "<a class='btn btn-primary' href='{{url}}'><span class='glyphicon glyphicon-eye-open'></span>{{{../../const.details}}}</a>" +
@@ -85,7 +85,7 @@ var YC_RECO_TEMPLATES = {
         "<div class='imageBox h-lg-2 h-md-3 h-sm-2 h-xs-6 adapt-line-height'>" +
         "<a href='{{url}}'><img class='center img-responsive id-{{itemId}}' src='{{image}}' data-original='{{image}}' data-plenty-link='item-{{itemId}}'" +
         " data-plenty-lazyload='fadeIn' style='display: inline-block;' ></a></div></div>" +
-        "<a class='name block' href='{{url}}' data-plenty-href='item-{{itemId}}'>{{title}}</a><p class='price bold' data-plenty-link='item-{{itemId}}'>" +
+        "<a class='name block' href='{{url}}' data-plenty-href='item-{{itemId}}'>{{{title}}}</a><p class='price bold' data-plenty-link='item-{{itemId}}'>" +
         "<span class='large linkToItem'>{{{price}}}</span></p><p class='small' data-plenty-link='item-{{itemId}}'>{{{unitprice}}}</p>" +
         "<div class='visible-hover'><div class='basketButtonContainer clearfix'><div class='buttonBox isViewItem'>" +
         "<a class='btn btn-primary' href='{{url}}'><span class='glyphicon glyphicon-eye-open'></span>{{{../../const.details}}}</a>" +
@@ -108,7 +108,7 @@ var YC_RECO_TEMPLATES = {
         "<div class='imageBox h-lg-2 h-md-3 h-sm-2 h-xs-6 adapt-line-height'>" +
         "<a href='{{url}}'><img class='center img-responsive id-{{itemId}}' src='{{image}}' data-original='{{image}}' data-plenty-link='item-{{itemId}}'" +
         " data-plenty-lazyload='fadeIn' style='display: inline-block;' ></a></div></div>" +
-        "<a class='name block' href='{{url}}' data-plenty-href='item-{{itemId}}'>{{title}}</a><p class='price bold' data-plenty-link='item-{{itemId}}'>" +
+        "<a class='name block' href='{{url}}' data-plenty-href='item-{{itemId}}'>{{{title}}}</a><p class='price bold' data-plenty-link='item-{{itemId}}'>" +
         "<span class='large linkToItem'>{{{price}}}</span></p><p class='small' data-plenty-link='item-{{itemId}}'>{{{unitprice}}}</p>" +
         "<div class='visible-hover'><div class='basketButtonContainer clearfix'><div class='buttonBox isViewItem'>" +
         "<a class='btn btn-primary' href='{{url}}'><span class='glyphicon glyphicon-eye-open'></span>{{{../../const.details}}}</a>" +
@@ -131,7 +131,7 @@ var YC_RECO_TEMPLATES = {
         " class='h-lg-2 h-md-3 h-sm-2 h-xs-6'><div class='imageBox h-lg-2 h-md-3 h-sm-2 h-xs-6 adapt-line-height'><a href='{{url}}'>" +
         "<img class='center img-responsive id-{{itemId}}' src='{{image}}' data-original='{{image}}' data-plenty-link='item-{{itemId}}'" +
         " data-plenty-lazyload='fadeIn' style='display: inline-block;' ></a></div></div><a class='name block' " +
-        "href='{{url}}' data-plenty-href='item-{{itemId}}'>{{title}}</a><p class='price bold' data-plenty-link='item-{{itemId}}'>" +
+        "href='{{url}}' data-plenty-href='item-{{itemId}}'>{{{title}}}</a><p class='price bold' data-plenty-link='item-{{itemId}}'>" +
         "<span class='large linkToItem'>{{{price}}}</span></p><p class='small' data-plenty-link='item-{{itemId}}'>{{{unitprice}}}</p>" +
         "<div class='visible-hover'><div class='basketButtonContainer clearfix'><div class='buttonBox isViewItem'>" +
         "<a class='btn btn-primary' href='{{url}}'><span class='glyphicon glyphicon-eye-open'></span>{{{../../const.details}}}</a>" +
