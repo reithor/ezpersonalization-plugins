@@ -43,7 +43,7 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
         $this->removeDatabase();
 
         /* @var $rootNode  \Shopware\Models\Menu\Menu */
-        $menuItem = $this->Menu()->findOneBy('label', 'Yoochoose');
+        $menuItem = $this->Menu()->findOneBy(array('label' => 'Yoochoose'));
         Shopware()->Models()->remove($menuItem);
         Shopware()->Models()->flush();
 
@@ -232,7 +232,7 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
      */
     private function createMenu()
     {
-        $rootNode = $this->Menu()->findOneBy('label', 'Configuration');
+        $rootNode = $this->Menu()->findOneBy(array('label' => 'Configuration'));
         $this->createMenuItem(array(
             'label' => 'Yoochoose',
             'class' => 'yoochoose_image',
