@@ -188,10 +188,10 @@ class YoochooseArticles extends Resource
      * to get the full query builder result for the current resource result mode
      * using the query paginator.
      *
-     * @param QueryBuilder $builder
+     * @param $builder
      * @return array
      */
-    private function getFullResult(QueryBuilder $builder)
+    private function getFullResult(\Shopware\Components\Model\QueryBuilder $builder)
     {
         $query = $builder->getQuery();
         $query->setHydrationMode($this->getResultMode());
