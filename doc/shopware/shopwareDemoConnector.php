@@ -60,16 +60,16 @@ class ApiClient
 
 $client = new ApiClient(
     //URL des Shopware Rest Servers
-    'http://localhost/shopware/api',
+    'http://shopware5.dev/api',
     //Benutzername
-    'demo',
+    'YoochooseApiUser',
     //API-Key des Benutzers
-    'lTsm3m1y9WXeCKKW1iU6ChW3nWKJsKvTh9sxzsKt'
+    'xYHfC7Bc3nerWXoVRzt7Ush0Hka2hpZcio4WOwhg'
 );
 
 $params = array(
     'limit' => 2,
-    'start' => 1,
+    'start' => 0,
 );
 $data = $client->get('ycsubscribers', $params);
 echo '<h1> Subscribers export with limit(1) and start(2)</h1>';

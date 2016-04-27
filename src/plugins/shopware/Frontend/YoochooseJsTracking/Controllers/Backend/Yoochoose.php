@@ -71,6 +71,11 @@ class Shopware_Controllers_Backend_Yoochoose extends Shopware_Controllers_Backen
             // $data['endpoint'] = Shopware()->Front()->Router()->assemble();
         }
 
+        /* @var $user Shopware\Models\User\User */
+        $user = $this->em->getRepository('Shopware\Models\User\User')->findOneBy(array('username' => 'YoochooseApiUser'));
+        $data['apiKey'] = $user->getApiKey();
+        $data['username'] = $user->getUsername();
+
         $this->View()->assign(array(
             'success' => true,
             'data'    => array($data),
@@ -90,14 +95,8 @@ class Shopware_Controllers_Backend_Yoochoose extends Shopware_Controllers_Backen
                 $data[$f['name']] = trim($f['value']);
             }
 
-            $userId = $_SESSION['Shopware']['Auth']->id;
             /* @var $user Shopware\Models\User\User */
-            $user = $this->em->getRepository('Shopware\Models\User\User')->find($userId);
-            if (!$user->getApiKey()) {
-                $user->setApiKey(md5(time()));
-                $this->em->persist($user);
-            }
-
+            $user = $this->em->getRepository('Shopware\Models\User\User')->findOneBy(array('username' => 'YoochooseApiUser'));
             $data['apiKey'] = $user->getApiKey();
             $data['username'] = $user->getUsername();
 

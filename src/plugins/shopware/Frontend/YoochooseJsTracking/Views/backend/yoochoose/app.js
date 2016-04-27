@@ -7,7 +7,7 @@ Ext.define('Shopware.apps.Yoochoose', {
     controllers: ['Main'],
     models: ['Settings'],
     stores: ['StoreSettings'],
-    views: ['Main', 'Config', 'GeneralSettings', 'ScriptSettings'],
+    views: ['Main', 'Config', 'GeneralSettings', 'ScriptSettings', 'ApiSettings'],
     launch: function () {
         var me = this,
             mainController = me.getController('Main');
