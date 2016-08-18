@@ -334,7 +334,8 @@
                     <comment><![CDATA[
                             	After the Application Consumer Key and Secret have been generated, please 
                                 insert them into the Magento plugin configuration in the Yoochoose 
-                                Configuration Backend. (For more information read: <a href='https://doc.yoochoose.net/display/PUBDOC/Magento+Connect+1.0+Extension+Tutorial#MagentoConnect1.0ExtensionTutorial-oauthInsert' target='_blank'>Entering the OAUTH Consumer Key and Secret to the Yoochoose Configuration Backend</a>).
+                                Configuration Backend. <br>
+								(For more information read: <a href='https://doc.yoochoose.net/display/PUBDOC/Magento+Connect+1.0+Extension+Tutorial#MagentoConnect1.0ExtensionTutorial-oauthInsert' target='_blank'>Entering the OAUTH Consumer Key and Secret to the Yoochoose Configuration Backend</a>).
                                 <p id="yc_adminConfigureMsg" style="display: none;"></p>]]></comment>
                     <sort_order>80</sort_order>
                     <frontend_type>text</frontend_type>
