@@ -9,7 +9,7 @@ use Magento\Framework\Data\Form\Element\AbstractElement;
 class RegisterButton extends Field
 {
 
-    const YOOCHOOSE_ADMIN_URL = "//admin.yoochoose.net/login.html?product=magento2_Direct&lang=";
+    const YOOCHOOSE_ADMIN_URL = "//admin.yoochoose.net/login.html?product=magento_Direct&lang=";
 
     public function __construct(Context $context)
     {
