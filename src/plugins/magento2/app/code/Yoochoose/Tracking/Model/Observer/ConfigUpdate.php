@@ -48,7 +48,7 @@ class ConfigUpdate implements ObserverInterface
         $design = $this->config->getValue('yoochoose/general/design');
         $body = [
             'base' => [
-                'type' => 'MAGENTO',
+                'type' => 'MAGENTO2',
                 'pluginId' => $this->config->getValue('yoochoose/general/plugin_id'),
                 'endpoint' => $this->config->getValue('yoochoose/general/endpoint'),
                 'appKey' => '',
