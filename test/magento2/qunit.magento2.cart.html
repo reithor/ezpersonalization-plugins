@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="../qunit/qunit.css" rel="stylesheet" type="text/css"/>
+    <script src="../qunit/qunit.js"></script>
+
+    <script src="../../dist/yc-tracking.js"></script>
+
+    <script type="text/javascript">
+        var yc_config_object = {
+            "url": "http:\/\/127.0.0.1\/Magento2\/",
+            "trackid": "1",
+            "orderData": null,
+            "itemType": "1",
+            "language": "en-US",
+            "currentPage": "cart",
+            "productIds": "467,15,23"
+        };
+    </script>
+</head>
+<body>
+
+<div class="magento-test-structure" style="display: none;">
+    <div class="main"></div>
+</div>
+
+<h1 id="qunit-header">Cart</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture"></div>
+<script>
+    (function (open) {
+        XMLHttpRequest.prototype.open = function (method, url, async, user, pass) {
+            if (url.indexOf(location.origin + '/ycproductexport/') === 0) {
+                url = location.origin + '/yoochoose/js-tracking/test/magento2/plugin.response.mock.json';
+            }
+            open.call(this, method, url, async, user, pass);
+        };
+    })(XMLHttpRequest.prototype.open);
+    (function () {
+        module('Shop Cart Page');
+    }());
+</script>
+</body>
+</html>

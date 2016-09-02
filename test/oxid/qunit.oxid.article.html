@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="../qunit/qunit.css" rel="stylesheet" type="text/css"/>
+    <script src="../qunit/qunit.js"></script>
+
+    <script src="../../dist/yc-tracking.js"></script>
+
+    <script type="text/javascript">
+        var yc_config_object = {
+            "trackid": 0,
+            "url": "http:\/\/oxid.dev.soprex.com\/",
+            "language": "de",
+            "currentPage": "product",
+            "itemType": "1",
+            "products": "b56597806428de2f58b1c6c7d3e0e093"
+        }
+    </script>
+</head>
+<body>
+
+<div class="oxid-test-structure" style="display: none;">
+    <div class="main">
+        <div id="breadCrumb">
+            <a href="http://oxid.dev.soprex.com/Kiteboarding/" title="Kiteboarding">Kiteboarding</a>
+            <a href="http://oxid.dev.soprex.com/Kiteboarding/Kites/" title="Kites">Kites</a>
+        </div>
+        <div id="content">
+            <form id="rating"></form>
+        </div>
+    </div>
+
+</div>
+
+<h1 id="qunit-header">Article</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture"></div>
+<script>
+    (function (open) {
+        XMLHttpRequest.prototype.open = function (method, url, async, user, pass) {
+            if (url.indexOf(location.origin + '/yoochoose/') === 0) {
+                url = location.origin + '/yoochoose/js-tracking/test/oxid/plugin.response.mock.json';
+            }
+            open.call(this, method, url, async, user, pass);
+        };
+    })(XMLHttpRequest.prototype.open);
+    (function () {
+        module('Shop Article Page');
+
+    }());
+</script>
+</body>
+</html>
