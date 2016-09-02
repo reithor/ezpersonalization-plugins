@@ -38,5 +38,4 @@ interface YoochooseInterface
      * @return mixed
      */
     public function getProducts();
-
 }

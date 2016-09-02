@@ -34,7 +34,8 @@ class Head extends Template
             $scriptOverwrite = (!preg_match('/^(http|\/\/)/', $scriptOverwrite) ? '//' : '') . $scriptOverwrite;
             $scriptUrl = preg_replace('(^https?:)', '', $scriptOverwrite);
         } else {
-            $scriptUrl = $this->_scopeConfig->getValue('yoochoose/script/cdn_source', 'stores') ? self::AMAZON_CDN_SCRIPT : self::YOOCHOOSE_CDN_SCRIPT;
+            $scriptUrl = $this->_scopeConfig->getValue('yoochoose/script/cdn_source', 'stores') ?
+            self::AMAZON_CDN_SCRIPT : self::YOOCHOOSE_CDN_SCRIPT;
         }
 
         $scriptUrl = rtrim($scriptUrl, '/') . "/v1/{$mandator}{$plugin}/tracking.";
@@ -68,7 +69,7 @@ class Head extends Template
         $itemTypeId = $this->_scopeConfig->getValue('yoochoose/general/item_type', 'stores');
         $currentPage = $this->getCurrentPage();
 
-        $json = array(
+        $json = [
             'url' => $this->_storeManager->getStore()->getBaseUrl(),
             'trackid' => $customerId,
             'orderData' => $order,
@@ -76,7 +77,7 @@ class Head extends Template
             'language' => str_replace('_', '-', $language),
             'currentPage' => $currentPage,
             'productIds' => $this->getContextProductIds($currentPage),
-        );
+        ];
 
         return sprintf('<script type="text/javascript">var yc_config_object = %s;</script>', json_encode($json));
     }
@@ -171,7 +172,9 @@ class Head extends Template
         $id = $product->getId();
         $type = $product->getTypeId();
         if ($type == 'configurable') {
-            $parents = $this->objectManager->create('Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable')->getParentIdsByChild($id);
+            $parents = $this->objectManager->
+            create('Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable')->
+            getParentIdsByChild($id);
             if (!empty($parents)) {
                 return $parents[0];
             }

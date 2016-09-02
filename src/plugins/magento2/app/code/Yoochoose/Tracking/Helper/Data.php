@@ -25,7 +25,7 @@ class Data extends AbstractHelper
     public function getHttpPage($url, $body, $customerId, $licenceKey)
     {
         $bodyString = json_encode($body);
-        $options = array(
+        $options = [
             CURLOPT_URL => $url,
             CURLOPT_HEADER => 0,
             CURLOPT_CUSTOMREQUEST => "POST",
@@ -36,12 +36,12 @@ class Data extends AbstractHelper
             CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
             CURLOPT_USERPWD => "$customerId:$licenceKey",
             CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_HTTPHEADER => array(
+            CURLOPT_HTTPHEADER => [
                 'Content-Type: application/json',
                 'Content-Length: ' . strlen($bodyString),
-            ),
+            ],
             CURLOPT_POSTFIELDS => $bodyString,
-        );
+        ];
 
         $cURL = curl_init();
         curl_setopt_array($cURL, $options);
@@ -68,6 +68,7 @@ class Data extends AbstractHelper
                 if ($result['faultCode'] === 'pluginAlreadyExistsFault') {
                     break;
                 }
+            //it will will continue (fall-through) to the default intentionally
             default:
                 $msg = $result['faultMessage'] . ' With status code: ' . $status;
                 throw new Exception(new Phrase($msg));
