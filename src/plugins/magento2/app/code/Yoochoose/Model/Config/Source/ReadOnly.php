@@ -32,5 +32,4 @@ class ReadOnly extends Field
 
         return parent::_getElementHtml($element);
     }
-
 }

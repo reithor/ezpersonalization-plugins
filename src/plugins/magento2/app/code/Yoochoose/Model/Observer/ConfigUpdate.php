@@ -88,5 +88,4 @@ class ConfigUpdate implements ObserverInterface
 
         return $tokenModel->getToken();
     }
-
 }

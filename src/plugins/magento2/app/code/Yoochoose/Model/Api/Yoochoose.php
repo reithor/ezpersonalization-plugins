@@ -62,8 +62,8 @@ class Yoochoose implements YoochooseInterface
         Response $response,
         Request $request,
         UrlFinderInterface $urlFinder
-    )
-    {
+    ) {
+    
         $this->storeManager = $storeManager;
         $this->config = $config;
         $this->response = $response;
@@ -223,7 +223,7 @@ class Yoochoose implements YoochooseInterface
         foreach ($collection as $product) {
             $id = $product->getId();
             $manufacturer = $product->getAttributeText('manufacturer');
-            $temp = array(
+            $temp = [
                 'id' => $id,
                 'name' => $product->getName(),
                 'description' => $product->getData('description'),
@@ -235,7 +235,7 @@ class Yoochoose implements YoochooseInterface
                     ($thumbPh ? $placeHolderPath . $thumbPh : null)),
                 'manufacturer' => $manufacturer ? $manufacturer : null,
                 'categories' => [],
-            );
+            ];
             $imageInfo = getimagesize($temp['image']);
             if (is_array($imageInfo)) {
                 $temp['image_size'] = $imageInfo[0] . 'x' . $imageInfo[1];
@@ -270,5 +270,4 @@ class Yoochoose implements YoochooseInterface
 
         return $products;
     }
-
 }
