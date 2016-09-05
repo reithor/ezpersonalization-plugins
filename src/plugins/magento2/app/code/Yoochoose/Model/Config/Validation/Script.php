@@ -14,7 +14,7 @@ class Script extends Value
     public function save()
     {
         if ($this->getValue() && !preg_match(self::SCRIPT_URL_REGEX, $this->getValue())) {
-            throw new Exception( new Phrase('Unsupported URL type: (' . $this->getValue() . ')'));
+            throw new Exception(new Phrase('Unsupported URL type: (' . $this->getValue() . ')'));
         }
 
         parent::save();
