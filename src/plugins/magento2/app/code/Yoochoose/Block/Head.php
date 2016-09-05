@@ -144,13 +144,13 @@ class Head extends Template
 
         if ($currentPage === 'product') {
             $result[] = $this->getParentProductId($registry->registry('current_product'));
-        } else if ($currentPage === 'cart') {
+        } elseif ($currentPage === 'cart') {
             /** @var \Magento\Checkout\Model\Cart $cart */
             $cart = $this->objectManager->get('Magento\Checkout\Model\Cart');
             foreach ($cart->getQuote()->getAllVisibleItems() as $item) {
                 $result[] = $this->getParentProductId($item->getProduct());
             }
-        } else if ($currentPage === 'category') {
+        } elseif ($currentPage === 'category') {
             /** @var \Magento\Catalog\Block\Product\ListProduct $block */
             /** @var \Magento\Catalog\Model\Product $product */
             $block = $this->_layout->getBlock('category.products.list');
