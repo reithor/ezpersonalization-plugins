@@ -82,6 +82,6 @@ class Index extends Action
         }
 
         header('Content-Type: application/json;');
-        exit(json_encode(array_values($products)));
+        return(json_encode(array_values($products)));
     }
 }
