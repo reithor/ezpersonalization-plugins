@@ -7,14 +7,14 @@ use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\View\Result\PageFactory;
+use Magento\Framework\Controller\Result\JsonFactory;
 use Magento\Store\Model\StoreManagerInterface;
 
 class Index extends Action
 {
 
-    /** @var  \Magento\Framework\View\Result\Page */
-    protected $resultPageFactory;
+    /** @var  \Magento\Framework\Controller\Result\Json */
+    protected $resultJsonFactory;
 
     /**
      * @var ScopeConfigInterface
@@ -28,14 +28,14 @@ class Index extends Action
 
     /**
      * @param Context $context
-     * @param PageFactory $resultPageFactory
+     * @param JsonFactory $resultJsonFactory
      * @param ScopeConfigInterface $scope
      * @param StoreManagerInterface $store
      */
-    public function __construct(Context $context, PageFactory $resultPageFactory, ScopeConfigInterface $scope, StoreManagerInterface $store)
+    public function __construct(Context $context, JsonFactory $resultJsonFactory, ScopeConfigInterface $scope, StoreManagerInterface $store)
     {
 
-        $this->resultPageFactory = $resultPageFactory;
+        $this->resultJsonFactory = $resultJsonFactory;
         parent::__construct($context);
         $this->scope = $scope;
         $this->store = $store;
@@ -81,8 +81,8 @@ class Index extends Action
             ];
         }
 
-        header('Content-Type: application/json;');
-	
+//        header('Content-Type: application/json;');
+
         $result = $this->resultJsonFactory->create();
         $result->setData(array_values($products));
         return $result;
