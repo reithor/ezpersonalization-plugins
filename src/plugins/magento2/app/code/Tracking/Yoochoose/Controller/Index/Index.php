@@ -82,6 +82,9 @@ class Index extends Action
         }
 
         header('Content-Type: application/json;');
-        return(json_encode(array_values($products)));
+	
+        $result = $this->resultJsonFactory->create();
+        $result->setData(array_values($products));
+        return $result;
     }
 }
