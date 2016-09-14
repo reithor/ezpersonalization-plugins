@@ -15,11 +15,10 @@
             <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>General</label>
                 <field id="register_button" translate="label" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0">
-                    <label>If you don't have a Customer ID yet, please</label>
+                    <label>If you don't have a Customer ID yet, please register a new Yoochoose account</label>
                     <frontend_model>Yoochoose\Tracking\Model\Config\Source\RegisterButton</frontend_model>
-                    <comment><![CDATA[Please visit <a href='https://www.yoochoose.com' target='_blank'>
-                                     Yoochoose website</a> for information to pricing, data privacy and
-                                     terms of service.
+                    <comment><![CDATA[For more information about pricing, data privacy and terms of service please visit the <a href='https://www.yoochoose.com' target='_blank'>
+                                     Yoochoose website</a>.
                                      <script>
                                          function yc_register(url, object) {
                                             var form = document.createElement('form'),
@@ -82,11 +81,8 @@
                     <label>Design</label>
                     <frontend_model>Yoochoose\Tracking\Model\Config\Source\ReadOnly</frontend_model>
                     <comment>
-                        <![CDATA[
-                            We will try a design template for your shop.Please read  <a style="color: blue;"
-                             href="https://doc.yoochoose.net/display/PUBDOC/Magento+Connect+2.0+Extension+Tutorial" target="_blank">
-                             Magento 2 Connect Extension Tutorial</a>, if you need to customize the design of the recommendations.
-                        ]]>
+                        <![CDATA[We will try to find a design template for your shop. If you need to customize the Recommendations design, please read the
+                                        <a href="https://www.yoochoose.com/magento-connect-2-tutorial" target="_blank">Magento Connect Extention Tutorial</a>.]]>
                     </comment>
                 </field>
                 <field id="item_type" translate="label" type="text" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -94,10 +90,8 @@
                     <validate>required-entry validate-not-negative-number</validate>
                     <comment>
                         <![CDATA[
-                                 In the most cases the item type must be set to 1. If more than one type is needed or if more,
-                                 than one shop language is supported, please read the
-                                <a style="color: blue;" href="http://doc.yoochoose.net/" target="_blank">User Guide</a>.
-                        ]]>
+                                 In most cases the item type must be set to 1. 
+                                 If more than one type is needed or if more than one shop language is supported, please read the <a href="http://doc.yoochoose.net/" target="_blank" >User Guide</a>.]]>
                     </comment>
                 </field>
                 <field id="log_id" translate="label" type="select" sortOrder="8" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -111,8 +105,9 @@
                     <label>Performance</label>
                     <source_model>Yoochoose\Tracking\Model\Config\Source\ScriptSource</source_model>
                     <comment><![CDATA[
-                        CDN mode provide better performance but takes about a 30 minutes, if the configuration is updated.
-                         Please switch to CDN only, if the configuration is done and stable
+                        CDN mode delivers better performance
+                            but takes about 30 minutes to update if the configuration is changed. 
+                            Please switch to CDN only if the configuration is finished and stable.
                     ]]></comment>
                 </field>
                 <field id="script_id" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
