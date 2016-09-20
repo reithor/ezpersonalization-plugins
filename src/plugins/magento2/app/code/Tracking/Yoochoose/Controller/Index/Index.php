@@ -74,7 +74,7 @@ class Index extends Action
             $image = $product->getData('thumbnail');
             $products[] = [
                 'id' => $product->getId(),
-                'link' => $product->getProductUrl(),
+                'link' => $product->getUrlModel()->getUrl($product),
                 'price' => $priceHelper->currency($product->getFinalPrice(), true, false),
                 'image' => ($image ? $helper->getMediaUrl($image) : ($thumbnailHolder ? $placeholderPath : null)),
                 'title' => $product->getName(),
