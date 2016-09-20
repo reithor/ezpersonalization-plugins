@@ -121,6 +121,7 @@ function initYcTrackingModule(context) {
                     contextProducts.push(product.value);
                 }
 
+                category = context['yc_config_object'] ? context['yc_config_object'].category : category;
                 fetchRecommendations(contextProducts, category);
                 break;
             case 'home':
