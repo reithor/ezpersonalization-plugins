@@ -191,9 +191,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment><![CDATA[<span style="color: red; font-weight: bold;">Attention!
-                            </span> See the <a href="https://www.yoochoose.com/magento-connect-2-tutorial" 
-                            target="_blank">extension manual</a> if you intend to use this property.]]></comment>
+                            <comment><![CDATA[This option is used mostly during development phase.]]></comment>
                         </overwrite>
                     </fields>
                 </advanced>
