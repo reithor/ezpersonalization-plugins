@@ -154,7 +154,7 @@ function initYcTrackingModule(context) {
                         if (xmlHttp.status === 200) {
                             response = JSON.parse(xmlHttp.responseText);
                             response.data.forEach(function (elem) {
-                                contextProducts.push(elem.ID);
+                                contextProducts.push(elem.BasketItemItemID);
                             });
 
                         }
