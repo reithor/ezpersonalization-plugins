@@ -150,17 +150,20 @@ function initYcTrackingModule(context) {
 
                 xmlHttp.onreadystatechange = function () {
                     var response;
-                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
-                        response = JSON.parse(xmlHttp.responseText);
-                        response.data.forEach(function (elem) {
-                            contextProducts.push(elem.ID);
-                        });
+                    if (xmlHttp.readyState === 4) {
+                        if (xmlHttp.status === 200) {
+                            response = JSON.parse(xmlHttp.responseText);
+                            response.data.forEach(function (elem) {
+                                contextProducts.push(elem.ID);
+                            });
+
+                        }
 
                         fetchRecommendations(contextProducts, category);
                     }
                 };
 
-                xmlHttp.open('GET', location.origin + '/rest/itemview/basketitemslist/', true);
+                xmlHttp.open('GET', location.origin + '/rest/checkout/basketitemslist/', true);
                 xmlHttp.send();
                 break;
         }
