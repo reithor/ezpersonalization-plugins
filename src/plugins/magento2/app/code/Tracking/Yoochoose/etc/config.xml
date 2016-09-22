@@ -5,6 +5,9 @@
             <general>
                 <item_type>1</item_type>
             </general>
+            <search>
+                <search_enable>1</search_enable>
+            </search>
         </yoochoose>
     </default>
 </config>

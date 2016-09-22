@@ -225,20 +225,25 @@ function initYcTrackingModule(context) {
 
     function setupTracking() {
         context.addEventListener('load', function () {
-            var trackId;
+            var trackId,
+                enableSearch;
 
             ycObject = context['yc_config_object'] ? context['yc_config_object'] : null;
             trackId = ycObject ? ycObject.trackid : null;
             currentPage = ycObject ? ycObject.currentPage : null;
             language = ycObject ? ycObject.language : null;
             itemType = ycObject ? ycObject.itemType : null;
+            enableSearch = ycObject ? ycObject.enableSearch : null;
 
             YcTracking.trackLogin(trackId);
             trackClickAndRate();
             hookBasketHandlers();
             trackBuy();
-            YcTracking.hookSearchingHandler(language);
+            if (enableSearch == 1) {
+                YcTracking.hookSearchingHandler(language);
+            }
             fetchRecommendations();
+
         }, false);
     }
 

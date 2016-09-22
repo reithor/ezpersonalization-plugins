@@ -69,6 +69,8 @@ class Head extends Template
         $itemTypeId = $this->_scopeConfig->getValue('yoochoose/general/item_type', 'stores');
         $currentPage = $this->getCurrentPage();
 
+        $enableSearch = $this->_scopeConfig->getValue('yoochoose/search/search_enable', 'stores');
+
         $json = [
             'url' => $this->_storeManager->getStore()->getBaseUrl(),
             'trackid' => $customerId,
@@ -77,6 +79,7 @@ class Head extends Template
             'language' => str_replace('_', '-', $language),
             'currentPage' => $currentPage,
             'productIds' => $this->getContextProductIds($currentPage),
+            'enableSearch' => $enableSearch
         ];
 
         return sprintf('<script type="text/javascript">var yc_config_object = %s;</script>', json_encode($json));

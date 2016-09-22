@@ -116,6 +116,18 @@
                     <comment><![CDATA[This option is used mostly during development phase.]]></comment>
                 </field>
             </group>
+            <group id="search"  type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Yoochoose search box</label>
+                <field id="search_enable" translate="label" type="select" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label><![CDATA[
+                    Use the Yoochoose search box:<br/>(recommended)
+                     ]]></label>
+                    <source_model>Yoochoose\Tracking\Model\Config\Source\SearchOption</source_model>
+                    <comment><![CDATA[
+                    Select this option to use the Yoochoose search box instead of the standard Magento search box and benefit from its cloud-based, high-performance search engine with "self-learning" suggest feature.
+                    ]]></comment>
+                </field>
+            </group>
         </section>
     </system>
 </config>
