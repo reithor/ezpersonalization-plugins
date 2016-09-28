@@ -90,7 +90,7 @@
                     <validate>required-entry validate-not-negative-number</validate>
                     <comment>
                         <![CDATA[
-                                 In most cases the item type must be set to 1. 
+                                 In most cases the item type must be set to 1.
                                  If more than one type is needed or if more than one shop language is supported, please read the <a href="http://doc.yoochoose.net/" target="_blank" >User Guide</a>.]]>
                     </comment>
                 </field>
@@ -106,7 +106,7 @@
                     <source_model>Yoochoose\Tracking\Model\Config\Source\ScriptSource</source_model>
                     <comment><![CDATA[
                         CDN mode delivers better performance
-                            but takes about 30 minutes to update if the configuration is changed. 
+                            but takes about 30 minutes to update if the configuration is changed.
                             Please switch to CDN only if the configuration is finished and stable.
                     ]]></comment>
                 </field>
@@ -117,7 +117,7 @@
                 </field>
             </group>
             <group id="search"  type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Yoochoose search box</label>
+                <label>Yoochoose Search Box</label>
                 <field id="search_enable" translate="label" type="select" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label><![CDATA[
                     Use the Yoochoose search box:<br/>(recommended)
@@ -129,7 +129,7 @@
                 </field>
             </group>
             <group id="auth"  type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Yoochoose authorization</label>
+                <label>Yoochoose Authorization</label>
                 <field id="auth_token" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Authorization Token</label>
                     <frontend_model>Yoochoose\Tracking\Model\Config\Source\Token</frontend_model>
@@ -142,7 +142,7 @@
                     <frontend_model>Yoochoose\Tracking\Model\Config\Source\TokenResetButton</frontend_model>
                     <comment>
                         <![CDATA[
-                                <span id="ycAuthHidden" style="color: red; display: none;">Save configuration so this action could effect.</span>
+                                <span id="ycAuthHidden" style="color: red; display: none;">Click "Save Config" to complete the Token Reset.</span>
                                 <script type="text/javascript">
                                     function ycAuthTokenReset() {
                                         var authToken = document.getElementById('yoochoose_auth_auth_token');
