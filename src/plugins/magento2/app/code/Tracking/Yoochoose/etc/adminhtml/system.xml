@@ -128,6 +128,39 @@
                     ]]></comment>
                 </field>
             </group>
+            <group id="auth"  type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Yoochoose authorization</label>
+                <field id="auth_token" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Authorization Token</label>
+                    <frontend_model>Yoochoose\Tracking\Model\Config\Source\Token</frontend_model>
+                    <comment>
+                        <![CDATA[This token is used for API authentication.]]>
+                    </comment>
+                </field>
+                <field id="auth_token_reset" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Reset Token</label>
+                    <frontend_model>Yoochoose\Tracking\Model\Config\Source\TokenResetButton</frontend_model>
+                    <comment>
+                        <![CDATA[
+                                <span id="ycAuthHidden" style="color: red; display: none;">Save configuration so this action could effect.</span>
+                                <script type="text/javascript">
+                                    function ycAuthTokenReset() {
+                                        var authToken = document.getElementById('yoochoose_auth_auth_token');
+                                        var text = '';
+                                        var possible = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
+                                        for (var i = 0; i < 32; i++) {
+                                            text += possible.charAt(Math.floor(Math.random() * possible.length));
+                                        }
+
+                                        authToken.value = text;
+                                        document.getElementById('ycAuthHidden').style.display = 'block';
+                                    }
+                                </script>
+                            ]]>
+                    </comment>
+                </field>
+            </group>
         </section>
     </system>
 </config>

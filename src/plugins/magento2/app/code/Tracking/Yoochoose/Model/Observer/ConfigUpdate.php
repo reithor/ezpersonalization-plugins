@@ -9,10 +9,20 @@ use Magento\Framework\ObjectManagerInterface;
 use Yoochoose\Tracking\Helper\Data;
 use Magento\Framework\Validator\Exception;
 use Magento\Framework\Phrase;
+use Magento\Integration\Model\Oauth\Token;
+use Magento\Authorization\Setup\AuthorizationFactory;
+use Magento\Authorization\Model\Acl\Role\Group as RoleGroup;
+use Magento\Authorization\Model\UserContextInterface;
 
 class ConfigUpdate implements ObserverInterface
 {
     const YOOCHOOSE_LICENSE_URL = 'https://admin.yoochoose.net/api/v4/';
+    const YOOCHOOSE_API_RULES = array(
+        'Magento_Customer::customer',
+        'Magento_Catalog::products',
+        'Magento_Backend::stores',
+        'Magento_Catalog::categories'
+    );
 
     /** @var ScopeConfigInterface */
     private $config;
@@ -23,11 +33,15 @@ class ConfigUpdate implements ObserverInterface
     /** @var ObjectManagerInterface */
     private $om;
 
-    public function __construct(ScopeConfigInterface $scope, Data $dataHelper, ObjectManagerInterface $om)
+    /** @var AuthorizationFactory */
+    private $authFactory;
+
+    public function __construct(ScopeConfigInterface $scope, Data $dataHelper, ObjectManagerInterface $om, AuthorizationFactory $authFactory)
     {
         $this->config = $scope;
         $this->helper = $dataHelper;
         $this->om = $om;
+        $this->authFactory = $authFactory;
     }
 
     /**
@@ -38,12 +52,62 @@ class ConfigUpdate implements ObserverInterface
     {
         $customerId = $this->config->getValue('yoochoose/general/customer_id');
         $licenseKey = $this->config->getValue('yoochoose/general/license_key');
+        $hasRole = false;
 
         if (!$customerId && !$licenseKey) {
             return;
         }
 
-        $token = $this->getAdminToken();
+        $token = $this->config->getValue('yoochoose/auth/auth_token');
+        if (!$token) {
+            throw new Exception(new Phrase("Reset current Authorization token because token must not be empty!"));
+        }
+
+        $resource = $this->om->get('Magento\User\Model\ResourceModel\User');
+        $userData = $resource->loadByUsername('Yoochoose-Consumer');
+        if (empty($userData)) {
+            $userData = $this->createUser();
+        }
+
+        $user = $this->om->create('Magento\User\Model\User');
+        $user->load($userData['user_id']);
+        $userRoles = $user->hasAssigned2Role($user);
+
+        if (!empty($userRoles)) {
+            foreach ($userRoles as $role){
+                if($role['role_name'] === 'Yoochoose'){
+                    $hasRole = true;
+                }
+            }
+        }
+
+        if(!$hasRole){
+            $ycRole = $this->authFactory->createRole()->setData([
+                'parent_id' => 1,
+                'tree_level' => 1,
+                'sort_order' => 1,
+                'role_type' => RoleGroup::ROLE_TYPE,
+                'user_id' => $userData['user_id'],
+                'user_type' => UserContextInterface::USER_TYPE_ADMIN,
+                'role_name' => 'Yoochoose',
+            ])->save();
+
+            $rulesCollection = $this->authFactory->createRulesCollection()
+                ->addFieldToFilter('role_id', $ycRole->getId())
+                ->addFieldToFilter('resource_id', 'all');
+
+            if ($rulesCollection->count() == 0) {
+                $this->createRules($ycRole, self::YOOCHOOSE_API_RULES);
+            }
+        }
+
+        $tokenModel = $this->getToken($token);
+        if (!$tokenModel->getId()) {
+            $this->createNewToken($token, $userData['user_id']);
+            $this->revokePreviousTokens($token);
+        } else if ($tokenModel->getRevoked()) {
+            throw new Exception(new Phrase("Reset current Authorization token because token ($token) is revoked!"));
+        }
 
         $design = $this->config->getValue('yoochoose/general/design');
         $body = [
@@ -66,26 +130,100 @@ class ConfigUpdate implements ObserverInterface
         $this->helper->getHttpPage($url, $body, $customerId, $licenseKey);
     }
 
+
     /**
      * Returns admin token that is used for api authentication.
      * Token is either fetched if it exists and is not revoked or new token is created.
      *
-     * @return string
+     * @param $currentToken
+     * @return Token
      */
-    protected function getAdminToken()
+    protected function getToken($currentToken)
     {
-        /** @var \Magento\Backend\Model\Auth\Session $adminSession */
-        /** @var \Magento\Integration\Model\Oauth\Token $tokenModel */
-        $adminSession = $this->om->get('Magento\Backend\Model\Auth\Session');
+        /** @var Token $tokenModel */
         $tokenModel = $this->om->get('Magento\Integration\Model\Oauth\Token');
-        $adminId = $adminSession->getUser()->getData('user_id');
-        $tokenModel->loadByAdminId($adminId);
 
-        // if token doesn't exist or token is revoked, create new token
-        if (!$tokenModel->getToken() || $tokenModel->getRevoked()) {
-            $tokenModel->createAdminToken($adminId);
+        return $tokenModel->loadByToken($currentToken);
+    }
+
+    /**
+     * Creates new token
+     * @param $token
+     * @param $adminId
+     */
+    protected function createNewToken($token, $adminId)
+    {
+
+        /** @var Token $tokenModel */
+        $tokenModel = $this->om->create('Magento\Integration\Model\Oauth\Token');
+        $tokenModel->createAdminToken($adminId);
+        $tokenModel->setToken($token);
+        $tokenModel->save();
+    }
+
+    /**
+     * Revokes all previous tokens
+     * @param $activeToken
+     * @return int
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    protected function revokePreviousTokens($activeToken)
+    {
+        /** @var \Magento\Integration\Model\ResourceModel\Oauth\Token $resource */
+        /** @var \Magento\Framework\DB\Adapter\AdapterInterface $connection */
+        $resource = $this->om->get('Magento\Integration\Model\ResourceModel\Oauth\Token');
+        $connection = $resource->getConnection();
+        if (!$connection) {
+            throw new Exception(new Phrase('Unable to fetch db connection!'));
         }
 
-        return $tokenModel->getToken();
+        $where = "token != '$activeToken' AND revoked = 0";
+
+        return $connection->update($resource->getMainTable(), ['revoked' => 1], $where);
+    }
+
+    /**
+     * Creates rules
+     * @param Role $role
+     * @param array $rules
+     */
+    private function createRules($role, $rules = array()){
+        foreach ($rules as $rule) {
+            $this->authFactory->createRules()->setData(
+                [   'role_id' => $role->getId(),
+                    'resource_id' => $rule,
+                    'privileges' => null,
+                    'permission' => 'allow',
+                ]
+            )->save();
+        }
+    }
+
+    /**
+     * Creates new admin user
+     * @param $resource
+     * @return User $user
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    private function createUser($resource){
+
+        $connection = $resource->getConnection();
+        if (!$connection) {
+            throw new Exception(new Phrase('Unable to fetch db connection!'));
+        }
+        $data = array(
+            'username'  => 'Yoochoose-Consumer',
+            'firstname' => 'Yoochoose',
+            'lastname'  => 'Consumer',
+            'email'     => 'test@yoochoose.net',
+            'password'  => '3lP4aTY3orre',
+            'is_active' => 1
+        );
+
+        $connection->insert($resource->getMainTable(), $data);
+
+        $user = $resource->loadByUsername('Yoochoose-Consumer');
+
+        return $user;
     }
 }
