@@ -53,22 +53,23 @@ function initYcTrackingModule(context) {
             categoryPath = getCategoriesFromBreadcrumb();
 
         [].forEach.call(cartButtons, function (button) {
-            button.addEventListener('click', function () {
-                var productId = null,
-                    data;
+                button.addEventListener('click', function () {
+                    var productId = null,
+                        data;
 
-                if (button.form && button.form.product) {
-                    //button has form
-                    productId = button.form.product.value;
-                } else if (button.attributes.getNamedItem('data-post')) {
-                    data = JSON.parse(button.attributes.getNamedItem('data-post').value);
-                    productId = data.data.product;
-                }
+                    if (button.form && button.form.product) {
+                        //button has form
+                        productId = button.form.product.value;
+                    } else if (button.attributes.getNamedItem('data-post')) {
+                        data = JSON.parse(button.attributes.getNamedItem('data-post').value);
+                        productId = data.data.product;
+                    }
 
-                if (productId) {
-                    YcTracking.trackBasket(itemType, productId, categoryPath, language);
-                }
-            });
+                    if (productId) {
+                        YcTracking.trackBasket(itemType, productId, categoryPath, language);
+                    }
+
+                });
         });
 
         if (currentPage === 'product') {
@@ -140,7 +141,31 @@ function initYcTrackingModule(context) {
                 context[fncName] = fetchRecommendedProducts(allBoxes[i], url);
                 YcTracking.callFetchRecommendedProducts(itemType, tpl.scenario, tpl.rows * tpl.columns, products, category, fncName, language);
             }
+
         }
+
+    }
+
+    function hookRecommendedBasketHandlers() {
+        var cartButtons = document.querySelectorAll('.yc-recommendation-box ' + YC_BASKET_LINKS_SELECTOR),
+            categoryPath = getCategoriesFromBreadcrumb();
+
+        [].forEach.call(cartButtons, function (button) {
+            button.addEventListener('click', function () {
+                var productId = null,
+                    data;
+
+                if (button.attributes.getNamedItem('data-post')) {
+                    data = JSON.parse(button.attributes.getNamedItem('data-post').value);
+                    productId = data.data.product;
+                }
+
+                if (productId) {
+                    YcTracking.trackBasket(itemType, productId, categoryPath, language);
+                }
+
+            });
+        });
     }
 
     function fetchRecommendedProducts(box, url) {
@@ -205,8 +230,8 @@ function initYcTrackingModule(context) {
                                 YcTracking.trackRendered(itemType, renderedIds);
                                 YcTracking.renderRecommendation(box, language, trackFollowEvent);
                             });
-
                         }
+                        hookRecommendedBasketHandlers();
                     }
                 }
             };

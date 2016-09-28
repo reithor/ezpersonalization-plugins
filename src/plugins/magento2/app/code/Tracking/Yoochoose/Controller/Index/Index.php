@@ -26,6 +26,7 @@ class Index extends Action
      */
     private $store;
 
+
     /**
      * @param Context $context
      * @param JsonFactory $resultJsonFactory
@@ -69,15 +70,52 @@ class Index extends Action
             ->addAttributeToFilter('entity_id', ['in' => explode(',', $productIds)]);
 
         $products = [];
+
+        /** @var \Magento\Framework\Url\EncoderInterface */
+        $urlEncoder = $this->_objectManager->get('Magento\Framework\Url\EncoderInterface');
+        $newUenc = $urlEncoder->encode($this->getCurrentURL());
+
+        /** @var \Magento\CatalogWidget\Block\Product\ProductsList */
+        $block = $this->_objectManager->get('\Magento\CatalogWidget\Block\Product\ProductsList');
+
         /** @var \Magento\Catalog\Model\Product $product */
         foreach ($collection as $product) {
+            $postData = false;
+            $compareData = false;
+            $wishlistData = false;
             $image = $product->getData('thumbnail');
+
+            if ($product->isSaleable()){
+                /** @var \Magento\Framework\Data\Helper\PostHelper */
+                $postDataHelper = $this->_objectManager->get('Magento\Framework\Data\Helper\PostHelper');
+                $url = $block->getAddToCartUrl($product);
+                $oldUenc = $this->getStringBetween($url, 'uenc/', ",/product");
+                $url = str_replace($oldUenc, $newUenc, $url);
+                $postData = $postDataHelper->getPostData($url, ['product' => $product->getId()]);
+                $postData = $this->changeUenc($postData, $newUenc);
+            }
+
+            if ($block->getAddToCompareUrl()){
+                /** @var \Magento\Catalog\Helper\Product\Compare */
+                $compareHelper = $this->_objectManager->get('Magento\Catalog\Helper\Product\Compare');
+                $compareData = $compareHelper->getPostDataParams($product);
+                $compareData = $this->changeUenc($compareData, $newUenc);
+            }
+
+            /** @var \Magento\Wishlist\Helper\Data */
+            if ($this->_objectManager->get('Magento\Wishlist\Helper\Data')->isAllow()){
+                $wishlistData = $block->getAddToWishlistParams($product);
+            }
+
             $products[] = [
                 'id' => $product->getId(),
                 'link' => $product->getUrlModel()->getUrl($product),
                 'price' => $priceHelper->currency($product->getFinalPrice(), true, false),
                 'image' => ($image ? $helper->getMediaUrl($image) : ($thumbnailHolder ? $placeholderPath : null)),
                 'title' => $product->getName(),
+                'postData' => $postData,
+                'wishlistData' => $wishlistData,
+                'compareData' => $compareData,
             ];
         }
 
@@ -86,5 +124,27 @@ class Index extends Action
         $result = $this->resultJsonFactory->create();
         $result->setData(array_values($products));
         return $result;
+    }
+
+    private function getStringBetween($string, $start, $finish) {
+        $string = " ".$string;
+        $position = strpos($string, $start);
+        if ($position == 0) return "";
+        $position += strlen($start);
+        $length = strpos($string, $finish, $position) - $position;
+        return substr($string, $position, $length);
+    }
+
+    private function changeUenc($data, $newUenc){
+        $data = json_decode($data);
+        $data->data->uenc = $newUenc;
+        return json_encode($data);
+    }
+
+    private function getCurrentURL(){
+        $url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] :  'https://'.$_SERVER["SERVER_NAME"];
+        $url .= ( $_SERVER["SERVER_PORT"] !== 80 ) ? ":".$_SERVER["SERVER_PORT"] : "";
+        $url .= $_SERVER["REQUEST_URI"];
+        return $url;
     }
 }

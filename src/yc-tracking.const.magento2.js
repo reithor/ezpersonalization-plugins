@@ -17,7 +17,13 @@ var YC_RECO_TEMPLATES = {
         "class='product-item-link'>{{{title}}}</a></strong><div class='price-box price-final_price' data-role='priceBox'" +
         " data-product-id='{{{itemId}}}'><span class='price-container price-final_price tax weee'><span " +
         "class='old-price-14-widget-product-grid' data-price-type='finalPrice' class='price-wrapper '>" +
-        "<span class='price'>{{{price}}}</span></span></span></div></div></div></li>{{/each}}{{/each}}</ol></div></div></div>",
+        "<span class='price'>{{{price}}}</span></span></span></div><div class='product-item-actions'>" +
+        "<div class='actions-primary'>{{#if postData}}<button class='action tocart primary' " +
+        "data-post='{{{postData}}}' data-action='add-to-wishlist' type='button' title='Add to Cart'>" +
+        "<span>Add to Cart</span></button>{{/if}}</div><div class='actions-secondary' data-role='add-to-links'>" +
+        "{{#if wishlistData}}<a href='#' data-post='{{{wishlistData}}}' class='action towishlist' data-action='add-to-wishlist' title='Add to Wish List'>" +
+        "<span>Add to Wish List</span></a>{{/if}}{{#if compareData}}<a href='#' class='action tocompare' data-post='{{{compareData}}}' title='Add to Compare'>" +
+        "<span>Add to Compare</span></a>{{/if}}</div></div></div></div></li>{{/each}}{{/each}}</ol></div></div></div>",
         target: '.columns',
         priority: 0,
         consts: {
@@ -39,7 +45,13 @@ var YC_RECO_TEMPLATES = {
         "class='product-item-link'>{{{title}}}</a></strong><div class='price-box price-final_price' data-role='priceBox'" +
         " data-product-id='{{{itemId}}}'><span class='price-container price-final_price tax weee'><span " +
         "class='old-price-14-widget-product-grid' data-price-type='finalPrice' class='price-wrapper '>" +
-        "<span class='price'>{{{price}}}</span></span></span></div></div></div></li>{{/each}}{{/each}}</ol></div></div></div>",
+        "<span class='price'>{{{price}}}</span></span></span></div><div class='product-item-actions'>" +
+        "<div class='actions-primary'>{{#if postData}}<button class='action tocart primary' " +
+        "data-post='{{postData}}' data-action='add-to-wishlist' type='button' title='Add to Cart'>" +
+        "<span>Add to Cart</span></button>{{/if}}</div><div class='actions-secondary' data-role='add-to-links'>" +
+        "{{#if wishlistData}}<a href='#' data-post='{{wishlistData}}' class='action towishlist' data-action='add-to-wishlist' title='Add to Wish List'>" +
+        "<span>Add to Wish List</span></a>{{/if}}{{#if compareData}}<a href='#' class='action tocompare' data-post='{{compareData}}' title='Add to Compare'>" +
+        "<span>Add to Compare</span></a>{{/if}}</div></div></div></div></li>{{/each}}{{/each}}</ol></div></div></div>",
         target: '.columns',
         priority: 1,
         rows: 2,
@@ -61,7 +73,13 @@ var YC_RECO_TEMPLATES = {
         "class='product-item-link'>{{{title}}}</a></strong><div class='price-box price-final_price' data-role='priceBox'" +
         " data-product-id='{{{itemId}}}'><span class='price-container price-final_price tax weee'><span " +
         "class='old-price-14-widget-product-grid' data-price-type='finalPrice' class='price-wrapper '>" +
-        "<span class='price'>{{{price}}}</span></span></span></div></div></div></li>{{/each}}{{/each}}</ol></div></div></div>",
+        "<span class='price'>{{{price}}}</span></span></span></div><div class='product-item-actions'>" +
+        "<div class='actions-primary'>{{#if postData}}<button class='action tocart primary' " +
+        "data-post='{{postData}}' data-action='add-to-wishlist' type='button' title='Add to Cart'>" +
+        "<span>Add to Cart</span></button>{{/if}}</div><div class='actions-secondary' data-role='add-to-links'>" +
+        "{{#if wishlistData}}<a href='#' data-post='{{wishlistData}}' class='action towishlist' data-action='add-to-wishlist' title='Add to Wish List'>" +
+        "<span>Add to Wish List</span></a>{{/if}}{{#if compareData}}<a href='#' class='action tocompare' data-post='{{compareData}}' title='Add to Compare'>" +
+        "<span>Add to Compare</span></a>{{/if}}</div></div></div></div></li>{{/each}}{{/each}}</ol></div></div></div>",
         target: '.columns',
         priority: 1,
         rows: 2,
@@ -83,7 +101,13 @@ var YC_RECO_TEMPLATES = {
         "class='product-item-link'>{{{title}}}</a></strong><div class='price-box price-final_price' data-role='priceBox'" +
         " data-product-id='{{{itemId}}}'><span class='price-container price-final_price tax weee'><span " +
         "class='old-price-14-widget-product-grid' data-price-type='finalPrice' class='price-wrapper '>" +
-        "<span class='price'>{{{price}}}</span></span></span></div></div></div></li>{{/each}}{{/each}}</ol></div></div></div>",
+        "<span class='price'>{{{price}}}</span></span></span></div><div class='product-item-actions'>" +
+        "<div class='actions-primary'>{{#if postData}}<button class='action tocart primary' " +
+        "data-post='{{postData}}' data-action='add-to-wishlist' type='button' title='Add to Cart'>" +
+        "<span>Add to Cart</span></button>{{/if}}</div><div class='actions-secondary' data-role='add-to-links'>" +
+        "{{#if wishlistData}}<a href='#' data-post='{{wishlistData}}' class='action towishlist' data-action='add-to-wishlist' title='Add to Wish List'>" +
+        "<span>Add to Wish List</span></a>{{/if}}{{#if compareData}}<a href='#' class='action tocompare' data-post='{{compareData}}' title='Add to Compare'>" +
+        "<span>Add to Compare</span></a>{{/if}}</div></div></div></div></li>{{/each}}{{/each}}</ol></div></div></div>",
         target: '.columns',
         consts: {
             title: {'': 'Related', en: 'Related'}
@@ -105,7 +129,13 @@ var YC_RECO_TEMPLATES = {
         "class='product-item-link'>{{{title}}}</a></strong><div class='price-box price-final_price' data-role='priceBox'" +
         " data-product-id='{{{itemId}}}'><span class='price-container price-final_price tax weee'><span " +
         "class='old-price-14-widget-product-grid' data-price-type='finalPrice' class='price-wrapper '>" +
-        "<span class='price'>{{{price}}}</span></span></span></div></div></div></li>{{/each}}{{/each}}</ol></div></div></div>",
+        "<span class='price'>{{{price}}}</span></span></span></div><div class='product-item-actions'>" +
+        "<div class='actions-primary'>{{#if postData}}<button class='action tocart primary' " +
+        "data-post='{{postData}}' data-action='add-to-wishlist' type='button' title='Add to Cart'>" +
+        "<span>Add to Cart</span></button>{{/if}}</div><div class='actions-secondary' data-role='add-to-links'>" +
+        "{{#if wishlistData}}<a href='#' data-post='{{wishlistData}}' class='action towishlist' data-action='add-to-wishlist' title='Add to Wish List'>" +
+        "<span>Add to Wish List</span></a>{{/if}}{{#if compareData}}<a href='#' class='action tocompare' data-post='{{compareData}}' title='Add to Compare'>" +
+        "<span>Add to Compare</span></a>{{/if}}</div></div></div></div></li>{{/each}}{{/each}}</ol></div></div></div>",
         target: '.columns',
         priority: 0,
         rows: 2,
@@ -127,7 +157,13 @@ var YC_RECO_TEMPLATES = {
         "class='product-item-link'>{{{title}}}</a></strong><div class='price-box price-final_price' data-role='priceBox'" +
         " data-product-id='{{{itemId}}}'><span class='price-container price-final_price tax weee'><span " +
         "class='old-price-14-widget-product-grid' data-price-type='finalPrice' class='price-wrapper '>" +
-        "<span class='price'>{{{price}}}</span></span></span></div></div></div></li>{{/each}}{{/each}}</ol></div></div></div>",
+        "<span class='price'>{{{price}}}</span></span></span></div><div class='product-item-actions'>" +
+        "<div class='actions-primary'>{{#if postData}}<button class='action tocart primary' " +
+        "data-post='{{postData}}' data-action='add-to-wishlist' type='button' title='Add to Cart'>" +
+        "<span>Add to Cart</span></button>{{/if}}</div><div class='actions-secondary' data-role='add-to-links'>" +
+        "{{#if wishlistData}}<a href='#' data-post='{{wishlistData}}' class='action towishlist' data-action='add-to-wishlist' title='Add to Wish List'>" +
+        "<span>Add to Wish List</span></a>{{/if}}{{#if compareData}}<a href='#' class='action tocompare' data-post='{{compareData}}' title='Add to Compare'>" +
+        "<span>Add to Compare</span></a>{{/if}}</div></div></div></div></li>{{/each}}{{/each}}</ol></div></div></div>",
         target: '.columns .column.main',
         priority: 0,
         rows: 2,
