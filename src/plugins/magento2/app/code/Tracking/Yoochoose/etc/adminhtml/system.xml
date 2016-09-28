@@ -124,7 +124,7 @@
                      ]]></label>
                     <source_model>Yoochoose\Tracking\Model\Config\Source\SearchOption</source_model>
                     <comment><![CDATA[
-                    Select this option to use the Yoochoose search box instead of the standard Magento search box. Benefit from a cloud-based, high-performance search engine with "self-learning" capability.
+                    Select this option to use the Yoochoose search box instead of the standard Magento search box. Benefit from a cloud-based, high-performance search engine with "self-learning" recommendation capability.
                     ]]></comment>
                 </field>
             </group>
