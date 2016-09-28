@@ -2,10 +2,12 @@
 
 namespace Yoochoose\Tracking\Model\Observer;
 
+use Magento\Authorization\Model\Role;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\ObjectManagerInterface;
+use Magento\User\Model\User;
 use Yoochoose\Tracking\Helper\Data;
 use Magento\Framework\Validator\Exception;
 use Magento\Framework\Phrase;
@@ -66,16 +68,19 @@ class ConfigUpdate implements ObserverInterface
         $resource = $this->om->get('Magento\User\Model\ResourceModel\User');
         $userData = $resource->loadByUsername('Yoochoose-Consumer');
         if (empty($userData)) {
-            $userData = $this->createUser();
+            $userData = $this->createUser($resource);
         }
 
         $user = $this->om->create('Magento\User\Model\User');
         $user->load($userData['user_id']);
-        $userRoles = $user->hasAssigned2Role($user);
 
-        if (!empty($userRoles)) {
-            foreach ($userRoles as $role){
-                if($role['role_name'] === 'Yoochoose'){
+        $roleCollection = $this->om->create('Magento\Authorization\Model\ResourceModel\Role\Collection');
+        $roleData = $roleCollection->getItems();
+        if (!empty($roleData)) {
+            /** @var Role $role */
+            foreach ($roleData as $role){
+                $roleOptions = $role->getData();
+                if($roleOptions['role_name'] === 'Yoochoose' && $roleOptions['user_id'] == $userData['user_id']){
                     $hasRole = true;
                 }
             }
@@ -83,7 +88,7 @@ class ConfigUpdate implements ObserverInterface
 
         if(!$hasRole){
             $ycRole = $this->authFactory->createRole()->setData([
-                'parent_id' => 1,
+                'parent_id' => 0,
                 'tree_level' => 1,
                 'sort_order' => 1,
                 'role_type' => RoleGroup::ROLE_TYPE,
@@ -201,7 +206,7 @@ class ConfigUpdate implements ObserverInterface
 
     /**
      * Creates new admin user
-     * @param $resource
+     * @param \Magento\User\Model\ResourceModel\User $resource
      * @return User $user
      * @throws \Magento\Framework\Exception\LocalizedException
      */
