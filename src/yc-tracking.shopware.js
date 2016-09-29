@@ -214,6 +214,7 @@ function initYcTrackingModule(context) {
                                 YcTracking.trackRendered(1, renderedIds);
                                 YcTracking.renderRecommendation(box, language, trackFollowEvent);
                             });
+                            StateManager.updatePlugin('*[data-product-slider-yc="true"]', 'swProductSlider');
                         }
                     }
                 }
@@ -258,5 +259,6 @@ function initYcTrackingModule(context) {
         trackBuy();
         YcTracking.hookSearchingHandler(language);
         fetchRecommendations();
+
     }, false);
 }

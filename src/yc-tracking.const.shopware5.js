@@ -8,15 +8,15 @@ var YC_CONSTS = {
 
 var YC_RECO_TEMPLATES = {
         related: {
-            html_template: "<div class='topseller--title panel--title is--underline'>{{{const.title}}}</div>" +
-            "<div class='topseller--content panel--body product-slider'>{{#each rows}}{{#each columns}}" +
-            "<div class='product-slider--item rendered-related' style='width: 20%; float: left'><div class='product--box box--slider'>" +
-            "<div class='box--content is--rounded'><div class='product--info'><a href='{{link}}' class='product--image' " +
-            "title='{{{title}}}'><span class='image--element'><span class='image--media'><img src='{{image}}' " +
-            "alt='{{{title}}}'></span></span></a><a href='{{link}}' title='{{{title}}}' class='product--title'>" +
+            html_template: "<div class='panel has--border' style='float:left;width: 100%;'><div class='topseller--title panel--title is--underline'>" +
+            "{{{const.title}}}</div><div class='topseller--content panel--body product-slider' data-product-slider-yc='true'>" +
+            "<div class='product-slider--container is--horizontal'>{{#each rows}}{{#each columns}}<div class='product-slider--item " +
+            "rendered-related'><div class='product--box box--slider'><div class='box--content'><div class='product--info'>" +
+            "<a href='{{link}}' class='product--image' title='{{{title}}}'><span class='image--element'><span class='image--media'>" +
+            "<img src='{{image}}' alt='{{{title}}}'></span></span></a><a href='{{link}}' title='{{{title}}}' class='product--title'>" +
             "{{{title}}}</a><div class='product--price-info'><div class='price--unit'></div><div class='product--price'>" +
             "<span class='price--default is--nowrap'>{{{price}}}</span></div></div></div></div></div></div>{{/each}}" +
-            "{{/each}}</div>",
+            "{{/each}}</div></div></div>",
             target: '.content-main--inner',
             consts: {
                 title: {'': 'Personal', de: 'Personal'}
@@ -28,15 +28,15 @@ var YC_RECO_TEMPLATES = {
             enabled : true
         },
         crossselling: {
-            html_template: "<div class='topseller--title panel--title is--underline'>{{{const.title}}}</div>" +
-            "<div class='topseller--content panel--body product-slider'>{{#each rows}}{{#each columns}}" +
-            "<div class='product-slider--item rendered-crossselling' style='width: 20%; float: left'><div class='product--box box--slider'>" +
-            "<div class='box--content is--rounded'><div class='product--info'><a href='{{link}}' class='product--image' " +
-            "title='{{{title}}}'><span class='image--element'><span class='image--media'><img src='{{image}}' " +
-            "alt='{{{title}}}'></span></span></a><a href='{{link}}' title='{{{title}}}' class='product--title'>" +
+            html_template: "<div class='panel has--border' style='float:left;width: 100%;'><div class='topseller--title panel--title is--underline'>" +
+            "{{{const.title}}}</div><div class='topseller--content panel--body product-slider' data-product-slider-yc='true'>" +
+            "<div class='product-slider--container is--horizontal'>{{#each rows}}{{#each columns}}<div class='product-slider--item " +
+            "rendered-crossselling'><div class='product--box box--slider'><div class='box--content'><div class='product--info'>" +
+            "<a href='{{link}}' class='product--image' title='{{{title}}}'><span class='image--element'><span class='image--media'>" +
+            "<img src='{{image}}' alt='{{{title}}}'></span></span></a><a href='{{link}}' title='{{{title}}}' class='product--title'>" +
             "{{{title}}}</a><div class='product--price-info'><div class='price--unit'></div><div class='product--price'>" +
             "<span class='price--default is--nowrap'>{{{price}}}</span></div></div></div></div></div></div>{{/each}}" +
-            "{{/each}}</div>",
+            "{{/each}}</div></div></div>",
             target: '.container_20',
             priority: 0,
             rows: 1,
@@ -48,15 +48,15 @@ var YC_RECO_TEMPLATES = {
             enabled : true
         },
         personal : {
-            html_template: "<div class='topseller--title panel--title is--underline'>{{{const.title}}}</div>" +
-            "<div class='topseller--content panel--body product-slider'>{{#each rows}}{{#each columns}}" +
-            "<div class='product-slider--item rendered-personal' style='width: 20%; float: left'><div class='product--box box--slider'>" +
-            "<div class='box--content is--rounded'><div class='product--info'><a href='{{link}}' class='product--image' " +
-            "title='{{{title}}}'><span class='image--element'><span class='image--media'><img src='{{image}}' " +
-            "alt='{{{title}}}'></span></span></a><a href='{{link}}' title='{{{title}}}' class='product--title'>" +
+            html_template: "<div class='panel has--border' style='float:left;width: 100%;'><div class='topseller--title panel--title is--underline'>" +
+            "{{{const.title}}}</div><div class='topseller--content panel--body product-slider' data-product-slider-yc='true'>" +
+            "<div class='product-slider--container is--horizontal'>{{#each rows}}{{#each columns}}<div class='product-slider--item " +
+            "rendered-personal'><div class='product--box box--slider'><div class='box--content'><div class='product--info'>" +
+            "<a href='{{link}}' class='product--image' title='{{{title}}}'><span class='image--element'><span class='image--media'>" +
+            "<img src='{{image}}' alt='{{{title}}}'></span></span></a><a href='{{link}}' title='{{{title}}}' class='product--title'>" +
             "{{{title}}}</a><div class='product--price-info'><div class='price--unit'></div><div class='product--price'>" +
             "<span class='price--default is--nowrap'>{{{price}}}</span></div></div></div></div></div></div>{{/each}}" +
-            "{{/each}}</div>",
+            "{{/each}}</div></div></div>",
             target: '.content--wrapper',
             priority: 0,
             consts: {
@@ -68,15 +68,15 @@ var YC_RECO_TEMPLATES = {
             enabled : true
         },
         upselling: {
-            html_template: "<div class='topseller--title panel--title is--underline'>{{{const.title}}}</div>" +
-            "<div class='topseller--content panel--body product-slider'>{{#each rows}}{{#each columns}}" +
-            "<div class='product-slider--item rendered-upselling' style='width: 20%; float: left'><div class='product--box box--slider'>" +
-            "<div class='box--content is--rounded'><div class='product--info'><a href='{{link}}' class='product--image' " +
-            "title='{{{title}}}'><span class='image--element'><span class='image--media'><img src='{{image}}' " +
-            "alt='{{{title}}}'></span></span></a><a href='{{link}}' title='{{{title}}}' class='product--title'>" +
+            html_template: "<div class='panel has--border' style='float:left;width: 100%;'><div class='topseller--title panel--title is--underline'>" +
+            "{{{const.title}}}</div><div class='topseller--content panel--body product-slider' data-product-slider-yc='true'>" +
+            "<div class='product-slider--container is--horizontal'>{{#each rows}}{{#each columns}}<div class='product-slider--item " +
+            "rendered-upselling'><div class='product--box box--slider'><div class='box--content'><div class='product--info'>" +
+            "<a href='{{link}}' class='product--image' title='{{{title}}}'><span class='image--element'><span class='image--media'>" +
+            "<img src='{{image}}' alt='{{{title}}}'></span></span></a><a href='{{link}}' title='{{{title}}}' class='product--title'>" +
             "{{{title}}}</a><div class='product--price-info'><div class='price--unit'></div><div class='product--price'>" +
             "<span class='price--default is--nowrap'>{{{price}}}</span></div></div></div></div></div></div>{{/each}}" +
-            "{{/each}}</div>",
+            "{{/each}}</div></div></div>",
             target: '.content-main--inner',
             priority: 1,
             rows: 2,
@@ -88,15 +88,15 @@ var YC_RECO_TEMPLATES = {
             enabled : true
         },
         bestseller: {
-            html_template: "<div class='topseller--title panel--title is--underline'>{{{const.title}}}</div>" +
-            "<div class='topseller--content panel--body product-slider'>{{#each rows}}{{#each columns}}" +
-            "<div class='product-slider--item rendered-bestseller' style='width: 20%; float: left'><div class='product--box box--slider'>" +
-            "<div class='product--info'><a href='{{link}}' class='product--image' title='{{{title}}}'><span " +
-            "class='image--element'><span class='image--media'><img src='{{image}}' alt='{{{title}}}'></span></span>" +
-            "</a><a href='{{link}}' title='{{{title}}}' class='product--title'>{{{title}}}</a><div " +
-            "class='product--price-info'><div class='price--unit'></div><div class='product--price'>" +
-            "<span class='price--default is--nowrap'>{{{price}}}</span></div></div></div></div></div>{{/each}}" +
-            "{{/each}}</div>",
+            html_template: "<div class='panel has--border' style='float:left;width: 100%;'><div class='topseller--title panel--title is--underline'>" +
+            "{{{const.title}}}</div><div class='topseller--content panel--body product-slider' data-product-slider-yc='true'>" +
+            "<div class='product-slider--container is--horizontal'>{{#each rows}}{{#each columns}}<div class='product-slider--item " +
+            "rendered-bestseller'><div class='product--box box--slider'><div class='box--content'><div class='product--info'>" +
+            "<a href='{{link}}' class='product--image' title='{{{title}}}'><span class='image--element'><span class='image--media'>" +
+            "<img src='{{image}}' alt='{{{title}}}'></span></span></a><a href='{{link}}' title='{{{title}}}' class='product--title'>" +
+            "{{{title}}}</a><div class='product--price-info'><div class='price--unit'></div><div class='product--price'>" +
+            "<span class='price--default is--nowrap'>{{{price}}}</span></div></div></div></div></div></div>{{/each}}" +
+            "{{/each}}</div></div></div>",
             target: '.content--wrapper',
             priority: 1,
             rows: 2,
@@ -108,15 +108,15 @@ var YC_RECO_TEMPLATES = {
             enabled : true
         },
         category_page: {
-            html_template: "<div class='topseller--title panel--title is--underline'>{{{const.title}}}</div>" +
-            "<div class='topseller--content panel--body product-slider'>{{#each rows}}{{#each columns}}" +
-            "<div class='product-slider--item rendered-category_page' style='width: 20%; float: left'><div class='product--box box--slider'>" +
-            "<div class='box--content is--rounded'><div class='product--info'><a href='{{link}}' class='product--image' " +
-            "title='{{{title}}}'><span class='image--element'><span class='image--media'><img src='{{image}}' " +
-            "alt='{{{title}}}'></span></span></a><a href='{{link}}' title='{{{title}}}' class='product--title'>" +
+            html_template: "<div class='panel has--border' style='float:left;width: 100%;'><div class='topseller--title panel--title is--underline'>" +
+            "{{{const.title}}}</div><div class='topseller--content panel--body product-slider' data-product-slider-yc='true'>" +
+            "<div class='product-slider--container is--horizontal'>{{#each rows}}{{#each columns}}<div class='product-slider--item " +
+            "rendered-category_page'><div class='product--box box--slider'><div class='box--content'><div class='product--info'>" +
+            "<a href='{{link}}' class='product--image' title='{{{title}}}'><span class='image--element'><span class='image--media'>" +
+            "<img src='{{image}}' alt='{{{title}}}'></span></span></a><a href='{{link}}' title='{{{title}}}' class='product--title'>" +
             "{{{title}}}</a><div class='product--price-info'><div class='price--unit'></div><div class='product--price'>" +
             "<span class='price--default is--nowrap'>{{{price}}}</span></div></div></div></div></div></div>{{/each}}" +
-            "{{/each}}</div>",
+            "{{/each}}</div></div></div>",
             target: '.content.listing--content',
             priority: 0,
             rows: 1,
