@@ -95,4 +95,12 @@ $params = array(
 );
 $data = $client->get('ycarticles', $params);
 echo '<h1> Articles export with limit(3), start(15) and language(en_GB)</h1>';
+echo '<pre>' . print_r($data, true) . '</pre><hr />';
+
+$params = array(
+    'limit' => 2,
+    'start' => 0,
+);
+$data = $client->get('manufacturers', $params);
+echo '<h1> Manufacturers export with limit(2) and start(0)</h1>';
 echo '<pre>' . print_r($data, true) . '</pre>';

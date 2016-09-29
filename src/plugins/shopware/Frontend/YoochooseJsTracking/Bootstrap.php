@@ -24,6 +24,7 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
         'yoochoosecategories' => array('read'),
         'yoochoosestorelocals' => array('read'),
         'yoochoosesubscribers' => array('read'),
+        'supplier' => array('read')
     );
 
     /**

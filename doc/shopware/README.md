@@ -231,3 +231,38 @@
    "success":true
 }
 ```
+## Manufacturers Export
+
+### Parameters
+* limit - (Integer) Number of results
+* offset - (Integer) Start from this offset
+
+### Call example
+```php
+    $params = array(
+        'limit' => 10,
+        'offset' => 100,
+    );
+    $response = $client->get('manufacturers', $params);
+```
+
+### Response example
+```javascript
+{
+    "data":[
+        {
+            "id": 1,
+            "name": "Name",
+            "image": "",
+            "link": "http://www.example.com",
+            "description": "<p>Example</p>",
+            "metaTitle": "Example meta",
+            "metaDescription": "",
+            "metaKeywords": "",
+            "changed": "2016-09-28T19:24:43+0200"
+        }
+    ],
+    "total":1,
+    "success":true
+}
+```
