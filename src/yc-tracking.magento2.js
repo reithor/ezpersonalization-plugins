@@ -165,6 +165,31 @@ function initYcTrackingModule(context) {
                 }
 
             });
+
+        });
+    }
+
+    function hookTrackFollowEvent(boxes){
+        boxes.forEach(function (box) {
+            var template = box ? box.template : null,
+                elements = template ? GLOBAL.document.querySelectorAll(template.target + ' .yc-recommendation-box') : null;
+            elements.forEach(function (elem) {
+                box.products.forEach(function (product) {
+                    var buttons = elem.querySelectorAll('.yc-recommendation-box ' + YC_BASKET_LINKS_SELECTOR);
+
+                    [].forEach.call(buttons, function (button) {
+                        var productId = null;
+
+                        if (button.attributes.getNamedItem('data-post')) {
+                            var data = JSON.parse(button.attributes.getNamedItem('data-post').value);
+                            productId = data.data.product;
+                        }
+                        if (productId === product.id) {
+                            button.addEventListener('click', trackFollowEvent(product, template.scenario));
+                        }
+                    });
+                });
+            });
         });
     }
 
@@ -230,8 +255,9 @@ function initYcTrackingModule(context) {
                                 YcTracking.trackRendered(itemType, renderedIds);
                                 YcTracking.renderRecommendation(box, language, trackFollowEvent);
                             });
+                            hookTrackFollowEvent(allBoxes);
+                            hookRecommendedBasketHandlers();
                         }
-                        hookRecommendedBasketHandlers();
                     }
                 }
             };
