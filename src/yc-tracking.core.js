@@ -400,8 +400,8 @@ function initYcTrackingCore(context) {
              */
             _extractConstants = function (source, destination, locale) {
                 var prop,
-                    language = locale.substr(0, locale.indexOf('-')),
-                    properyNames;
+                    language = locale ? locale.substr(0, locale.indexOf('-')) : '',
+                    propertyNames;
 
                 destination.const = {};
 
@@ -409,11 +409,11 @@ function initYcTrackingCore(context) {
                 for (prop in source) {
                     if (source.hasOwnProperty(prop)) {
                         if (typeof(source[prop]) === 'object') {
-                            properyNames = Object.getOwnPropertyNames(source[prop]);
-                            if (properyNames.length) {
+                            propertyNames = Object.getOwnPropertyNames(source[prop]);
+                            if (propertyNames.length) {
                                 destination.const[prop] = source[prop][locale] ? source[prop][locale] :
                                     source[prop][language] ? source[prop][language] :
-                                        source[prop][''] ? source[prop][''] : source[prop][properyNames[0]];
+                                        source[prop][''] ? source[prop][''] : source[prop][propertyNames[0]];
                             } else {
                                 destination.const[prop] = '';
                                 GLOBAL.console.log('Error: No translation found. Constant "' + prop + '" is an empty object!');
@@ -428,11 +428,11 @@ function initYcTrackingCore(context) {
                 for (prop in YC_CONSTS) {
                     if (YC_CONSTS.hasOwnProperty(prop) && !destination.const.hasOwnProperty(prop)) {
                         if (typeof(YC_CONSTS[prop]) === 'object') {
-                            properyNames = Object.getOwnPropertyNames(YC_CONSTS[prop]);
-                            if (properyNames.length) {
+                            propertyNames = Object.getOwnPropertyNames(YC_CONSTS[prop]);
+                            if (propertyNames.length) {
                                 destination.const[prop] = YC_CONSTS[prop][locale] ? YC_CONSTS[prop][locale] :
                                     YC_CONSTS[prop][language] ? YC_CONSTS[prop][language] :
-                                        YC_CONSTS[prop][''] ? YC_CONSTS[prop][''] : YC_CONSTS[prop][properyNames[0]];
+                                        YC_CONSTS[prop][''] ? YC_CONSTS[prop][''] : YC_CONSTS[prop][propertyNames[0]];
                             } else {
                                 destination.const[prop] = '';
                                 GLOBAL.console.log('Error: No translation found. Constant "' + prop + '" is an empty object!');
@@ -729,7 +729,7 @@ function initYcTrackingCore(context) {
 
         /**
          * Renders recommendation boxes and displays them on frontend page.
-         * 
+         *
          * @param {object} box
          * @param {string} lang
          * @param {function} trackFunction
@@ -749,7 +749,6 @@ function initYcTrackingCore(context) {
                 return null;
             }
 
-            lang = typeof(lang) === 'string' ? lang : '';
             _extractConstants(template.consts, box, lang);
 
             box.products.forEach(function (product) {
@@ -824,9 +823,9 @@ function initYcTrackingCore(context) {
                 }
 
                 // Check if language code is in correct format
-                if (!language.match(/^[a-z]{2}(\-[a-z]{2})?$/i)) {
+                if (language === null || !language.match(/^[a-z]{2}(\-[a-z]{2})?$/i)) {
                     GLOBAL.console.log('Language code (' + language + ') is not in correct format, see http://www.rfc-editor.org/rfc/bcp/bcp47.txt for more info.');
-                    parameters.lang = '';
+                    delete parameters.lang;
                 }
 
                 // Creating and appending searchResult div
@@ -944,7 +943,7 @@ function initYcTrackingCore(context) {
 
         return this;
     };
-    
+
     var YcValidator = {
 
         /**
