@@ -4,5 +4,8 @@
         <route id="yoochoose" frontName="ycproductexport">
             <module name="Yoochoose_Tracking" />
         </route>
+        <route id="yoochooseexport" frontName="yoochoose">
+            <module name="Yoochoose_Tracking" />
+        </route>
     </router>
 </config>

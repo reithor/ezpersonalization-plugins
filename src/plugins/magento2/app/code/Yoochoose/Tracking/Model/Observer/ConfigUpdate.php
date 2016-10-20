@@ -19,12 +19,6 @@ use Magento\Authorization\Model\UserContextInterface;
 class ConfigUpdate implements ObserverInterface
 {
     const YOOCHOOSE_LICENSE_URL = 'https://admin.yoochoose.net/api/v4/';
-    const YOOCHOOSE_API_RULES = array(
-        'Magento_Customer::customer',
-        'Magento_Catalog::products',
-        'Magento_Backend::stores',
-        'Magento_Catalog::categories'
-    );
 
     /** @var ScopeConfigInterface */
     private $config;
@@ -52,6 +46,12 @@ class ConfigUpdate implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
+        $ycApiRules = [
+            'Magento_Customer::customer',
+            'Magento_Catalog::products',
+            'Magento_Backend::stores',
+            'Magento_Catalog::categories'
+        ];
         $customerId = $this->config->getValue('yoochoose/general/customer_id');
         $licenseKey = $this->config->getValue('yoochoose/general/license_key');
         $hasRole = false;
@@ -102,7 +102,7 @@ class ConfigUpdate implements ObserverInterface
                 ->addFieldToFilter('resource_id', 'all');
 
             if ($rulesCollection->count() == 0) {
-                $this->createRules($ycRole, self::YOOCHOOSE_API_RULES);
+                $this->createRules($ycRole, $ycApiRules);
             }
         }
 

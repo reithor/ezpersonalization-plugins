@@ -153,7 +153,7 @@ class Yoochoose implements YoochooseInterface
         $storeId = $this->request->getParam('storeId');
 
         /* @var \Magento\Catalog\Model\ResourceModel\Category\Collection $categoryCollection */
-        $categoryCollection = $this->om->get('Magento\Catalog\Model\ResourceModel\Category\Collection');
+        $categoryCollection = $this->om->create('Magento\Catalog\Model\ResourceModel\Category\Collection');
         $categoryCollection->setStoreId($storeId)
             ->addAttributeToFilter('is_active', 1)
             ->addAttributeToSelect(['url_path', 'name', 'level']);
@@ -173,6 +173,7 @@ class Yoochoose implements YoochooseInterface
                 'name' => $category->getName(),
                 'level' => $category->getLevel(),
                 'parentId' => $category->getParentId(),
+                'storeId' => $category->getStoreId()
             ];
         }
 
@@ -206,7 +207,7 @@ class Yoochoose implements YoochooseInterface
 
 
         /* @var \Magento\Catalog\Model\ResourceModel\Product\Collection $collection */
-        $collection = $this->om->get('Magento\Catalog\Model\ResourceModel\Product\Collection');
+        $collection = $this->om->create('Magento\Catalog\Model\ResourceModel\Product\Collection');
         $collection->setStoreId($storeId);
         $collection->addFieldToFilter('visibility', ['neq' => Visibility::VISIBILITY_NOT_VISIBLE]);
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
@@ -235,6 +236,7 @@ class Yoochoose implements YoochooseInterface
                     ($thumbPh ? $placeHolderPath . $thumbPh : null)),
                 'manufacturer' => $manufacturer ? $manufacturer : null,
                 'categories' => [],
+                'storeId' => $product->getStoreId(),
             ];
             $imageInfo = getimagesize($temp['image']);
             if (is_array($imageInfo)) {
@@ -253,9 +255,13 @@ class Yoochoose implements YoochooseInterface
                         UrlRewrite::STORE_ID => $category->getStoreId(),
                     ]);
 
-                    // remove .html suffix if it exists
-                    $parts = explode('.', $rewrite->getRequestPath());
-                    $categoriesRel[$categoryId] = $parts[0];
+                    if(!empty($rewrite)) {
+                        // remove .html suffix if it exists
+                        $parts = explode('.', $rewrite->getRequestPath());
+                        $categoriesRel[$categoryId] = $parts[0];
+                    } else {
+                        $categoriesRel[$categoryId] = '';
+                    }
                 }
 
                 $temp['categories'][] = $categoriesRel[$categoryId];
@@ -269,5 +275,42 @@ class Yoochoose implements YoochooseInterface
         }
 
         return $products;
+    }
+
+    /**
+     * Returns list of manufacturers that are visible on frontend
+     *
+     * @return mixed
+     */
+    public function getVendors()
+    {
+        
+        $limit = $this->request->getParam('limit');
+        $offset = $this->request->getParam('offset');
+        
+        $eavConfig = $this->om->create('\Magento\Eav\Model\Config');
+        $attribute = $eavConfig->getAttribute('catalog_product', 'manufacturer');
+        $vendors = $attribute->getSource()->getAllOptions();
+
+        $result = [];
+        $i=0;
+        foreach ($vendors as $key => $option) {
+            if ($i >= $offset) {
+                if (!empty($option['value'])) {
+                    $result[$option['value']] = $option['label'];
+                }
+                if (count($result) == $limit) {
+                    break;
+                }
+            }
+            $i++;
+        }
+
+        if (empty($result)) {
+            $this->response->setStatusCode(204);
+        }
+
+        return $result;
+
     }
 }

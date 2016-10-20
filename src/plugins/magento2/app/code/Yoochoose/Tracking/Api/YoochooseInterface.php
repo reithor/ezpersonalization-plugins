@@ -38,4 +38,13 @@ interface YoochooseInterface
      * @return mixed
      */
     public function getProducts();
+
+    /**
+     * Returns list of manufacturers that are visible on frontend
+     *
+     * @api
+     * @return mixed
+     */
+    public function getVendors();
+    
 }
