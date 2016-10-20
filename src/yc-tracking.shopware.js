@@ -145,7 +145,7 @@ function initYcTrackingModule(context) {
     /**
      * Creates function for JSONP callback. Fetches requested products from backend
      * and renders them using supplied function.
-     * 
+     *
      * @param {object} box Recommendation box config with products in it.
      * @param {string} url Backend url
      * @returns {function} Callback function
@@ -199,7 +199,7 @@ function initYcTrackingModule(context) {
                                 box.products.forEach(function (item) {
                                     if (idHistory.indexOf(item.id) === -1) {
                                         currentBox.push(item);
-                                    } 
+                                    }
                                 });
 
                                 //out of unique products, take first N products
@@ -214,7 +214,10 @@ function initYcTrackingModule(context) {
                                 YcTracking.trackRendered(1, renderedIds);
                                 YcTracking.renderRecommendation(box, language, trackFollowEvent);
                             });
-                            StateManager.updatePlugin('*[data-product-slider-yc="true"]', 'swProductSlider');
+
+                            if (context.StateManager) {
+                                StateManager.updatePlugin('*[data-product-slider-yc="true"]', 'swProductSlider');
+                            }
                         }
                     }
                 }
@@ -234,7 +237,7 @@ function initYcTrackingModule(context) {
 
     if (!context['Handlebars']) {
         script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.2/handlebars.min.js';
+        script.src = YC_HANDLEBARS_CDN;
         document.head.appendChild(script);
     }
 

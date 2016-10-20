@@ -297,7 +297,7 @@ function initYcTrackingModule(context) {
 
     if (!context['Handlebars']) {
         script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.2/handlebars.min.js';
+        script.src = YC_HANDLEBARS_CDN;
         document.head.appendChild(script);
     }
 

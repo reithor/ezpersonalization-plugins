@@ -151,9 +151,9 @@ function initYcTrackingModule(context) {
         allBoxes.forEach(function (box) {
             var tpl = box.template,
                 fncName;
-                
+
             if (!tpl) {
-                document.getElementsByTagName('body')[0].innerHTML += 
+                document.getElementsByTagName('body')[0].innerHTML +=
                         '<!-- Yoochoose: Template for ' + box.id + ' recommendation box is not found! -->';
                 console.log('Template for ' + box.id + ' recommendation box is not found!');
                 box.priority = 999;
@@ -181,7 +181,7 @@ function initYcTrackingModule(context) {
             if (!response.hasOwnProperty('recommendationResponseList') || !response.recommendationResponseList.length) {
                 return;
             }
-            
+
             requestsSent++;
             all = response.recommendationResponseList.length;
             response.recommendationResponseList.forEach(function (item) {
@@ -220,7 +220,7 @@ function initYcTrackingModule(context) {
                                     item.handle = item.handle.replace(/-/g, "_");
                                     if (handleHistory.indexOf(item.handle) === -1) {
                                         currentBox.push(item);
-                                    } 
+                                    }
                                 });
 
                                 //out of unique products, take first N products
@@ -249,7 +249,7 @@ function initYcTrackingModule(context) {
     }
 
     if (!window['Handlebars']) {
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.2/handlebars.min.js';
+        script.src = YC_HANDLEBARS_CDN;
         document.getElementsByTagName('head')[0].appendChild(script);
     }
 

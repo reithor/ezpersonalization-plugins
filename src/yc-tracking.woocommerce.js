@@ -79,13 +79,13 @@ function initYcTrackingModule(context) {
             });
         }
     }
-    
+
     function hookLogoutHandler(trackid) {
         if (!trackid && (typeof YcTracking.getUserId() === 'number')) {
             YcTracking.resetUser();
         }
     }
-    
+
     function fetchRecommendations() {
         var boxes = ycObject ? ycObject.boxes : null,
             products = ycObject && ycObject.productIds ? ycObject.productIds : [],
@@ -107,13 +107,13 @@ function initYcTrackingModule(context) {
         } else if (currentPage === 'cart') {
             category = document.location.pathname;
         }
-        
+
         if (currentPage === 'category' || currentPage === 'home') {
             elements = document.querySelectorAll(YC_ADD_BASKET_BUTTON_SELECTOR);
             for (i = 0; i < elements.length; i++) {
                products.push(elements[i].getAttribute(YC_ADD_BASKET_BUTTON_ITEMID));
             }
-            
+
             products = products.join();
         }
 
@@ -136,11 +136,11 @@ function initYcTrackingModule(context) {
             }
         }
     }
-    
+
     /**
      * Creates function for JSONP callback. Fetches requested products from backend
      * and renders them using supplied function.
-     * 
+     *
      * @param {object} box Recommendation box config with products in it.
      * @param {string} url Backend url
      * @returns {function} Callback function
@@ -194,7 +194,7 @@ function initYcTrackingModule(context) {
                                 box.products.forEach(function (item) {
                                     if (idHistory.indexOf(item.id) === -1) {
                                         currentBox.push(item);
-                                    } 
+                                    }
                                 });
 
                                 //out of unique products, take first N products
@@ -228,7 +228,7 @@ function initYcTrackingModule(context) {
 
     if (!window['Handlebars']) {
         script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.2/handlebars.min.js';
+        script.src = YC_HANDLEBARS_CDN;
         document.head.appendChild(script);
     }
 

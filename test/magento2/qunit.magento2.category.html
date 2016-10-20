@@ -8,7 +8,7 @@
 
     <script type="text/javascript">
         var yc_config_object = {
-            "url": "http:\/\/127.0.0.1\/Magento2\/",
+            "url": "http:\/\/magento2-test.yoochoose.net\/",
             "trackid": 0,
             "orderData": null,
             "itemType": "1",
@@ -57,9 +57,12 @@
 <script>
     (function (open) {
         XMLHttpRequest.prototype.open = function (method, url, async, user, pass) {
-            if (url.indexOf(location.origin + '/ycproductexport/') === 0) {
-                url = location.origin + '/yoochoose/js-tracking/test/magento2/plugin.response.mock.json';
+            var parts = location.href.split('/');
+
+            if (url.indexOf('/ycproductexport/') !== -1) {
+                url = parts.slice(0, parts.length -1).join('/') + '/plugin.response.mock.json';
             }
+
             open.call(this, method, url, async, user, pass);
         };
     })(XMLHttpRequest.prototype.open);

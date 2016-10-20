@@ -67,9 +67,12 @@
 <script>
     (function (open) {
         XMLHttpRequest.prototype.open = function (method, url, async, user, pass) {
-            if (url.indexOf(location.origin + '/yoochoose/') === 0) {
-                url = location.origin + '/yoochoose/js-tracking/test/shopware/plugin.response.mock.json';
+            var parts = location.href.split('/');
+
+            if (url.indexOf('/yoochoose?') !== -1) {
+                url = parts.slice(0, parts.length -1).join('/') + '/plugin.response.mock.json';
             }
+
             open.call(this, method, url, async, user, pass);
         };
     })(XMLHttpRequest.prototype.open);

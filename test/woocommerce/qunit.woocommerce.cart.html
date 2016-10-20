@@ -38,9 +38,12 @@
 <script>
     (function (open) {
         XMLHttpRequest.prototype.open = function (method, url, async, user, pass) {
+            var parts = location.href.split('/');
+
             if (url.indexOf(yoochoose_ajax_script.ajaxurl) === 0) {
-                url = location.origin + '/yoochoose/js-tracking/test/woocommerce/plugin.response.mock.json';
+                url = parts.slice(0, parts.length -1).join('/') + '/plugin.response.mock.json';
             }
+
             open.call(this, method, url, async, user, pass);
         };
     })(XMLHttpRequest.prototype.open);

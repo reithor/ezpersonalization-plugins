@@ -1,6 +1,5 @@
 // {id} will be changed with current product id
-var YC_HANDLEBARS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.2/handlebars.min',
-    YC_BREADCRUMBS_SELECTOR = '.breadcrumbs li[class^="item category"]',
+var YC_BREADCRUMBS_SELECTOR = '.breadcrumbs li[class^="item category"]',
     YC_BREADCRUMBS_VALUE = 'innerHTML',
     YC_ARTICLE_RATING_FORM_SELECTOR = '#review-form',
     YC_ARTICLE_RATING_FORM_RADIO_SELECTOR = '[name^="ratings"]:checked',
