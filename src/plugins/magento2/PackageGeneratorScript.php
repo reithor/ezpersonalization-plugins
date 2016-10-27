@@ -39,7 +39,7 @@ function makeArchiveFile($content, $destination)
     $zip->close();
 }
 
-$filePath = dirname(__FILE__) . '/app/code/Tracking/Yoochoose/composer.json';
+$filePath = dirname(__FILE__) . '/app/code/Yoochoose/Tracking/composer.json';
 $realPath = realpath($filePath);
 if (!file_exists($realPath)) {
     exit('Error: File ' . $realPath . ' doesn\'t exist');
@@ -49,5 +49,5 @@ $contents = file_get_contents($realPath);
 $parsed = json_decode($contents, true);
 $version = $parsed['version'];
 
-$rootPath = dirname(__FILE__) . '/app/code/Tracking/Yoochoose';
+$rootPath = dirname(__FILE__) . '/app/code/Yoochoose';
 makeArchiveFile($rootPath, "Yoochoose.zip");
