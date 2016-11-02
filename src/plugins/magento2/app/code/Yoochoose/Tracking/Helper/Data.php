@@ -194,7 +194,7 @@ class Data extends AbstractHelper
         $model = $this->om->get('\Yoochoose\Tracking\Model\Api\Yoochoose');
 
         $baseUrl =  $this->store->getStore()->getBaseUrl();
-        $fileUrl = $baseUrl . 'pub/' . self::YC_DIRECTORY_NAME . '/';
+        $fileUrl = $baseUrl . 'pub/media/' . self::YC_DIRECTORY_NAME . '/';
 
         $method = 'get' . $method;
         $this->request->setParam('limit', $limit);
