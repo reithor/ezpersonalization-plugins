@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="../qunit/qunit.css" rel="stylesheet" type="text/css"/>
+    <script src="../qunit/qunit.js"></script>
+
+    <script src="../../dist/yc-tracking.js"></script>
+
+    <script type="text/javascript">
+        var Mage = {
+            Cookies: {
+                path: '/'
+            }
+        };
+        var yc_config_object = {
+            "trackid": "147",
+            "orderData": null,
+            "itemType": "1",
+            "language": "en-US",
+            "currentPage": "category",
+            "products": "378,380,381,382,383,384,385,447",
+            "boxes": [{"id": "category_page", "title": "Recommendation in %", "display": true}]
+        };
+    </script>
+</head>
+<body>
+
+<div class="magento-test-structure" style="display: none;">
+    <div class="main">
+        <div class="breadcrumbs">
+            <ul>
+                <li class="home">
+                    <a href="http://magento.magnalister/" title="Go to Home Page">Home</a>
+                    <span>/ </span>
+                </li>
+                <li class="category7">
+                    <a href="http://magento.magnalister/home-decor.html" title="">Home &amp; Decor</a>
+                    <span>/ </span>
+                </li>
+                <li class="category23">
+                    <a href="http://magento.magnalister/home-decor/bed-bath.html" title="">Bed &amp; Bath</a>
+                    <span>/ </span>
+                </li>
+                <li class="product">
+                    <strong>Shea Enfused Hydrating Body Lotion</strong>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+<h1 id="qunit-header">Category</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture"></div>
+<script>
+    (function (open) {
+        XMLHttpRequest.prototype.open = function (method, url, async, user, pass) {
+            var parts = location.href.split('/');
+
+            if (url.indexOf(location.origin + '/yoochoose/') === 0) {
+                url = parts.slice(0, parts.length -1).join('/') + '/plugin.response.mock.json';
+            }
+            open.call(this, method, url, async, user, pass);
+        };
+    })(XMLHttpRequest.prototype.open);
+
+    (function () {
+        module('Shop Category Page');
+    }());
+</script>
+</body>
+</html>
