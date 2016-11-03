@@ -72,13 +72,17 @@ class Index extends Action
         if ($password === $postPassword) {
             //lock
             $this->config->saveConfig('yoochoose/export/enable_flag', 1, 'default', 0);
-            $postData = $this->helper->export($limit);
 
-            $this->setCallback($callbackUrl, $postData);
-
-            //unlock
-            $this->config->saveConfig('yoochoose/export/enable_flag', 0, 'default', 0);
-            $response['success'] = true;
+            try {
+                $postData = $this->helper->export($limit);
+                $this->setCallback($callbackUrl, $postData);
+                $response['success'] = true;
+            } catch (\Exception $e) {
+                $response['success'] = false;
+                $response['message'] = $e->getMessage();
+            } finally {
+                $this->config->saveConfig('yoochoose/export/enable_flag', 0, 'default', 0);
+            }
         } else {
             $response['message'] = 'Passwords do not match!';
         }
@@ -99,12 +103,14 @@ class Index extends Action
      */
     private function setCallback($url, $post)
     {
-
         $postString = json_encode($post);
 
         $cURL = curl_init();
         curl_setopt($cURL, CURLOPT_URL, $url);
         curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($cURL, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+        ));
 
         curl_setopt($cURL, CURLOPT_POST, 1);
         curl_setopt($cURL, CURLOPT_POSTFIELDS, $postString);

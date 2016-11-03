@@ -206,7 +206,7 @@ class Data extends AbstractHelper
             if (!empty($results)){
                 $filename = $this->generateRandomString() . '.json';
                 $file = $directory . $filename;
-                $this->io->write($file, json_encode($results));
+                $this->io->write($file, json_encode(array_values($results)));
                 $fileSize = filesize($file);
                 if ($fileSize >= self::YC_MAX_FILE_SIZE){
                     $this->io->rm($file);
@@ -220,4 +220,5 @@ class Data extends AbstractHelper
 
         return $postData;
     }
+
 }
