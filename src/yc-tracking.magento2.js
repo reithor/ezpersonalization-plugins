@@ -53,23 +53,23 @@ function initYcTrackingModule(context) {
             categoryPath = getCategoriesFromBreadcrumb();
 
         [].forEach.call(cartButtons, function (button) {
-                button.addEventListener('click', function () {
-                    var productId = null,
-                        data;
+            button.addEventListener('click', function () {
+                var productId = null,
+                    data;
 
-                    if (button.form && button.form.product) {
-                        //button has form
-                        productId = button.form.product.value;
-                    } else if (button.attributes.getNamedItem('data-post')) {
-                        data = JSON.parse(button.attributes.getNamedItem('data-post').value);
-                        productId = data.data.product;
-                    }
+                if (button.form && button.form.product) {
+                    //button has form
+                    productId = button.form.product.value;
+                } else if (button.attributes.getNamedItem('data-post')) {
+                    data = JSON.parse(button.attributes.getNamedItem('data-post').value);
+                    productId = data.data.product;
+                }
 
-                    if (productId) {
-                        YcTracking.trackBasket(itemType, productId, categoryPath, language);
-                    }
+                if (productId) {
+                    YcTracking.trackBasket(itemType, productId, categoryPath, language);
+                }
 
-                });
+            });
         });
 
         if (currentPage === 'product') {
@@ -103,21 +103,33 @@ function initYcTrackingModule(context) {
 
         switch (currentPage) {
             case 'category':
-                allBoxes.push({'id': 'category_page'});
+                allBoxes.push({
+                    'id': 'category_page'
+                });
                 category = getCategoriesFromBreadcrumb();
                 break;
             case 'product':
-                allBoxes.push({'id': 'upselling'});
-                allBoxes.push({'id': 'related'});
+                allBoxes.push({
+                    'id': 'upselling'
+                });
+                allBoxes.push({
+                    'id': 'related'
+                });
                 category = getCategoriesFromBreadcrumb();
                 break;
             case 'home':
-                allBoxes.push({'id': 'personal'});
-                allBoxes.push({'id': 'bestseller'});
+                allBoxes.push({
+                    'id': 'personal'
+                });
+                allBoxes.push({
+                    'id': 'bestseller'
+                });
                 category = context.location.pathname;
                 break;
             case 'cart':
-                allBoxes.push({'id': 'crossselling'});
+                allBoxes.push({
+                    'id': 'crossselling'
+                });
                 category = context.location.pathname;
                 break;
         }
@@ -128,8 +140,8 @@ function initYcTrackingModule(context) {
 
             if (!tpl) {
                 document.body.appendChild(document.createComment(
-                    'Yoochoose: Template for ' + allBoxes[i].id + ' recommendation box is not found!'));
-                console.log('Template for ' + allBoxes[i].id + ' recommendation box is not found!');
+                    'Yoochoose: Template for ' + allBoxes[i].id + ' recommendation box was not found!'));
+                GLOBAL.console.error('Template for ' + allBoxes[i].id + ' recommendation box was not found!');
                 allBoxes[i].priority = 999;
                 return;
             }
@@ -169,15 +181,11 @@ function initYcTrackingModule(context) {
         });
     }
 
-    function hookTrackFollowEvent(){
-        allBoxes.forEach(function (box) {
+    function hookTrackFollowEvent(boxes) {
+        boxes.forEach(function (box) {
             var template = box ? box.template : null,
-                elements = template ? GLOBAL.document.querySelectorAll(template.target + ' .yc-recommendation-box') : [];
+                elements = template ? GLOBAL.document.querySelectorAll(template.target + ' .yc-recommendation-box') : null;
             elements.forEach(function (elem) {
-                if (!box['products']) {
-                    return;
-                }
-
                 box.products.forEach(function (product) {
                     var buttons = elem.querySelectorAll('.yc-recommendation-box ' + YC_BASKET_LINKS_SELECTOR);
 
@@ -259,7 +267,7 @@ function initYcTrackingModule(context) {
                                 YcTracking.trackRendered(itemType, renderedIds);
                                 YcTracking.renderRecommendation(box, language, trackFollowEvent);
                             });
-                            hookTrackFollowEvent();
+                            hookTrackFollowEvent(allBoxes);
                             hookRecommendedBasketHandlers();
                         }
                     }
@@ -304,7 +312,9 @@ function initYcTrackingModule(context) {
 
     if (typeof require === 'function') {
         require.config({
-            paths: {"Handlebars": YC_HANDLEBARS_CDN},
+            paths: {
+                "Handlebars": YC_HANDLEBARS_CDN
+            },
             waitSeconds: 2
         });
 
