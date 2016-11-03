@@ -3,7 +3,8 @@
 /**
  * Reference to global object.
  */
-var Fn = Function, GLOBAL = new Fn('return this')();
+var Fn = Function,
+    GLOBAL = new Fn('return this')();
 
 /**
  * Init wrapper for the core module.
@@ -163,7 +164,10 @@ function initYcTrackingCore(context) {
                     }
                 }
 
-                _setLocalStore({ userId: userId, expires: expirationDate.getTime() });
+                _setLocalStore({
+                    userId: userId,
+                    expires: expirationDate.getTime()
+                });
                 return userId;
             },
 
@@ -263,6 +267,10 @@ function initYcTrackingCore(context) {
                         return;
                     }
 
+                    var isTemplatePosition = false;
+                    var isTopRowWhenResizePresent = false;
+                    var positionsArray = [];
+
                     // Formatting data
                     for (property in data) {
                         if (data.hasOwnProperty(property) && YC_SEARCH_TEMPLATES.hasOwnProperty(property)) {
@@ -270,57 +278,331 @@ function initYcTrackingCore(context) {
                                 return a.yc_score - b.yc_score;
                             });
 
-                            searchResults.push({
+                            var payload = {
                                 name: property.toLowerCase(),
                                 template: YC_SEARCH_TEMPLATES[property],
                                 results: data[property].slice(0, YC_SEARCH_TEMPLATES[property].amount),
                                 priority: YC_SEARCH_TEMPLATES[property].priority
+                            };
+                            //if position is used
+                            if (YC_SEARCH_TEMPLATES[property].hasOwnProperty('topRowWhenResize')) {
+                                isTopRowWhenResizePresent = true;
+                            }
+                            if (YC_SEARCH_TEMPLATES[property].hasOwnProperty('position')) {
+                                isTemplatePosition = true;
+                                payload.position = YC_SEARCH_TEMPLATES[property].position;
+                                _addToPositionsArray(positionsArray, property, YC_SEARCH_TEMPLATES[property]);
+                            }
+                            searchResults.push(payload);
+                        }
+                    }
+                    if (isTemplatePosition) {
+                        positionsArray.sort(_functionSortByColumnThenRow);
+                        _drawPositionSearchBox(searchResults, positionsArray, searchNode, language, isTopRowWhenResizePresent);
+                    } else {
+                        // Sorting by priority
+                        searchResults.sort(function (a, b) {
+                            return a.priority - b.priority;
+                        });
+                        _drawPrioritySearchBox(searchResults, searchNode, language);
+                    }
+                }
+            },
+
+            /**
+             * Helper function to sort an object by its properties.
+             * First by column then by row. 
+             */
+            _functionSortByColumnThenRow = function (a, b) {
+                if (a.col === b.col) {
+                    if (a.row === b.row)
+                        return 0;
+                    else
+                        return (a.row < b.row) ? -1 : 1;
+                } else {
+                    return (a.col < b.col) ? -1 : 1;
+                }
+            },
+
+            /**
+             * draws the HTML for the search box when tempalte property "priority" is used 
+             *
+             * @param {object} searchResults
+             * @param {object} searchNode
+             * @param {string} language
+             * @returns {Function}
+             */
+            _drawPrioritySearchBox = function (searchResults, searchNode, language) {
+
+                _resetSearchBox(searchNode);
+
+                var nrLeftResults = 1;
+                var nrRightResults = 1;
+
+
+                searchResults.forEach(function (elem) {
+                    var compiled = Handlebars.compile(elem.template.html_template),
+                        wrapper = GLOBAL.document.createElement('div'),
+                        filtered = [],
+                        view = searchNode.view;
+
+                    _extractConstants(elem.template.consts, elem, language);
+
+                    //reformat prices
+                    elem.results.forEach(function (item) {
+                        var priceValue,
+                            inArray = filtered.find(function (e) {
+                                return e.title === item.title && e.url === item.url;
                             });
+
+                        if (inArray) {
+                            return;
+                        }
+
+                        filtered.push(item);
+                        if (item.price) {
+                            priceValue = item.price.replace(YC_CONSTS.currency, '').replace('.', YC_DECIMAL_SEPARATOR);
+
+                            item.price = YC_RENDER_PRICE_FORMAT.replace('{price}', priceValue)
+                                .replace('{currencySign}', YC_CONSTS.currencySign)
+                                .replace('{currency}', YC_CONSTS.currency);
+                        }
+                    });
+
+                    elem.results = filtered;
+
+                    //underline the matching strings
+                    var searchBox = GLOBAL.document.querySelector(YC_SEARCH_FIELDS[0].target);
+                    elem.results.forEach(function (item) {
+                        item.searchTitle = _underlineMatchingString(item.title, searchBox.value);
+                    });
+
+                    wrapper.innerHTML = compiled(elem);
+                    view.appendChild(wrapper);
+                    _repositionSearchResults(searchNode.searchElement, view);
+                    view.style.display = 'block';
+                });
+            },
+
+            _getFirstMatchingSearchResult = function (searchResults, elementToSearch) {
+                var matchingSearchResults = searchResults.filter(function (sR) {
+                    return sR.name === elementToSearch.name.toLowerCase();
+                });
+
+                return matchingSearchResults ? matchingSearchResults[0] : null;
+            },
+
+            /**
+             * draws the HTML for the search box when template property "position" is used 
+             *
+             * @param {object} searchResults
+             * @param {object} positionsOrdered - positionsArrayOrdered (the orientating sequence of DOM object creation)
+             * @param {object} searchNode
+             * @param {string} language
+             * @param {boolean} isTopRowWhenResizePresent
+             * @returns {Function}
+             */
+            _drawPositionSearchBox = function (searchResults, positionsOrdered, searchNode, language, isTopRowWhenResizePresent) {
+                _resetSearchBox(searchNode);
+
+                var view;
+                var searchBox = GLOBAL.document.querySelector(YC_SEARCH_FIELDS[0].target);
+                var columnsMediaOrder = "";
+
+                positionsOrdered.forEach(function (element) {
+                    var matchingSearchResult = _getFirstMatchingSearchResult(searchResults, element);
+                    _extractConstants(matchingSearchResult.template.consts, matchingSearchResult, language); // extracts from consts -> to elem
+                    var priceValue;
+                    //reformat prices
+                    var filtered = [];
+
+                    matchingSearchResult.results.forEach(function (item) {
+                        var inArray = filtered.find(function (e) {
+                            return e.title === item.title && e.url === item.url;
+                        });
+                        if (inArray) {
+                            return;
+                        }
+
+                        //underline the matching strings
+                        item.searchTitle = _underlineMatchingString(item.title, searchBox.value);
+
+                        filtered.push(item);
+                        if (item.price) {
+                            priceValue = item.price.replace(YC_CONSTS.currency, '')
+                                .replace('.', YC_DECIMAL_SEPARATOR);
+
+                            item.price = YC_RENDER_PRICE_FORMAT.replace('{price}', priceValue)
+                                .replace('{currencySign}', YC_CONSTS.currencySign)
+                                .replace('{currency}', YC_CONSTS.currency);
+                        }
+                    });
+                    positionsOrdered.results = filtered;
+
+                    // make the tables
+                    view = searchNode.view;
+
+                    //condition to show only the templates with results (hides only the templates configured to be hidden)
+                    if (matchingSearchResult.results.length > 0 ||
+                        !_isDefinedAndExists(matchingSearchResult.template.hideOnNoResults) ||
+                        matchingSearchResult.template.hideOnNoResults === false) {
+                        _makeResultsBoxColumns(matchingSearchResult, view);
+
+                        if (isTopRowWhenResizePresent) {
+                            var cssColumnOrder = matchingSearchResult.template.topRowWhenResize ? 0 : 1;
+                            columnsMediaOrder += "#col-" + matchingSearchResult.position.column + "{ order:" + cssColumnOrder + ";}";
                         }
                     }
 
-                    // Sorting by priority
-                    searchResults.sort(function (a, b) {
-                        return a.priority - b.priority;
-                    });
+                    _repositionSearchResults(searchNode.searchElement, view);
+                });
 
-                    searchNode.view.innerHTML = '';
-                    searchResults.forEach(function (elem) {
-                        var compiled = Handlebars.compile(elem.template.html_template),
-                            wrapper = GLOBAL.document.createElement('div'),
-                            filtered = [],
-                            view = searchNode.view;
-
-                        _extractConstants(elem.template.consts, elem, language);
-
-                        //reformat prices
-                        elem.results.forEach(function (item) {
-                            var priceValue,
-                                inArray = filtered.find(function (e) {
-                                    return e.title === item.title && e.url === item.url;
-                                });
-
-                            if (inArray) {
-                                return;
-                            }
-
-                            filtered.push(item);
-                            if (item.price) {
-                                priceValue = item.price.replace(YC_CONSTS.currency, '').replace('.', YC_DECIMAL_SEPARATOR);
-
-                                item.price = YC_RENDER_PRICE_FORMAT.replace('{price}', priceValue)
-                                    .replace('{currencySign}', YC_CONSTS.currencySign)
-                                    .replace('{currency}', YC_CONSTS.currency);
-                            }
-                        });
-
-                        elem.results = filtered;
-                        wrapper.innerHTML = compiled(elem);
-                        view.appendChild(wrapper);
-                        _repositionSearchResults(searchNode.searchElement, view);
-                        view.style.display = 'block';
-                    });
+                _drawVerticalSeparatorLine(view);
+                //add the css responsive media rules to the columns 
+                if (isTopRowWhenResizePresent) {
+                    _addResponsiveCssRules(columnsMediaOrder);
                 }
+
+                // shows the searchResults
+                view.style.display = 'flex';
+            },
+
+            /**
+             * @param {string} columnsSortRules - column order rules to be appended to css media
+             **/
+            _addResponsiveCssRules = function (columnsSortRules) {
+                var RESPONSIVE_DESIGN_CSS = '@media screen and (max-width:785px) {' +
+                    'div[class*="flex-container"]{' +
+                    'display: -webkit-box;' +
+                    'display: -moz-box;' +
+                    'display: -ms-flexbox;' +
+                    'display: -webkit-flex;' +
+                    'display: flex;' +
+                    'flex-flow:column;' +
+                    '}' + columnsSortRules +
+                    'div[class^="col-"]{ border: none !important;} }';
+                var sheet = (function () {
+                    var style = document.createElement('style');
+                    style.appendChild(document.createTextNode(''));
+                    document.head.appendChild(style);
+                    return style.sheet;
+                })();
+                sheet.insertRule(RESPONSIVE_DESIGN_CSS, sheet.cssRules.length);
+            },
+
+
+            /**
+             * @param {object} view - internal use (to draw the rows inside the same column) 
+             * @returns {string} the css media order for the columns
+             */
+            _makeResultsBoxColumns = function (searchResult, view) {
+                var columnWrapper;
+                var viewChildren = view.children;
+                var currentColumnClass = 'col-' + searchResult.position.column;
+                var columnIndex = _getColumnIndexFromViewChildren(viewChildren, currentColumnClass);
+                if (columnIndex === -1) {
+                    //create new column
+                    columnWrapper = GLOBAL.document.createElement('div');
+                    columnWrapper.setAttribute('id', 'col-' + searchResult.position.column);
+                    columnWrapper.setAttribute('class', 'col-' + searchResult.position.column); // + ' flex-item');
+                } else {
+                    //add element to existing column
+                    columnWrapper = viewChildren[columnIndex];
+                }
+
+
+                var rowWrapper = GLOBAL.document.createElement('div');
+                var ROW_ZERO = 0;
+                if (searchResult.position.hasOwnProperty('row')) {
+                    rowWrapper.setAttribute('class', 'row-' + searchResult.position.row);
+                    rowWrapper.setAttribute('id', 'col-' + searchResult.position.column + '_row-' + searchResult.position.row);
+                } else { //for templates without row defined
+                    rowWrapper.setAttribute('class', 'row-' + ROW_ZERO);
+                    rowWrapper.setAttribute('id', 'col-' + searchResult.position.column + '_row-' + ROW_ZERO);
+                }
+
+                var compiled = Handlebars.compile(searchResult.template.html_template);
+                rowWrapper.innerHTML = compiled(searchResult);
+                columnWrapper.appendChild(rowWrapper);
+
+                view.appendChild(columnWrapper);
+            },
+            /**
+             * draws the vertical line separating the 2 columns
+             */
+            _drawVerticalSeparatorLine = function (searchBoxView) {
+                var results = [];
+                var TWO_COLUMNS = 2;
+                var allDivs = searchBoxView.getElementsByTagName("div");
+                for (var i = 0; i < allDivs.length; i++) {
+                    if (allDivs[i].className.indexOf('col-') !== -1) { //is a column
+                        //get columnID + height;
+                        var columnNameAndHeight = {};
+                        columnNameAndHeight['id'] = allDivs[i].id;
+                        columnNameAndHeight['height'] = allDivs[i].clientHeight;
+                        results.push(columnNameAndHeight);
+                        if (results.length === TWO_COLUMNS) {
+                            break;
+                        }
+                    }
+                }
+
+                if (results.length === TWO_COLUMNS) {
+                    var cssBorder = "thin solid lightgray";
+                    var myColumnId;
+                    if (results[0].height >= results[1].height) {
+                        myColumnId = results[0].id;
+                        document.getElementById(myColumnId).style.borderRight = cssBorder;
+                    } else {
+                        myColumnId = results[1].id;
+                        document.getElementById(myColumnId).style.borderLeft = cssBorder;
+                    }
+                }
+            },
+
+            /**
+             * Helper method to validate the template confguration for Priority and Position.
+             * @returns {Number} the index of occurence. -1 if not found.
+             */
+            _getColumnIndexFromViewChildren = function (viewChildren, currentColumnClass) {
+
+                if (!_isDefinedAndExists(viewChildren) || viewChildren.length === 0) {
+                    return -1;
+                }
+
+                for (var i = 0; i < viewChildren.length; i++) {
+                    if (~viewChildren[i].className.indexOf(currentColumnClass)) {
+                        return i;
+                    }
+                }
+                return -1;
+            },
+
+            /**
+             * Helper method for adding some formatting to the matching product search in the searchbox.
+             *
+             * @param {string} stringToUnderLine - string to be processed
+             * @param {string} predicate - predicate to search
+             * @returns {string} processedString (with some added style) defined in the div 'matchedSearch'
+             */
+            _underlineMatchingString = function (stringToUnderline, predicate) {
+                if (stringToUnderline === null || stringToUnderline.length == 0 ||
+                    predicate === null || predicate.length == 0) {
+                    return stringToUnderline;
+                }
+
+                var replacementString = '<span class="yc-matched-string">' + predicate + '</span>';
+                var stringToModify = '' + stringToUnderline.trim();
+                var underlinedString = _replaceAll(stringToModify, predicate, replacementString);
+                return underlinedString;
+            },
+
+            _replaceAll = function (str, find, replace) {
+                return str.replace(new RegExp(_escapeRegExp(find), 'gi'), replace);
+            },
+
+            _escapeRegExp = function (str) {
+                return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
             },
 
             /**
@@ -330,7 +612,7 @@ function initYcTrackingCore(context) {
              * @param {object} config - This object contains all paramaters needed to make API call
              * @returns {YcTracking} This object's instance.
              */
-            _callFetchSearchResults = function  (config) {
+            _callFetchSearchResults = function (config) {
                 var url = searchRecommendationHost,
                     parameters = [];
 
@@ -408,15 +690,15 @@ function initYcTrackingCore(context) {
                 // Adding local constants
                 for (prop in source) {
                     if (source.hasOwnProperty(prop)) {
-                        if (typeof(source[prop]) === 'object') {
+                        if (typeof (source[prop]) === 'object') {
                             propertyNames = Object.getOwnPropertyNames(source[prop]);
                             if (propertyNames.length) {
                                 destination.const[prop] = source[prop][locale] ? source[prop][locale] :
                                     source[prop][language] ? source[prop][language] :
-                                        source[prop][''] ? source[prop][''] : source[prop][propertyNames[0]];
+                                    source[prop][''] ? source[prop][''] : source[prop][propertyNames[0]];
                             } else {
                                 destination.const[prop] = '';
-                                GLOBAL.console.log('Error: No translation found. Constant "' + prop + '" is an empty object!');
+                                GLOBAL.console.error('Error: No translation found. Constant "' + prop + '" is an empty object!');
                             }
                         } else {
                             destination.const[prop] = source[prop];
@@ -427,15 +709,15 @@ function initYcTrackingCore(context) {
                 // Adding global constants
                 for (prop in YC_CONSTS) {
                     if (YC_CONSTS.hasOwnProperty(prop) && !destination.const.hasOwnProperty(prop)) {
-                        if (typeof(YC_CONSTS[prop]) === 'object') {
+                        if (typeof (YC_CONSTS[prop]) === 'object') {
                             propertyNames = Object.getOwnPropertyNames(YC_CONSTS[prop]);
                             if (propertyNames.length) {
                                 destination.const[prop] = YC_CONSTS[prop][locale] ? YC_CONSTS[prop][locale] :
                                     YC_CONSTS[prop][language] ? YC_CONSTS[prop][language] :
-                                        YC_CONSTS[prop][''] ? YC_CONSTS[prop][''] : YC_CONSTS[prop][propertyNames[0]];
+                                    YC_CONSTS[prop][''] ? YC_CONSTS[prop][''] : YC_CONSTS[prop][propertyNames[0]];
                             } else {
                                 destination.const[prop] = '';
-                                GLOBAL.console.log('Error: No translation found. Constant "' + prop + '" is an empty object!');
+                                GLOBAL.console.error('Error: No translation found. Constant "' + prop + '" is an empty object!');
                             }
                         } else {
                             destination.const[prop] = YC_CONSTS[prop];
@@ -444,13 +726,36 @@ function initYcTrackingCore(context) {
                 }
             },
 
+            /* parses element to position object and inserts in position array
+             * 
+             * @param {object} myArray - array to operate
+             * @param {object} propertyName 
+             * @param {object} property - object that holds the position column and row
+             * @private
+             */
+            _addToPositionsArray = function (myArray, propertyName, property) {
+                var myObj = {};
+                myObj['name'] = propertyName;
+                myObj['col'] = property.position.column;
+                myObj['row'] = property.position.row;
+                myObj['id'] = 'col-' + property.position.column + '_row-' + property.position.row;
+                myArray.push(myObj);
+            },
+
+            /*
+             * @private 
+             */
+            _isDefinedAndExists = function (obj) {
+                return (typeof obj !== 'undefined' && obj !== null);
+            },
+
             /**
              *
              * @param {object} searchBox
              * @param {object} searchResults
              * @private
              */
-            _repositionSearchResults = function(searchBox, searchResults){
+            _repositionSearchResults = function (searchBox, searchResults) {
                 var rect = searchBox.getBoundingClientRect(),
                     resultsRect = searchResults.getBoundingClientRect(),
                     body = GLOBAL.document.body,
@@ -474,7 +779,19 @@ function initYcTrackingCore(context) {
                 }
 
                 searchResults.style.minWidth = rect.width + 'px';
+            },
+
+            /**
+             * removes all childs from the element.
+             */
+            _resetSearchBox = function (element) {
+                // this 'while' is much faster than -> elem.view.innerHTML = ''; 
+                // (+ info: https://jsperf.com/innerhtml-vs-removechild)
+                while (element.view.firstChild) {
+                    element.view.removeChild(element.view.firstChild);
+                }
             };
+
 
         /**
          * Resets user identifier. Should be called when user logs out.
@@ -511,7 +828,7 @@ function initYcTrackingCore(context) {
          * @returns {YcTracking} This object's instance.
          */
         this.trackClick = function (itemTypeId, itemId, categoryPath, language, title, productUrl, image, price,
-                                    unitPrice, oldPrice, rating, timestamp, signature) {
+            unitPrice, oldPrice, rating, timestamp, signature) {
             var url = '/click/' + _userId() + '/' + itemTypeId + '/' + itemId;
 
             url += '?categorypath=' + (categoryPath ? encodeURIComponent(categoryPath) : '');
@@ -578,8 +895,8 @@ function initYcTrackingCore(context) {
          */
         this.trackBuy = function (itemTypeId, itemId, quantity, price, currencyCode, language) {
             var url = '/buy/' + _userId() + '/' + itemTypeId + '/' + itemId +
-                '?fullprice=' + (price + '').replace(',', '.') + currencyCode + '&quantity=' + quantity
-                + '&lang=' + language;
+                '?fullprice=' + (price + '').replace(',', '.') + currencyCode + '&quantity=' + quantity +
+                '&lang=' + language;
 
             _executeEventCall(url);
             return this;
@@ -680,8 +997,8 @@ function initYcTrackingCore(context) {
          */
         this.callFetchRecommendedProducts = function (itemTypeId, scenario, count, products, categoryPath, callback, lang) {
             var url = recommendationHost + '/' + _userId() + '/' + scenario +
-                        '.jsonp?numrecs=' + (count * 2) + '&outputtypeid=' + itemTypeId +
-                        '&jsonpcallback=' + callback;
+                '.jsonp?numrecs=' + (count * 2) + '&outputtypeid=' + itemTypeId +
+                '&jsonpcallback=' + callback;
 
             url += '&contextitems=' + (products ? encodeURIComponent(products) : '');
             url += '&categorypath=' + (categoryPath ? encodeURIComponent(categoryPath) : '');
@@ -708,7 +1025,7 @@ function initYcTrackingCore(context) {
             url += '&contextitems=' + (config.products ? encodeURIComponent(config.products) : '');
             url += '&categorypath=' + (config.categoryPath ? encodeURIComponent(config.categoryPath) : '');
             url += '&usecontextcategorypath=' + (config.useContextCategoryPath === true);
-            url += '&recommendCategory=' + (config.recommendCategory  === true);
+            url += '&recommendCategory=' + (config.recommendCategory === true);
             url += '&lang=' + (config.lang ? config.lang : '');
 
             config.attributes.forEach(function (attr) {
@@ -735,7 +1052,7 @@ function initYcTrackingCore(context) {
          * @param {function} trackFunction
          * @param {string} linkProperty
          */
-        this.renderRecommendation = function(box, lang, trackFunction, linkProperty) {
+        this.renderRecommendation = function (box, lang, trackFunction, linkProperty) {
             var template = box ? box.template : null,
                 section = template ? template.html_template : null,
                 num = 0,
@@ -752,15 +1069,19 @@ function initYcTrackingCore(context) {
             _extractConstants(template.consts, box, lang);
 
             box.products.forEach(function (product) {
-               num++;
-               columns.push(product);
-               if ((num % template.columns) === 0) {
-                    rows.push({'columns' : columns});
+                num++;
+                columns.push(product);
+                if ((num % template.columns) === 0) {
+                    rows.push({
+                        'columns': columns
+                    });
                     columns = [];
                 }
             });
             if (columns.length) {
-                rows.push({'columns' : columns});
+                rows.push({
+                    'columns': columns
+                });
             }
 
             box.rows = rows;
@@ -793,6 +1114,10 @@ function initYcTrackingCore(context) {
                 unfiltered,
                 property;
 
+            if (!this.isSearchTemplateConfigurationValid()) {
+                return;
+            }
+
             //get all variables from all suggestion search templates
             for (property in YC_SEARCH_TEMPLATES) {
                 if (YC_SEARCH_TEMPLATES.hasOwnProperty(property) && YC_SEARCH_TEMPLATES[property].enabled) {
@@ -802,7 +1127,7 @@ function initYcTrackingCore(context) {
             }
 
             //remove duplicates
-            allAttributes = allAttributes.filter(function(item, pos) {
+            allAttributes = allAttributes.filter(function (item, pos) {
                 return allAttributes.indexOf(item) == pos;
             });
 
@@ -811,7 +1136,6 @@ function initYcTrackingCore(context) {
                     newNode,
                     functionName,
                     parameters = {
-                        lang: language,
                         itemtype: 1,
                         attribute: allAttributes
                     },
@@ -822,16 +1146,17 @@ function initYcTrackingCore(context) {
                     return;
                 }
 
+
                 // Check if language code is in correct format
                 if (language === null || !language.match(/^[a-z]{2}(\-[a-z]{2})?$/i)) {
-                    GLOBAL.console.log('Language code (' + language + ') is not in correct format, see http://www.rfc-editor.org/rfc/bcp/bcp47.txt for more info.');
+                    GLOBAL.console.warn('Language code "' + language + '" is not in the correct format, see http://www.rfc-editor.org/rfc/bcp/bcp47.txt for more info.');
                     delete parameters.lang;
                 }
 
                 // Creating and appending searchResult div
                 elem.view = GLOBAL.document.createElement('div');
                 elem.view.id = 'ycSearchResult' + index;
-                elem.view.className = 'yc-search-result';
+                elem.view.className = 'yc-search-result flex-container';
 
                 // Cloning the node so previous events are hooked off
                 newNode = searchInput.cloneNode(true);
@@ -839,7 +1164,6 @@ function initYcTrackingCore(context) {
                 newNode.value = null;
                 searchInput.parentNode.replaceChild(newNode, searchInput);
                 elem.searchElement = newNode;
-                //newNode.parentNode.appendChild(elem.view);
                 GLOBAL.document.body.appendChild(elem.view);
 
                 // Create jsonp response handler function for this search box
@@ -863,10 +1187,43 @@ function initYcTrackingCore(context) {
                     var me = this;
 
                     switch (e.keyCode) {
+                        //pressed keys to ignore. No calls made to the webservice.
+                        case 16: //shift
+                        case 17: //ctrl
+                        case 18: //alt
+                        case 19: //pause
+                        case 20: //caps
+                        case 33: //pageup
+                        case 34: //pagdown
+                        case 35: //end
+                        case 36: //home
+                        case 37: //left-arrow
+                        case 39: //right-arrow
+                        case 45: //insert
+                        case 91: //left windows key 
+                        case 92: //right windows key
+                        case 93: //select key
+                        case 112: //f1
+                        case 113: //f2
+                        case 114: //f3
+                        case 115: //f4
+                        case 116: //f5
+                        case 117: //f6
+                        case 118: //f7
+                        case 119: //f8
+                        case 120: //f9
+                        case 121: //f10
+                        case 122: //f11
+                        case 123: //f12
+                        case 144: //numlock
+                        case 145: //scroll lock
+                            e.preventDefault();
+                            return false;
                         case 27: // escape
                             elem.view.style.display = 'none';
-                            elem.view.innerHTML = '';
-                            break;
+                            _resetSearchBox(elem);
+                            //this return (instead of a 'break') will avoid making unnecessary calls to WS and hides the searchBox
+                            return;
                         case 38: // arrow up
                             _markAsSelected(-1, me, searchText, elem.view.id);
                             e.preventDefault();
@@ -901,6 +1258,75 @@ function initYcTrackingCore(context) {
         };
 
         /**
+         * Helper method to validate the template confguration for Priority and Position.
+         * @returns {boolean} true if valid
+         */
+        this.isSearchTemplateConfigurationValid = function () {
+
+            var priorityCount = 0;
+            var positionCount = 0;
+            var topRowWhenResizeCount = 0;
+
+            for (var template in YC_SEARCH_TEMPLATES) {
+                var hasTemplatePosition = YC_SEARCH_TEMPLATES[template].hasOwnProperty('position');
+
+                if (YC_SEARCH_TEMPLATES[template].hasOwnProperty('priority')) {
+                    //if has both properties in the same template -> invalid
+                    if (hasTemplatePosition) {
+                        GLOBAL.console.error('ERROR: YC_SEARCH_TEMPLATES is invalid; Reason: "Priority" and "Position" are both defined in the same template "' + template + '".');
+                        return false;
+                    }
+                    if (YC_SEARCH_TEMPLATES[template].hasOwnProperty('hideOnNoResults') || YC_SEARCH_TEMPLATES[template].hasOwnProperty('topRowWhenResize')) {
+                        GLOBAL.console.error('ERROR: YC_SEARCH_TEMPLATES is invalid; Reason: "hasTemplatePosition" and "hasHideOnResults" must not be configured in templates with "Priority"');
+                        return false;
+                    }
+                    priorityCount++
+                }
+
+                var topRowWhenResize = YC_SEARCH_TEMPLATES[template].hasOwnProperty('topRowWhenResize');
+                var hideOnNoResults = YC_SEARCH_TEMPLATES[template].hasOwnProperty('hideOnNoResults');
+
+                if (topRowWhenResize) {
+                    topRowWhenResizeCount++;
+                }
+
+                if (topRowWhenResize && hideOnNoResults && YC_SEARCH_TEMPLATES[template].topRowWhenResize && YC_SEARCH_TEMPLATES[template].hideOnNoResults) {
+                    GLOBAL.console.error('ERROR: YC_SEARCH_TEMPLATES is invalid; Reason: "topRowWhenResize" and "hideOnNoResults" cannot be defined for the same template "' + template + '".');
+                    return false;
+                }
+                if (hasTemplatePosition) {
+                    positionCount++;
+                }
+            }
+
+            if (priorityCount > 0) {
+                if (positionCount > 0) {
+                    //cannot have mixed priority and position in the same configuration array/collection
+                    GLOBAL.console.error('ERROR: YC_SEARCH_TEMPLATES is invalid; Reason: "Priority" and "Position" are both defined in the template collection.');
+                    return false;
+                }
+
+                if (priorityCount !== Object.keys(YC_SEARCH_TEMPLATES).length) {
+                    // priority is defined in some templates but not in all
+                    GLOBAL.console.error('ERROR: YC_SEARCH_TEMPLATES is invalid; Reason: "Priority" is missing in some templates. If "Priority" is used, it must be defined in all the templates.');
+                    return false;
+                }
+            }
+            if (positionCount > 0 && positionCount !== Object.keys(YC_SEARCH_TEMPLATES).length) {
+                // position is defined in some templates but not in all
+                GLOBAL.console.error('ERROR: YC_SEARCH_TEMPLATES is invalid; Reason: "Position" is missing in some templates. If "Position" is used, it must be defined in all the templates.');
+                return false;
+            }
+
+            if (topRowWhenResizeCount > 1) {
+                GLOBAL.console.error('ERROR: YC_SEARCH_TEMPLATES is invalid; Reason: only one "topRowWhenResize" is allowed.');
+                return false;
+            }
+            return true;
+        };
+
+
+        /**
          * Retrieves query parameter by name
          * @param {string} name
          * @returns {string}
@@ -926,7 +1352,7 @@ function initYcTrackingCore(context) {
                 return result;
             }
 
-            variables = variables.filter(function(item, pos) {
+            variables = variables.filter(function (item, pos) {
                 return variables.indexOf(item) == pos;
             });
 

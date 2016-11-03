@@ -42,7 +42,7 @@ function makeArchiveFile($content, $destination)
 $filePath = dirname(__FILE__) . '/app/code/Yoochoose/Tracking/composer.json';
 $realPath = realpath($filePath);
 if (!file_exists($realPath)) {
-    exit('Error: File ' . $realPath . ' doesn\'t exist');
+    exit('Error in Generator: File "' . ($realPath) . '" or "' . ($filePath) . '"doesn\'t exist');
 }
 
 $contents = file_get_contents($realPath);
