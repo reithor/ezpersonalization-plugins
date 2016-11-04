@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="../qunit/qunit.css" rel="stylesheet" type="text/css"/>
+    <script src="../qunit/qunit.js"></script>
+
+    <script src="../../dist/yc-tracking.js"></script>
+
+    <script type="text/javascript">
+        var yc_config_object = {
+            "url": "http:\/\/magento2-test.yoochoose.net\/",
+            "trackid": 0,
+            "orderData": null,
+            "itemType": "1",
+            "language": "en-US",
+            "currentPage": "category",
+            "productIds": "742,755,768,781,794,807,820,833,846,859,872,885"
+        };
+    </script>
+</head>
+<body>
+
+<div class="magento-test-structure" style="display: none;">
+    <div class="main columns">
+        <div class="breadcrumbs">
+            <ul class="items">
+                <li class="item home">
+                    <a href="http://127.0.0.1/Magento2/" title="Go to Home Page">
+                        Home                </a>
+                </li>
+                <li class="item category11">
+                    <a href="http://127.0.0.1/Magento2/men.html" title="">
+                        Men                </a>
+                </li>
+                <li class="item category12">
+                    <a href="http://127.0.0.1/Magento2/men/tops-men.html" title="">
+                        Tops                </a>
+                </li>
+                <li class="item category16">
+                    <strong>Tees</strong>
+                </li>
+            </ul>
+        </div>
+        <div class="column main"></div>
+    </div>
+
+</div>
+
+<h1 id="qunit-header">Category</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture"></div>
+<script>
+    (function (open) {
+        XMLHttpRequest.prototype.open = function (method, url, async, user, pass) {
+            var parts = location.href.split('/');
+
+            if (url.indexOf('/ycproductexport/') !== -1) {
+                url = parts.slice(0, parts.length -1).join('/') + '/plugin.response.mock.json';
+            }
+
+            open.call(this, method, url, async, user, pass);
+        };
+    })(XMLHttpRequest.prototype.open);
+
+    (function () {
+        module('Shop Category Page');
+    }());
+</script>
+</body>
+</html>

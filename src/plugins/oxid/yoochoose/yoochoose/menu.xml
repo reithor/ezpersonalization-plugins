@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<OX>
+    <OXMENU id="NAVIGATION_ESHOPADMIN">
+        <MAINMENU id="yoochoose" >
+            <SUBMENU id="config" cl="yoochoose">
+            </SUBMENU>
+        </MAINMENU>
+    </OXMENU>
+</OX>
