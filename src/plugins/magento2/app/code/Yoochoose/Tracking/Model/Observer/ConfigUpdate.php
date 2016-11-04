@@ -15,6 +15,7 @@ use Magento\Integration\Model\Oauth\Token;
 use Magento\Authorization\Setup\AuthorizationFactory;
 use Magento\Authorization\Model\Acl\Role\Group as RoleGroup;
 use Magento\Authorization\Model\UserContextInterface;
+use Magento\Framework\App\Request\Http;
 
 class ConfigUpdate implements ObserverInterface
 {
@@ -32,12 +33,18 @@ class ConfigUpdate implements ObserverInterface
     /** @var AuthorizationFactory */
     private $authFactory;
 
-    public function __construct(ScopeConfigInterface $scope, Data $dataHelper, ObjectManagerInterface $om, AuthorizationFactory $authFactory)
+    /** @var  Http*/
+    private $request;
+
+
+    public function __construct(ScopeConfigInterface $scope, Data $dataHelper, ObjectManagerInterface $om, AuthorizationFactory $authFactory,
+        Http $request)
     {
         $this->config = $scope;
         $this->helper = $dataHelper;
         $this->om = $om;
         $this->authFactory = $authFactory;
+        $this->request = $request;
     }
 
     /**
@@ -52,8 +59,11 @@ class ConfigUpdate implements ObserverInterface
             'Magento_Backend::stores',
             'Magento_Catalog::categories'
         ];
-        $customerId = $this->config->getValue('yoochoose/general/customer_id');
-        $licenseKey = $this->config->getValue('yoochoose/general/license_key');
+
+        $storeId= $this->request->getParam('store');
+
+        $customerId = $this->config->getValue('yoochoose/general/customer_id', 'stores', $storeId);
+        $licenseKey = $this->config->getValue('yoochoose/general/license_key', 'stores', $storeId);
         $hasRole = false;
 
         if (!$customerId && !$licenseKey) {

@@ -25,7 +25,7 @@ class Head extends Template
         }
 
         $this->objectManager = ObjectManager::getInstance();
-        $mandator = $this->_scopeConfig->getValue('yoochoose/general/customer_id');
+        $mandator = $this->_scopeConfig->getValue('yoochoose/general/customer_id', 'stores');
         $plugin = $this->_scopeConfig->getValue('yoochoose/general/plugin_id', 'stores');
         $plugin = $plugin ? '/' . $plugin : '';
         $scriptOverwrite = $this->_scopeConfig->getValue('yoochoose/script/script_id', 'stores');
