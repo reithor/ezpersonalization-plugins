@@ -84,7 +84,7 @@ class Yoochoose_JsTracking_Helper_Data extends Mage_Core_Helper_Abstract
             $postData['events'][] = [
                 'action' => 'FULL',
                 'format' => $format,
-                'contentType' => '1',
+                'contentTypeId' => '1',
                 'credentials' => [
                     'login' => null,
                     'password' => null

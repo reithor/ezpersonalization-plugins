@@ -186,6 +186,6 @@ class  Yoochoose_JsTracking_Model_YoochooseExport extends Mage_Core_Model_Config
         }
 
         return array('vendors' => array($vendors));
-
     }
+
 }

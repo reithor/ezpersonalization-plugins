@@ -39,22 +39,24 @@ class Yoochoose_JsTracking_TriggerController extends Mage_Core_Controller_Front_
     {
 
         $configModel = Mage::getModel('core/config');
-        $configModel->saveConfig('yoochoose/export/enable_flag', 1, 'default', 0);
 
         $limit = $this->getRequest()->getParam('limit');
         $callbackUrl = $this->getRequest()->getParam('webHookUrl');
         $postPassword = $this->getRequest()->getParam('password');
 
+        $customerId = Mage::getStoreConfig('yoochoose/general/customer_id');
+        $licenceKey = Mage::getStoreConfig('yoochoose/general/license_key');
         $password = Mage::getStoreConfig('yoochoose/export/password');
 
         if ($password === $postPassword) {
+            $configModel->saveConfig('yoochoose/export/enable_flag', 1, 'default', 0);
 
-            $postData = Mage::helper('yoochoose_jstracking')->export($limit);
-
-            $this->setCallback($callbackUrl, $postData);
-
-            $configModel->saveConfig('yoochoose/export/enable_flag', 0, 'default', 0);
-
+            try {
+                $postData = Mage::helper('yoochoose_jstracking')->export($limit);
+                $this->setCallback($callbackUrl, $postData, $customerId, $licenceKey);
+            } finally {
+                $configModel->saveConfig('yoochoose/export/enable_flag', 0, 'default', 0);
+            }
         }
 
     }
@@ -64,10 +66,12 @@ class Yoochoose_JsTracking_TriggerController extends Mage_Core_Controller_Front_
      *
      * @param string @url
      * @param array @post
+     * @param string $customerId
+     * @param string $licenceKey
      * @return array
      * @internal param mixed $params
      */
-    private function setCallback($url, $post)
+    private function setCallback($url, $post, $customerId, $licenceKey)
     {
 
         $postString = json_encode($post);
@@ -75,7 +79,11 @@ class Yoochoose_JsTracking_TriggerController extends Mage_Core_Controller_Front_
         $cURL = curl_init();
         curl_setopt($cURL, CURLOPT_URL, $url);
         curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
-
+        curl_setopt($cURL, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+        curl_setopt($cURL, CURLOPT_USERPWD, $customerId.":".$licenceKey);
+        curl_setopt($cURL, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json',
+        ));
         curl_setopt($cURL, CURLOPT_POST, 1);
         curl_setopt($cURL, CURLOPT_POSTFIELDS, $postString);
         curl_setopt($cURL, CURLOPT_SSL_VERIFYPEER, false);
