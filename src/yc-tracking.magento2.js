@@ -181,11 +181,14 @@ function initYcTrackingModule(context) {
         });
     }
 
-    function hookTrackFollowEvent(boxes) {
-        boxes.forEach(function (box) {
+    function hookTrackFollowEvent() {
+        allBoxes.forEach(function (box) {
             var template = box ? box.template : null,
-                elements = template ? GLOBAL.document.querySelectorAll(template.target + ' .yc-recommendation-box') : null;
+                elements = template ? GLOBAL.document.querySelectorAll(template.target + ' .yc-recommendation-box') : [];
             elements.forEach(function (elem) {
+                if (!box['products']) {
+                    return;
+                }
                 box.products.forEach(function (product) {
                     var buttons = elem.querySelectorAll('.yc-recommendation-box ' + YC_BASKET_LINKS_SELECTOR);
 
@@ -267,7 +270,7 @@ function initYcTrackingModule(context) {
                                 YcTracking.trackRendered(itemType, renderedIds);
                                 YcTracking.renderRecommendation(box, language, trackFollowEvent);
                             });
-                            hookTrackFollowEvent(allBoxes);
+                            hookTrackFollowEvent();
                             hookRecommendedBasketHandlers();
                         }
                     }
