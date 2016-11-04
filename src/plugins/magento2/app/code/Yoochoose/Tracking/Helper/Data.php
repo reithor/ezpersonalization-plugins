@@ -138,7 +138,7 @@ class Data extends AbstractHelper
             $postData['events'][] = [
                 'action' => 'FULL',
                 'format' => $format,
-                'contentType' => '1',
+                'contentTypeId' => '1',
                 'credentials' => [
                     'login' => null,
                     'password' => null
