@@ -30,10 +30,11 @@ class Yoochoose_JsTracking_Model_Observer
      */
     public function adminSystemConfigChangedSectionYoochoose($observer)
     {
-        $customerId = Mage::getStoreConfig('yoochoose/general/customer_id');
-        $licenseKey = Mage::getStoreConfig('yoochoose/general/license_key');
         $code = Mage::getSingleton('adminhtml/config_data')->getStore();
         $scopeId = Mage::getModel('core/store')->load($code)->getId();
+        $customerId = Mage::getStoreConfig('yoochoose/general/customer_id', $scopeId);
+        $licenseKey = Mage::getStoreConfig('yoochoose/general/license_key', $scopeId);
+
         if ($scopeId === null) {
             $scopeId = 0;
         }
