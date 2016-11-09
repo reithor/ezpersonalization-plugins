@@ -61,7 +61,8 @@ Enter your licence key to $_licenceKey
 		. $CategoryName[Level4] . "\t" . $CategoryName[Level5] . "\t" . $CategoryName[Level6] %}
 {% $_itemPrice = str_replace(',', '.', str_replace('.', '', $Price)) . $Currency %}
 {% $_priceBefore = number_format($RRPDecimalSeparatorDot, 2, ".", "") . $Currency %}
-{% $_imageUrl = substr($BaseURL4Links, 0, -1) . $MiddleSizeImageURL[1] %}
+{% $_baseUrl = substr($BaseURL4Links, 0, -1) %}
+{% $_imageUrl = $_baseUrl . str_replace($_baseUrl, '', $MiddleSizeImageURL[1]) %}
 {% $_unitPrice = $BasePrice . ' ' %}
 {% $_unitPrice .= $CurrencySign . '/' . $BasePriceUnit  %}
 {% $_itemName = $Name[1] %}
