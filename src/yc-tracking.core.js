@@ -457,7 +457,6 @@ function initYcTrackingCore(context) {
                     _repositionSearchResults(searchNode.searchElement, view);
                 });
 
-                _drawVerticalSeparatorLine(view);
                 //add the css responsive media rules to the columns 
                 if (isTopRowWhenResizePresent) {
                     _addResponsiveCssRules(columnsMediaOrder);
@@ -465,6 +464,7 @@ function initYcTrackingCore(context) {
 
                 // shows the searchResults
                 view.style.display = 'flex';
+                _drawVerticalSeparatorLine(view);
             },
 
             /**
