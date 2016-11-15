@@ -48,7 +48,7 @@ $targetMap = array(
 $magentoRoot = isset($argv[1]) ? $argv[1] : urldecode(filter_input(INPUT_GET, 'magentoSrc'));
 
 if (!is_dir($magentoRoot)) {
-    exit('Magneto path is not valid!');
+    exit('Magento path is not valid!');
 }
 
 // Change current directory to the directory of current script
