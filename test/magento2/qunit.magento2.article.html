@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="../qunit/qunit.css" rel="stylesheet" type="text/css"/>
+    <script src="../qunit/qunit.js"></script>
+
+    <script src="../../dist/yc-tracking.js"></script>
+
+    <script type="text/javascript">
+        var Mage = {
+            Cookies: {
+                path: '/'
+            }
+        };
+        var yc_config_object = {
+            "trackid": 0,
+            "orderData": null,
+            "itemType": "1",
+            "language": "en-US",
+            "currentPage": "product",
+            "products": "380",
+            "boxes": [
+                {
+                    "id": "bestseller",
+                    "title": "Bestsellers",
+                    "display": true
+                },
+                {
+                    "id": "personal",
+                    "title": "Recommendations for You",
+                    "display": true
+                }
+            ]
+        };
+    </script>
+</head>
+<body>
+
+<div class="magento-test-structure" style="display: none;">
+    <div class="main">
+        <div class="breadcrumbs">
+            <ul class="items">
+                <li class="item home">
+                    <a href="http://127.0.0.1/Magento2/" title="Go to Home Page">
+                        Home                </a>
+                </li>
+                <li class="item category11">
+                    <a href="http://127.0.0.1/Magento2/men.html" title="">
+                        Men                </a>
+                </li>
+                <li class="item category12">
+                    <a href="http://127.0.0.1/Magento2/men/tops-men.html" title="">
+                        Tops                </a>
+                </li>
+                <li class="item product">
+                    <strong>Teton Pullover Hoodie</strong>
+                </li>
+            </ul>
+        </div>
+        <form action="" method="POST" id="review-form"></form>
+    </div>
+</div>
+
+<h1 id="qunit-header">Article</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture"></div>
+<script>
+    (function(open) {
+        XMLHttpRequest.prototype.open = function(method, url, async, user, pass) {
+            var parts = location.href.split('/');
+
+            if (url.indexOf('/ycproductexport/') !== -1) {
+                url = parts.slice(0, parts.length -1).join('/') + '/plugin.response.mock.json';
+            }
+
+            open.call(this, method, url, async, user, pass);
+        };
+    })(XMLHttpRequest.prototype.open);
+    (function () {
+        module('Shop Article Page');
+    }());
+</script>
+</body>
+</html>

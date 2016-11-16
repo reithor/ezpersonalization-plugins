@@ -1,0 +1,76 @@
+.yc-search-result {
+    position: absolute;
+    display: none;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    margin-top: 10px;
+    padding: 8px 0;
+    z-index: 2147483647;
+}
+
+.yc-search-result div {
+    padding: 10px 10px 0px 10px;
+}
+
+.yc-search-result h2 {
+    text-align: left;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #39c;
+    font-size: 14px;
+    line-height: normal;
+    margin: 0 0 15px 0;
+}
+
+.yc-search-result ul {
+    display: table;
+    list-style-type: none;
+    padding-left: 0;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.yc-search-result ul li {
+    display: table-row;
+}
+
+.yc-search-result a {
+    display: table-cell;
+    color: black;
+    padding: 5px;
+}
+
+.yc-hover, .yc-search-result li:hover {
+    background-color: #39c;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+}
+
+.yc-hover a, .yc-search-result li:hover a{
+    color: white;
+}
+
+.yc-search-result a img {
+    height: 22px;
+    margin-right: 8px;
+    float: left;
+}
+
+.yc-no-results {
+    font-style: italic;
+}
+
+.yc-search-result .yc-search-title {
+    float: left;
+    margin-right: 10px;
+}
+
+.yc-search-result .yc-search-price {
+    float: right;
+}
+
+.yc-search-result-item {
+    margin: 5px;
+}
