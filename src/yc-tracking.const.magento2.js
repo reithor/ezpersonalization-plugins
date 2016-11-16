@@ -160,7 +160,38 @@ var YC_RECO_TEMPLATES = {
         columns: 5,
         scenario: 'cross_selling',
         enabled: true
-    }
+    },
+        category_page: {
+        html_template: "<div class='content-heading'><h2 class='title'>{{{const.title}}}</h2></div>" +
+            "<div class='block widget block-products-list grid'><div class='block-content'><div class='products-grid grid'>" +
+            "<ol class='product-items widget-product-grid'>{{#each rows}}{{#each columns}}<li class='product-item'>" +
+            "<div class='product-item-info'><a href='{{{link}}}' class='product-item-photo'><span class='product-image-container'" +
+            " style='width: 240px;'><span class='product-image-wrapper' style='padding-bottom: 125%;'><img src='{{{image}}}'" +
+            " class='product-image-photo' width='240' height='300' alt='{{{title}}}'/></span></span></a><div " +
+            "class='product-item-details'><strong class='product-item-name'><a title='{{{title}}}' href='{{{link}}}' " +
+            "class='product-item-link'>{{{title}}}</a></strong><div class='price-box price-final_price' data-role='priceBox'" +
+            " data-product-id='{{{itemId}}}'><span class='price-container price-final_price tax weee'><span " +
+            "class='old-price-14-widget-product-grid' data-price-type='finalPrice' class='price-wrapper '>" +
+            "<span class='price'>{{{price}}}</span></span></span></div><div class='product-item-actions'>" +
+            "<div class='actions-primary'>{{#if postData}}<button class='action tocart primary' " +
+            "data-post='{{postData}}' data-action='add-to-wishlist' type='button' title='Add to Cart'>" +
+            "<span>Add to Cart</span></button>{{/if}}</div><div class='actions-secondary' data-role='add-to-links'>" +
+            "{{#if wishlistData}}<a href='#' data-post='{{wishlistData}}' class='action towishlist' data-action='add-to-wishlist' title='Add to Wish List'>" +
+            "<span>Add to Wish List</span></a>{{/if}}{{#if compareData}}<a href='#' class='action tocompare' data-post='{{compareData}}' title='Add to Compare'>" +
+            "<span>Add to Compare</span></a>{{/if}}</div></div></div></div></li>{{/each}}{{/each}}</ol></div></div></div>",
+        target: '.columns',
+        priority: 1,
+        rows: 2,
+        consts: {
+            title: {
+                '': 'Category Bestseller',
+                en: 'Category Bestseller'
+            }
+        },
+        columns: 5,
+        scenario: 'category_page',
+        enabled: true
+    },
 };
 
 var YC_SEARCH_FIELDS = [{
@@ -200,8 +231,8 @@ var YC_SEARCH_TEMPLATES = {
             }
         },
         //priority is deprecated. use position instead
-        /*"priority": 0,
-        "position": {
+        //"priority": 0,
+        /*"position": {
             "column": 0,
             "row": 0
         },*/
