@@ -100,9 +100,3 @@ div[class^="row-"] {
     align-items: flex-start;
     align-content: flex-start;
 }
-
-/* recommendations are repositioned on top of the page */
-.yc-recommendation-box {
-    -webkit-order: 2;
-    order: 2;
-}
