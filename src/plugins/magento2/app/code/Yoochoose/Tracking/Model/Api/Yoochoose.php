@@ -85,8 +85,9 @@ class Yoochoose implements YoochooseInterface
         UrlFinderInterface $urlFinder,
         ProductRepository $productRepository,
         Emulation $appEmulation
-    ) {
-    
+    )
+    {
+
         $this->storeManager = $storeManager;
         $this->config = $config;
         $this->response = $response;
@@ -190,7 +191,7 @@ class Yoochoose implements YoochooseInterface
         }
 
         $result = [];
-        /** @var \Magento\Catalog\Model\Category  $category */
+        /** @var \Magento\Catalog\Model\Category $category */
         foreach ($categoryCollection as $category) {
             $result[] = [
                 'id' => $category->getId(),
@@ -312,16 +313,16 @@ class Yoochoose implements YoochooseInterface
      */
     public function getVendors()
     {
-        
+
         $limit = $this->request->getParam('limit');
         $offset = $this->request->getParam('offset');
-        
+
         $eavConfig = $this->om->create('\Magento\Eav\Model\Config');
         $attribute = $eavConfig->getAttribute('catalog_product', 'manufacturer');
         $vendors = $attribute->getSource()->getAllOptions();
 
         $result = [];
-        $i=0;
+        $i = 0;
         foreach ($vendors as $key => $option) {
             if ($i >= $offset) {
                 if (!empty($option['value'])) {
@@ -339,7 +340,6 @@ class Yoochoose implements YoochooseInterface
         }
 
         return $result;
-
     }
 
     /**
@@ -351,11 +351,12 @@ class Yoochoose implements YoochooseInterface
     {
         $this->appEmulation->startEnvironmentEmulation($storeId, \Magento\Framework\App\Area::AREA_FRONTEND, true);
         $resizedImage = $this->productImageHelper->create()->init($productModel, 'product_small_image')
-            ->constrainOnly(TRUE)
-            ->keepAspectRatio(TRUE)
-            ->keepTransparency(TRUE)
-            ->keepFrame(FALSE)
-            ->resize(100, 100)->save()
+            ->constrainOnly(true)
+            ->keepAspectRatio(true)
+            ->keepTransparency(true)
+            ->keepFrame(false)
+            ->resize(25, 25)
+            ->save()
             ->getUrl();
 
         $this->appEmulation->stopEnvironmentEmulation();
