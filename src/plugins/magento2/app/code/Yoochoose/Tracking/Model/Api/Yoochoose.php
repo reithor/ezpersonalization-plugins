@@ -3,17 +3,20 @@
 namespace Yoochoose\Tracking\Model\Api;
 
 use Magento\Catalog\Model\Product\Visibility;
+use Magento\Catalog\Model\ProductRepository;
 use Magento\CatalogUrlRewrite\Model\CategoryUrlRewriteGenerator;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Webapi\Rest\Response;
 use Magento\Framework\Webapi\Rest\Request;
 use Magento\Newsletter\Model\Subscriber;
+use Magento\Store\Model\App\Emulation;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\UrlRewrite\Model\UrlFinderInterface;
 use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
 use Yoochoose\Tracking\Api\YoochooseInterface;
 use Zend_Db_Select;
+use Magento\Catalog\Helper\ImageFactory;
 
 class Yoochoose implements YoochooseInterface
 {
@@ -49,19 +52,39 @@ class Yoochoose implements YoochooseInterface
     private $urlFinder;
 
     /**
+     * @var ImageFactory
+     */
+
+    private $productImageHelper;
+    /**
+     * @var Emulation
+     */
+    private $appEmulation;
+    /**
+     * @var ProductRepository
+     */
+    private $productRepository;
+
+    /**
      * Yoochoose constructor.
      * @param StoreManagerInterface $storeManager
      * @param ScopeConfigInterface $config
      * @param Response $response
      * @param Request $request
+     * @param ImageFactory $productImageHelper
      * @param UrlFinderInterface $urlFinder
+     * @param ProductRepository $productRepository
+     * @param Emulation $appEmulation
      */
     public function __construct(
         StoreManagerInterface $storeManager,
         ScopeConfigInterface $config,
         Response $response,
         Request $request,
-        UrlFinderInterface $urlFinder
+        ImageFactory $productImageHelper,
+        UrlFinderInterface $urlFinder,
+        ProductRepository $productRepository,
+        Emulation $appEmulation
     ) {
     
         $this->storeManager = $storeManager;
@@ -70,6 +93,9 @@ class Yoochoose implements YoochooseInterface
         $this->request = $request;
         $this->om = ObjectManager::getInstance();
         $this->urlFinder = $urlFinder;
+        $this->productImageHelper = $productImageHelper;
+        $this->appEmulation = $appEmulation;
+        $this->productRepository = $productRepository;
     }
 
     /**
@@ -201,10 +227,8 @@ class Yoochoose implements YoochooseInterface
 
         /** @var \Magento\Catalog\Model\Product\Media\Config $helper */
         $helper = $this->om->get('Magento\Catalog\Model\Product\Media\Config');
-        $placeHolderPath = $helper->getBaseMediaUrl(). '/placeholder/';
+        $placeHolderPath = $helper->getBaseMediaUrl() . '/placeholder/';
         $imagePh = $this->config->getValue("catalog/placeholder/image_placeholder", 'store', $storeCode);
-        $thumbPh = $this->config->getValue("catalog/placeholder/thumbnail_placeholder", 'store', $storeCode);
-
 
         /* @var \Magento\Catalog\Model\ResourceModel\Product\Collection $collection */
         $collection = $this->om->create('Magento\Catalog\Model\ResourceModel\Product\Collection');
@@ -223,6 +247,7 @@ class Yoochoose implements YoochooseInterface
         /** @var \Magento\Catalog\Model\Product $product */
         foreach ($collection as $product) {
             $id = $product->getId();
+            $productModel = $this->productRepository->getById($id, true, $storeId);
             $manufacturer = $product->getAttributeText('manufacturer');
             $temp = [
                 'id' => $id,
@@ -232,15 +257,18 @@ class Yoochoose implements YoochooseInterface
                 'url' => $product->getProductUrl(),
                 'image' => ($product->getImage() ? $helper->getMediaUrl($product->getImage()) :
                     ($imagePh ? $placeHolderPath . $imagePh : null)),
-                'icon_image' => ($product->getData('thumbnail') ? $helper->getMediaUrl($product->getData('thumbnail')) :
-                    ($thumbPh ? $placeHolderPath . $thumbPh : null)),
                 'manufacturer' => $manufacturer ? $manufacturer : null,
                 'categories' => [],
                 'storeId' => $product->getStoreId(),
             ];
-            $imageInfo = getimagesize($temp['image']);
-            if (is_array($imageInfo)) {
-                $temp['image_size'] = $imageInfo[0] . 'x' . $imageInfo[1];
+
+            $temp['icon_image'] = $this->makeSmallImage($storeId, $productModel);
+
+            if ($temp['image']) {
+                $imageInfo = getimagesize($temp['image']);
+                if (is_array($imageInfo)) {
+                    $temp['image_size'] = $imageInfo[0] . 'x' . $imageInfo[1];
+                }
             }
 
             // Categories
@@ -255,7 +283,7 @@ class Yoochoose implements YoochooseInterface
                         UrlRewrite::STORE_ID => $category->getStoreId(),
                     ]);
 
-                    if(!empty($rewrite)) {
+                    if (!empty($rewrite)) {
                         // remove .html suffix if it exists
                         $parts = explode('.', $rewrite->getRequestPath());
                         $categoriesRel[$categoryId] = $parts[0];
@@ -312,5 +340,26 @@ class Yoochoose implements YoochooseInterface
 
         return $result;
 
+    }
+
+    /**
+     * @param $storeId
+     * @param $productModel
+     * @return string
+     */
+    protected function makeSmallImage($storeId, $productModel):string
+    {
+        $this->appEmulation->startEnvironmentEmulation($storeId, \Magento\Framework\App\Area::AREA_FRONTEND, true);
+        $resizedImage = $this->productImageHelper->create()->init($productModel, 'product_small_image')
+            ->constrainOnly(TRUE)
+            ->keepAspectRatio(TRUE)
+            ->keepTransparency(TRUE)
+            ->keepFrame(FALSE)
+            ->resize(100, 100)->save()
+            ->getUrl();
+
+        $this->appEmulation->stopEnvironmentEmulation();
+
+        return $resizedImage;
     }
 }
