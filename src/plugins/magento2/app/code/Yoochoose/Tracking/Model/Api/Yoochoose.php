@@ -347,7 +347,7 @@ class Yoochoose implements YoochooseInterface
      * @param $productModel
      * @return string
      */
-    protected function makeSmallImage($storeId, $productModel):string
+    protected function makeSmallImage($storeId, $productModel)
     {
         $this->appEmulation->startEnvironmentEmulation($storeId, \Magento\Framework\App\Area::AREA_FRONTEND, true);
         $resizedImage = $this->productImageHelper->create()->init($productModel, 'product_small_image')
