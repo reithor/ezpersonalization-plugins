@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Core/etc/config.xsd">
+    <default>
+        <yoochoose>
+            <general>
+                <item_type>1</item_type>
+            </general>
+            <search>
+                <search_enable>1</search_enable>
+            </search>
+        </yoochoose>
+    </default>
+</config>
