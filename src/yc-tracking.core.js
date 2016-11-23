@@ -1232,6 +1232,10 @@ function initYcTrackingCore(context) {
                             _markAsSelected(1, me, searchText, elem.view.id);
                             e.preventDefault();
                             return false;
+                        case 13: // open search result page
+                            if (me.form) {
+                                me.form.submit();
+                            }
                     }
 
                     if (me.value.length < 2) {
