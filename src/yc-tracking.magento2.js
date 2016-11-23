@@ -185,7 +185,7 @@ function initYcTrackingModule(context) {
         allBoxes.forEach(function (box) {
             var template = box ? box.template : null,
                 elements = template ? GLOBAL.document.querySelectorAll(template.target + ' .yc-recommendation-box') : [];
-            elements.forEach(function (elem) {
+            [].forEach.call(elements, function (elem) {
                 if (!box['products']) {
                     return;
                 }
