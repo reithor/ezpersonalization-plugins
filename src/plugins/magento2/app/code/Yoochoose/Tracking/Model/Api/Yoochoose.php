@@ -200,7 +200,7 @@ class Yoochoose implements YoochooseInterface
                 'name' => $category->getName(),
                 'level' => $category->getLevel(),
                 'parentId' => $category->getParentId(),
-                'storeId' => $category->getStoreId()
+                'storeId' => $category->getStoreId(),
             ];
         }
 
@@ -237,7 +237,7 @@ class Yoochoose implements YoochooseInterface
         $collection->addFieldToFilter('visibility', ['neq' => Visibility::VISIBILITY_NOT_VISIBLE]);
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
         $collection->getSelect()->columns(['e.entity_id']);
-        $collection->addAttributeToSelect(['name', 'thumbnail', 'description', 'price', 'url_path', 'image', 'manufacturer', 'qty']);
+        $collection->addAttributeToSelect(['*']);
         if ($limit && is_numeric($limit)) {
             $offset = $offset ? $offset : 0;
             $collection->getSelect()->limit($limit, $offset);
@@ -264,6 +264,16 @@ class Yoochoose implements YoochooseInterface
             ];
 
             $temp['icon_image'] = $this->makeSmallImage($storeId, $productModel);
+
+            $customAttributes = $product->getCustomAttributes();
+            foreach ($customAttributes as $customAttribute) {
+                $customKey = $customAttribute->getAttributeCode();
+                if (!isset($temp[$customKey])) {
+                    $customValue = $product->getAttributeText($customKey);
+                    $temp[$customKey] = $this->getCustomAttributeValue($customValue);
+                }
+            }
+
 
             if ($temp['image']) {
                 $imageInfo = getimagesize($temp['image']);
@@ -362,5 +372,21 @@ class Yoochoose implements YoochooseInterface
         $this->appEmulation->stopEnvironmentEmulation();
 
         return $resizedImage;
+    }
+
+    /**
+     * @param $value
+     * @return string|array
+     */
+    protected function getCustomAttributeValue($value)
+    {
+        $result = '';
+        if (is_object($value)) {
+            $result = (get_class($value) === 'Magento\Framework\Phrase' ? $value->getText() : '');
+        } else if (is_array($value) || is_string($value)) {
+            $result = $value;
+        }
+
+        return $result;
     }
 }

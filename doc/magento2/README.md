@@ -33,6 +33,20 @@ $data = $client->get('yoochoose/products', $params);
             "gear",
             "gear/bags"
         ],
+        "activity": [
+            "Yoga",
+            "Gym"
+        ],
+        "style_bags": [
+            "Exercise",
+            "Tote"
+        ],
+        "strap_bags": [
+            "Adjustable",
+            "Cross Body",
+            "Shoulder",
+            "Single"
+        ],
         "image_size": "1080x1340"
     },
     {
@@ -48,6 +62,20 @@ $data = $client->get('yoochoose/products', $params);
             "gear",
             "gear/bags",
             "collections"
+        ],
+        "activity": [
+            "Yoga",
+            "Gym"
+        ],
+        "style_bags": [
+            "Exercise",
+            "Tote"
+        ],
+        "strap_bags": [
+            "Adjustable",
+            "Cross Body",
+            "Shoulder",
+            "Single"
         ],
         "image_size": "1080x1340"
     }
