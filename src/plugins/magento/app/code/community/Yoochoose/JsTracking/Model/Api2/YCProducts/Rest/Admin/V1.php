@@ -14,7 +14,8 @@ class Yoochoose_JsTracking_Model_Api2_YCProducts_Rest_Admin_V1 extends Yoochoose
         $products = array();
         $limit = $this->getRequest()->getParam('limit');
         $offset = $this->getRequest()->getParam('offset');
-        $storeId = $this->_getStore()->getId();
+        $storeId = $this->getRequest()->getParam('storeViewId');
+        $storeId = ($storeId ? : $this->_getStore()->getId());
         $helper = Mage::getModel('catalog/product_media_config');
         $imagePlaceholder = Mage::getStoreConfig("catalog/placeholder/image_placeholder");
         $placeholderFullPath = $helper->getBaseMediaUrl(). '/placeholder/' . $imagePlaceholder;

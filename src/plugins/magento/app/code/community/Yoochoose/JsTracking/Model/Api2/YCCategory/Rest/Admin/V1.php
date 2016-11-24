@@ -12,7 +12,8 @@ class Yoochoose_JsTracking_Model_Api2_YCCategory_Rest_Admin_V1 extends Yoochoose
     {
         $limit = $this->getRequest()->getParam('limit');
         $offset = $this->getRequest()->getParam('offset');
-        $storeId = $this->_getStore()->getId();
+        $storeId = $this->getRequest()->getParam('storeViewId');
+        $storeId = ($storeId ? : $this->_getStore()->getId());
         $storeUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
 
         /* @var $categoryCollection Mage_Catalog_Model_Resource_Category_Collection */
