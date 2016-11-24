@@ -7,7 +7,6 @@ use Magento\Catalog\Model\ProductRepository;
 use Magento\CatalogUrlRewrite\Model\CategoryUrlRewriteGenerator;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Webapi\Rest\Response;
 use Magento\Framework\Webapi\Rest\Request;
 use Magento\Newsletter\Model\Subscriber;
 use Magento\Store\Model\App\Emulation;
@@ -32,7 +31,7 @@ class Yoochoose implements YoochooseInterface
     private $config;
 
     /**
-     * @var Response
+     * @var \Magento\Framework\Webapi\Rest\Response
      */
     private $response;
 
@@ -69,7 +68,7 @@ class Yoochoose implements YoochooseInterface
      * Yoochoose constructor.
      * @param StoreManagerInterface $storeManager
      * @param ScopeConfigInterface $config
-     * @param Response $response
+     * @param \Magento\Framework\Webapi\Rest\Response $response
      * @param Request $request
      * @param ImageFactory $productImageHelper
      * @param UrlFinderInterface $urlFinder
@@ -79,7 +78,7 @@ class Yoochoose implements YoochooseInterface
     public function __construct(
         StoreManagerInterface $storeManager,
         ScopeConfigInterface $config,
-        Response $response,
+        \Magento\Framework\Webapi\Rest\Response $response,
         Request $request,
         ImageFactory $productImageHelper,
         UrlFinderInterface $urlFinder,
