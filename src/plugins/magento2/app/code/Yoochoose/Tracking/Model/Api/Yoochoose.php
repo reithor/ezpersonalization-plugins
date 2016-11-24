@@ -138,6 +138,7 @@ class Yoochoose implements YoochooseInterface
         $limit = $this->request->getParam('limit');
         $offset = $this->request->getParam('offset');
         $storeId = $this->request->getParam('storeId');
+        $storeId =  ($storeId ? : $this->request->getParam('storeViewId'));
 
         /** @var \Magento\Customer\Model\ResourceModel\Customer\Collection $collection */
         $collection = $this->om->get('Magento\Customer\Model\ResourceModel\Customer\Collection');
@@ -178,6 +179,7 @@ class Yoochoose implements YoochooseInterface
         $limit = $this->request->getParam('limit');
         $offset = $this->request->getParam('offset');
         $storeId = $this->request->getParam('storeId');
+        $storeId =  ($storeId ? : $this->request->getParam('storeViewId'));
 
         /* @var \Magento\Catalog\Model\ResourceModel\Category\Collection $categoryCollection */
         $categoryCollection = $this->om->create('Magento\Catalog\Model\ResourceModel\Category\Collection');
@@ -224,6 +226,7 @@ class Yoochoose implements YoochooseInterface
         $limit = $this->request->getParam('limit');
         $offset = $this->request->getParam('offset');
         $storeId = $this->request->getParam('storeId');
+        $storeId =  ($storeId ? : $this->request->getParam('storeViewId'));
         $storeCode = $this->storeManager->getStore($storeId)->getCode();
 
         /** @var \Magento\Catalog\Model\Product\Media\Config $helper */
@@ -260,7 +263,7 @@ class Yoochoose implements YoochooseInterface
                     ($imagePh ? $placeHolderPath . $imagePh : null)),
                 'manufacturer' => $manufacturer ? $manufacturer : null,
                 'categories' => [],
-                'storeId' => $product->getStoreId(),
+                'storeViewId' => $product->getStoreId(),
             ];
 
             $temp['icon_image'] = $this->makeSmallImage($storeId, $productModel);
