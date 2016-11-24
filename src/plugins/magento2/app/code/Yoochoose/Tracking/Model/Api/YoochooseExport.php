@@ -1,18 +1,20 @@
 <?php
 
-namespace Yoochoose\Tracking\Controller\Export;
+namespace Yoochoose\Tracking\Model\Api;
 
-use Magento\Catalog\Model\Product\Attribute\Source\Status;
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
+
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\App\ResponseInterface;
 use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Config\Model\ResourceModel\Config;
+use Yoochoose\Tracking\Api\YoochooseExportInterface;
 use Yoochoose\Tracking\Logger\Logger;
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\App\RequestInterface;
 
-class Index extends Action
+
+class YoochooseExport implements YoochooseExportInterface
 {
 
     /** @var  \Magento\Framework\Controller\Result\Json */
@@ -39,67 +41,83 @@ class Index extends Action
     private $logger;
 
     /**
-     * @param Context $context
+     * @var RequestInterface
+     */
+    private $request;
+
+    /**
+     * @var ObjectManager
+     */
+    private $om;
+
+    /**
+     * YoochooseExport constructor.
      * @param JsonFactory $resultJsonFactory
      * @param ScopeConfigInterface $scope
      * @param StoreManagerInterface $store
      * @param Config $config
      * @param Logger $logger
+     * @param RequestInterface $request
      */
-    public function __construct(Context $context, JsonFactory $resultJsonFactory, ScopeConfigInterface $scope, StoreManagerInterface $store, Config $config, Logger $logger)
+    public function __construct(
+        JsonFactory $resultJsonFactory,
+        ScopeConfigInterface $scope,
+        StoreManagerInterface $store,
+        Config $config,
+        Logger $logger,
+        RequestInterface $request
+    )
     {
-
         $this->resultJsonFactory = $resultJsonFactory;
-        parent::__construct($context);
         $this->scope = $scope;
         $this->store = $store;
         $this->config = $config;
         $this->logger = $logger;
+        $this->request = $request;
+        $this->om = ObjectManager::getInstance();
     }
+
+    /**
+     * @param array $post
+     * @return mixed
+     */
 
     /**
      * Dispatch request
      *
-     * @return \Magento\Framework\Controller\ResultInterface|ResponseInterface
      * @throws \Magento\Framework\Exception\NotFoundException
      */
-    public function execute()
+    public function startExport()
     {
-        $this->_objectManager->get('Magento\Framework\App\Config\ReinitableConfigInterface')->reinit();
+        $this->om->get('Magento\Framework\App\Config\ReinitableConfigInterface')->reinit();
         $enable = $this->scope->getValue('yoochoose/export/enable_flag');
+        $size = $this->request->getParam('size');
 
-        if ($enable != 1) {
-
-            $requestUri = $this->getRequest()->getRequestUri();
-            $queryString = substr($requestUri, strpos($requestUri, '?') + 1);
-            $this->logger->info('Export has started, with this query string : ' . $queryString);
-
-            $post = [];
-            $post['limit'] = $this->getRequest()->getParam('size');
-            $post['webHookUrl'] = $this->getRequest()->getParam('webHook');
-            $post['password'] = $this->generateRandomString();
-
-            $this->config->saveConfig('yoochoose/export/password', $post['password'], 'default', 0);
-
-            $baseUrl = $this->store->getStore()->getBaseUrl();
-
-            $this->triggerExport($baseUrl . '/yoochoose/trigger', $post);
-
-            $response = [
-                'success' => true
-            ];
-
+        /** Checks if size is set */
+        if (!isset($size) || empty($size)) {
+            throw new LocalizedException(__('Size must be set'));
         } else {
-            $response = [
-                'success' => false,
-                'message' => 'Job not sent'
-            ];
+            if ($enable != 1) {
+                $requestUri = $this->request->getRequestUri();
+                $queryString = substr($requestUri, strpos($requestUri, '?') + 1);
+                $this->logger->info('Export has started, with this query string : ' . $queryString);
+
+                $post = [];
+                $post['limit'] = $this->request->getParam('size');
+                $post['webHookUrl'] = $this->request->getParam('webHook');
+                $post['password'] = $this->generateRandomString();
+
+                $this->config->saveConfig('yoochoose/export/password', $post['password'], 'default', 0);
+
+                $baseUrl = $this->store->getStore()->getBaseUrl();
+
+                $this->triggerExport($baseUrl . '/yoochoose/trigger', $post);
+            } else {
+                throw new LocalizedException(__('Job not sent'));
+            }
         }
 
-        $result = $this->resultJsonFactory->create();
-        $result->setData($response);
-
-        return $result;
+        return true;
     }
 
     /**
@@ -126,7 +144,7 @@ class Index extends Action
      *
      * @param string @url
      * @param array $post
-     * @return cURL execute
+     * @return string execute
      */
     private function triggerExport($url, $post = array()) {
 

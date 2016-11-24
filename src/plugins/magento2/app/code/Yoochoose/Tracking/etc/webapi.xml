@@ -42,4 +42,12 @@
             <resource ref="Magento_Catalog::products"/>
         </resources>
     </route>
+    <!-- Example: curl http://<magento_host>/rest/V1/yoochoose/export -->
+    <route url="/V1/yoochoose/export" method="GET">
+        <service class="Yoochoose\Tracking\Api\YoochooseExportInterface" method="startExport"/>
+        <resources>
+            <resource ref="Magento_Catalog::products"/>
+            <resource ref="Magento_Catalog::categories"/>
+        </resources>
+    </route>
 </routes>

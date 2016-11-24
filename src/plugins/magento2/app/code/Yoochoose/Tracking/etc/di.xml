@@ -17,5 +17,6 @@
     </type>
     <preference for="Yoochoose\Tracking\Api\YoochooseInterface" type="Yoochoose\Tracking\Model\Api\Yoochoose" />
     <preference for="Yoochoose\Tracking\Api\YoochooseInfoInterface" type="Yoochoose\Tracking\Model\Api\YoochooseInfo" />
+    <preference for="Yoochoose\Tracking\Api\YoochooseExportInterface" type="Yoochoose\Tracking\Model\Api\YoochooseExport" />
     <preference for="Yoochoose\Tracking\Api\Data\ResponseInterface" type="Yoochoose\Tracking\Model\Api\Response" />
 </config>
