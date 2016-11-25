@@ -285,12 +285,13 @@ function initYcTrackingCore(context) {
                                 priority: YC_SEARCH_TEMPLATES[property].priority
                             };
                             //if position is used
-                            if (YC_SEARCH_TEMPLATES[property].hasOwnProperty('topRowWhenResize')) {
+                            if (YC_SEARCH_TEMPLATES[property].hasOwnProperty('topRowWhenResize') && YC_SEARCH_TEMPLATES[property].topRowWhenResize === true) {
                                 isTopRowWhenResizePresent = true;
                             }
-                            if (YC_SEARCH_TEMPLATES[property].hasOwnProperty('position')) {
+                            if (YC_SEARCH_TEMPLATES[property].hasOwnProperty('positionColumn') && YC_SEARCH_TEMPLATES[property].positionColumn !== null ) {
                                 isTemplatePosition = true;
-                                payload.position = YC_SEARCH_TEMPLATES[property].position;
+                                payload.position = { 'row' : YC_SEARCH_TEMPLATES[property].positionRow, 
+                                                     'column' : YC_SEARCH_TEMPLATES[property].positionColumn } ;
                                 _addToPositionsArray(positionsArray, property, YC_SEARCH_TEMPLATES[property]);
                             }
                             searchResults.push(payload);
@@ -736,9 +737,9 @@ function initYcTrackingCore(context) {
             _addToPositionsArray = function (myArray, propertyName, property) {
                 var myObj = {};
                 myObj['name'] = propertyName;
-                myObj['col'] = property.position.column;
-                myObj['row'] = property.position.row;
-                myObj['id'] = 'col-' + property.position.column + '_row-' + property.position.row;
+                myObj['col'] = property.positionColumn;
+                myObj['row'] = property.positionRow;
+                myObj['id'] = 'col-' + property.positionColumn + '_row-' + property.positionRow;
                 myArray.push(myObj);
             },
 
@@ -1287,8 +1288,8 @@ function initYcTrackingCore(context) {
                     priorityCount++
                 }
 
-                var topRowWhenResize = YC_SEARCH_TEMPLATES[template].hasOwnProperty('topRowWhenResize');
-                var hideOnNoResults = YC_SEARCH_TEMPLATES[template].hasOwnProperty('hideOnNoResults');
+                var topRowWhenResize = YC_SEARCH_TEMPLATES[template].hasOwnProperty('topRowWhenResize') && YC_SEARCH_TEMPLATES[template].topRowWhenResize === true;
+                var hideOnNoResults = YC_SEARCH_TEMPLATES[template].hasOwnProperty('hideOnNoResults') && YC_SEARCH_TEMPLATES[template].hideOnNoResults === true;
 
                 if (topRowWhenResize) {
                     topRowWhenResizeCount++;
