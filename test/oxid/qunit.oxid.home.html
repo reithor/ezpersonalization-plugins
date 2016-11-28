@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="../qunit/qunit.css" rel="stylesheet" type="text/css"/>
+    <script src="../qunit/qunit.js"></script>
+
+    <script src="../../dist/yc-tracking.js"></script>
+
+    <script type="text/javascript">
+        var yc_config_object = {
+            "trackid": 0,
+            "url": "http:\/\/oxid.dev.soprex.com\/",
+            "language": "de",
+            "currentPage": "home",
+            "itemType": "1",
+            "products": null
+        }
+    </script>
+</head>
+<body>
+
+<div class="oxid-test-structure" style="display: none;">
+    <div id="content"></div>
+</div>
+
+<h1 id="qunit-header">Home</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture"></div>
+<script>
+
+    (function (open) {
+        XMLHttpRequest.prototype.open = function (method, url, async, user, pass) {
+            var parts = location.href.split('/');
+
+            if (url.indexOf('/Yoochoose/') !== -1) {
+                url = parts.slice(0, parts.length -1).join('/') + '/plugin.response.mock.json';
+            }
+
+            open.call(this, method, url, async, user, pass);
+        };
+    })(XMLHttpRequest.prototype.open);
+
+    (function () {
+        function randomInt(max) {
+            max = max || 1000;
+            return parseInt(Math.random() * max);
+        }
+
+        yc_config_object.trackid = randomInt(50) + 100;
+        module('Shop Home Page');
+
+        window.addEventListener('load', function () {
+
+        });
+
+    }());
+</script>
+</body>
+</html>
