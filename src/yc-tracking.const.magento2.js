@@ -201,21 +201,13 @@ var YC_SEARCH_FIELDS = [{
 /* 
  * ABOUT NEW CONFIGURATION FIELDS
  * ==============================
- * new fileds: position, topRowWhenResize, hideOnNoResults
- * deprecated: priority. Use position instead.
  *
- *  use: 
- * - priority: <int>
- * OR
- * - position: {
- *   column: <int>, //starts in 0
- *   row: <int>; optional
- * }
- * when priority is defined, position is ignored (to keep backward compatibility)
- * in position: row is optional when, from all the templates, only 1 template exists in the column
- * 
- * - topRowWhenResize: <bool>; optional. In the searchbox, is the first template to be displayed when the window resizes. only one allowed.
- * - hideOnNoResults:  <bool>; optional. Hides the template in the searchbox when no (search) result was found for that template.
+ * - positionColumn: <int>, //starts in 0
+ * - positionRow:    <int>; //starts in 0
+ * - topRowWhenResize: <bool>; In the searchbox, sets the first template to be displayed when the window resizes. Only one as 'true' is allowed.
+ * - hideOnNoResults:  <bool>; Hides the template in the searchbox when no (search) result was found for that template.
+ *
+ * when positionColumn is not defined, the old design is used (single column search results) to keep backward compatibility
  * */
 var YC_SEARCH_TEMPLATES = {
     "CATEGORY": {
@@ -230,12 +222,9 @@ var YC_SEARCH_TEMPLATES = {
                 "de": "Kategorievorschläge"
             }
         },
-        //priority is deprecated. use position instead
-        //"priority": 0,
-        /*"position": {
-            "column": 0,
-            "row": 0
-        },*/
+        "positionColumn": 0,
+        "positionRow": 0,
+        "topRowWhenResize": false,
         "hideOnNoResults": false
     },
     "VENDOR": {
@@ -250,12 +239,9 @@ var YC_SEARCH_TEMPLATES = {
                 "de": "Markenvorschläge"
             }
         },
-        // priority is deprecated. use position instead
-        /*"priority": 1,
-        "position": {
-            "column": 0,
-            "row": 1
-        },*/
+        "positionColumn": 0,
+        "positionRow": 1,
+        "topRowWhenResize": false,
         "hideOnNoResults": true
     },
     "ITEM": {
@@ -270,12 +256,9 @@ var YC_SEARCH_TEMPLATES = {
                 "de": "Produktvorschläge"
             }
         },
-        //priority is deprecated. use position instead
-        /*"priority": 2,
-        "position": {
-            "column": 1
-                //row is optional when there is only 1 template in the colum
-        },*/
-        "topRowWhenResize": true
+        "positionColumn": 1,
+        "positionRow": 0,
+        "topRowWhenResize": true,
+        "hideOnNoResults": false
     }
 };
