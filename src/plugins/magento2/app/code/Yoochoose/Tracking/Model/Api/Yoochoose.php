@@ -53,7 +53,6 @@ class Yoochoose implements YoochooseInterface
     /**
      * @var ImageFactory
      */
-
     private $productImageHelper;
     /**
      * @var Emulation
@@ -333,18 +332,32 @@ class Yoochoose implements YoochooseInterface
         $attribute = $eavConfig->getAttribute('catalog_product', 'manufacturer');
         $vendors = $attribute->getSource()->getAllOptions();
 
+        if ($limit && is_numeric($limit)) {
+            $limit = (int)$limit;
+            $offset = $offset && is_numeric($offset) ? $offset : 0;
+        }
+
         $result = [];
         $i = 0;
         foreach ($vendors as $key => $option) {
-            if ($i >= $offset) {
-                if (!empty($option['value'])) {
-                    $result[$option['value']] = $option['label'];
-                }
-                if (count($result) == $limit) {
-                    break;
-                }
+            //ignore empty values
+            if (empty($option['value'])) {
+                continue;
             }
+
+            //if value is in our offset add it to results
+            if ($i >= $offset) {
+                $result[$option['value']] = [
+                    'id' => $option['value'],
+                    'name' => $option['label'],
+                ];
+            }
+
             $i++;
+            //check limit of results
+            if ($limit && count($result) === $limit) {
+                break;
+            }
         }
 
         if (empty($result)) {

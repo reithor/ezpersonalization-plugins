@@ -29,7 +29,7 @@
         </resources>
     </route>
     <!-- Example: curl http://<magento_host>/rest/V1/yoochoose/vendors -->
-    <route url="/V1/yoochoose/categories" method="GET">
+    <route url="/V1/yoochoose/vendors" method="GET">
         <service class="Yoochoose\Tracking\Api\YoochooseInterface" method="getVendors"/>
         <resources>
             <resource ref="Magento_Catalog::products"/>
