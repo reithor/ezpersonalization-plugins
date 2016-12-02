@@ -105,6 +105,7 @@ class YoochooseExport implements YoochooseExportInterface
                 $post = [];
                 $post['limit'] = $this->request->getParam('size');
                 $post['webHookUrl'] = $this->request->getParam('webHook');
+                $post['storeView'] = $this->request->getParam('storeView');
                 $post['password'] = $this->generateRandomString();
 
                 $this->config->saveConfig('yoochoose/export/password', $post['password'], 'default', 0);

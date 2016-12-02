@@ -2,6 +2,7 @@
 
 namespace Yoochoose\Tracking\Model\Api;
 
+use Magento\Catalog\Helper\ImageFactory;
 use Magento\Catalog\Model\Product\Visibility;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\CatalogUrlRewrite\Model\CategoryUrlRewriteGenerator;
@@ -15,7 +16,6 @@ use Magento\UrlRewrite\Model\UrlFinderInterface;
 use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
 use Yoochoose\Tracking\Api\YoochooseInterface;
 use Zend_Db_Select;
-use Magento\Catalog\Helper\ImageFactory;
 
 class Yoochoose implements YoochooseInterface
 {
@@ -98,34 +98,6 @@ class Yoochoose implements YoochooseInterface
     }
 
     /**
-     * Returns list of store views with language codes
-     *
-     * @api
-     * @return mixed
-     */
-    public function getStoreViews()
-    {
-        $result = [];
-        $stores = $this->storeManager->getStores();
-
-        foreach ($stores as $store) {
-            $language = $this->config->getValue('general/locale/code', 'stores', $store->getCode());
-            $result[] = [
-                'id' => $store['store_id'],
-                'name' => $store['name'],
-                'item_type_id' => $this->config->getValue('yoochoose/general/item_type', 'store', $store->getCode()),
-                'language' => str_replace('_', '-', $language),
-            ];
-        }
-
-        if (empty($result)) {
-            $this->response->setStatusCode(204);
-        }
-
-        return $result;
-    }
-
-    /**
      * Returns list of subscribers
      *
      * @api
@@ -135,8 +107,12 @@ class Yoochoose implements YoochooseInterface
     {
         $limit = $this->request->getParam('limit');
         $offset = $this->request->getParam('offset');
-        $storeId = $this->request->getParam('storeId');
-        $storeId =  ($storeId ? : $this->request->getParam('storeViewId'));
+        $storeId = $this->request->getParam('storeView');
+
+        /** @deprecated storeId is deprecated */
+        if (!isset($storeId) || empty($storeId)) {
+            $storeId = $this->request->getParam('storeId');
+        }
 
         /** @var \Magento\Customer\Model\ResourceModel\Customer\Collection $collection */
         $collection = $this->om->get('Magento\Customer\Model\ResourceModel\Customer\Collection');
@@ -176,31 +152,46 @@ class Yoochoose implements YoochooseInterface
     {
         $limit = $this->request->getParam('limit');
         $offset = $this->request->getParam('offset');
-        $storeId = $this->request->getParam('storeId');
-        $storeId =  ($storeId ? : $this->request->getParam('storeViewId'));
+        $storeId = $this->request->getParam('storeViewId');
 
-        /* @var \Magento\Catalog\Model\ResourceModel\Category\Collection $categoryCollection */
-        $categoryCollection = $this->om->create('Magento\Catalog\Model\ResourceModel\Category\Collection');
-        $categoryCollection->setStoreId($storeId)
-            ->addAttributeToFilter('is_active', 1)
-            ->addAttributeToSelect(['url_path', 'name', 'level']);
-
-        if ($limit && is_numeric($limit)) {
-            $offset = $offset ? $offset : 0;
-            $categoryCollection->getSelect()->limit($limit, $offset);
+        /** @deprecated storeId is deprecated */
+        if (!isset($storeId) || empty($storeId)) {
+            $storeId = $this->request->getParam('storeId');
         }
 
+        if (!isset($storeId) || empty($storeId)) {
+            $storeIds = $this->getStoreViews();
+            $result = array();
+            foreach ($storeIds as $storeId) {
+                $result[] = $this->getCategoriesHelper($limit, $offset, $storeId['id']);
+            }
+            $result = call_user_func_array('array_merge', $result);
+
+            return $result;
+
+        } else {
+            return $this->getCategoriesHelper($limit, $offset, $storeId);
+        }
+    }
+
+    /**
+     * Returns list of store views with language codes
+     *
+     * @api
+     * @return mixed
+     */
+    public function getStoreViews()
+    {
         $result = [];
-        /** @var \Magento\Catalog\Model\Category $category */
-        foreach ($categoryCollection as $category) {
+        $stores = $this->storeManager->getStores();
+
+        foreach ($stores as $store) {
+            $language = $this->config->getValue('general/locale/code', 'stores', $store->getCode());
             $result[] = [
-                'id' => $category->getId(),
-                'path' => $category->getPath(),
-                'url' => $category->getUrl(),
-                'name' => $category->getName(),
-                'level' => $category->getLevel(),
-                'parentId' => $category->getParentId(),
-                'storeId' => $category->getStoreId(),
+                'id' => $store['store_id'],
+                'name' => $store['name'],
+                'item_type_id' => $this->config->getValue('yoochoose/general/item_type', 'store', $store->getCode()),
+                'language' => str_replace('_', '-', $language),
             ];
         }
 
@@ -219,12 +210,136 @@ class Yoochoose implements YoochooseInterface
      */
     public function getProducts()
     {
-        $categoriesRel = [];
-        $products = [];
         $limit = $this->request->getParam('limit');
         $offset = $this->request->getParam('offset');
-        $storeId = $this->request->getParam('storeId');
-        $storeId =  ($storeId ? : $this->request->getParam('storeViewId'));
+        $storeId = $this->request->getParam('storeViewId');
+
+        /** @deprecated storeId is deprecated */
+        if (!isset($storeId) || empty($storeId)) {
+            $storeId = $this->request->getParam('storeId');
+        }
+
+        if (!isset($storeId) || empty($storeId)) {
+            $storeIds = $this->getStoreViews();
+            $result = [];
+            foreach ($storeIds as $storeId) {
+                $result[] = $this->getProductsHelper($limit, $offset, $storeId['id']);
+            }
+
+            $result = call_user_func_array('array_merge', $result);
+
+            return $result;
+        } else {
+            return $this->getProductsHelper($limit, $offset, $storeId);
+
+        }
+    }
+
+    /**
+     * Returns list of manufacturers that are visible on frontend
+     *
+     * @return mixed
+     */
+    public function getVendors()
+    {
+
+        $limit = $this->request->getParam('limit');
+        $offset = $this->request->getParam('offset');
+
+        $eavConfig = $this->om->create('\Magento\Eav\Model\Config');
+        $attribute = $eavConfig->getAttribute('catalog_product', 'manufacturer');
+        $vendors = $attribute->getSource()->getAllOptions();
+
+        if ($limit && is_numeric($limit)) {
+            $limit = (int)$limit;
+            $offset = $offset && is_numeric($offset) ? $offset : 0;
+        }
+
+        $result = [];
+        $i = 0;
+        foreach ($vendors as $key => $option) {
+            //ignore empty values
+            if (empty($option['value'])) {
+                continue;
+            }
+
+            //if value is in our offset add it to results
+            if ($i >= $offset) {
+                $result[$option['value']] = [
+                    'id' => $option['value'],
+                    'name' => $option['label'],
+                ];
+            }
+
+            $i++;
+            //check limit of results
+            if ($limit && count($result) === $limit) {
+                break;
+            }
+        }
+
+        if (empty($result)) {
+            $this->response->setStatusCode(204);
+        }
+
+        return $result;
+    }
+
+    /**
+     * This method returns categories filtered by storeView
+     *
+     * @param $limit
+     * @param $offset
+     * @param $storeId
+     * @return array
+     */
+    protected function getCategoriesHelper($limit, $offset, $storeId)
+    {
+        /* @var \Magento\Catalog\Model\ResourceModel\Category\Collection $categoryCollection */
+        $categoryCollection = $this->om->create('Magento\Catalog\Model\ResourceModel\Category\Collection');
+        $categoryCollection->setStoreId($storeId)
+            ->addAttributeToFilter('is_active', 1)
+            ->addAttributeToSelect(['url_path', 'name', 'level', 'store_id']);
+
+        if ($limit && is_numeric($limit)) {
+            $offset = $offset ? $offset : 0;
+            $categoryCollection->getSelect()->limit($limit, $offset);
+        }
+
+        $result = [];
+        /** @var \Magento\Catalog\Model\Category $category */
+        foreach ($categoryCollection as $category) {
+            $result[] = [
+                'id' => $category->getId(),
+                'path' => $category->getPath(),
+                'url' => $category->getUrl(),
+                'name' => $category->getName(),
+                'level' => $category->getLevel(),
+                'parentId' => $category->getParentId(),
+                'storeViewId' => $category->getStoreId(),
+            ];
+        }
+
+        if (empty($result)) {
+            $this->response->setStatusCode(204);
+        }
+
+        return $result;
+    }
+
+    /**
+     * This method returns products filtered by storeView.
+     *
+     * @param $limit
+     * @param $offset
+     * @param $storeId
+     * @return array
+     */
+    protected function getProductsHelper($limit, $offset, $storeId)
+    {
+        $categoriesRel = [];
+        $products = [];
+
         $storeCode = $this->storeManager->getStore($storeId)->getCode();
 
         /** @var \Magento\Catalog\Model\Product\Media\Config $helper */
@@ -318,56 +433,6 @@ class Yoochoose implements YoochooseInterface
     }
 
     /**
-     * Returns list of manufacturers that are visible on frontend
-     *
-     * @return mixed
-     */
-    public function getVendors()
-    {
-
-        $limit = $this->request->getParam('limit');
-        $offset = $this->request->getParam('offset');
-
-        $eavConfig = $this->om->create('\Magento\Eav\Model\Config');
-        $attribute = $eavConfig->getAttribute('catalog_product', 'manufacturer');
-        $vendors = $attribute->getSource()->getAllOptions();
-
-        if ($limit && is_numeric($limit)) {
-            $limit = (int)$limit;
-            $offset = $offset && is_numeric($offset) ? $offset : 0;
-        }
-
-        $result = [];
-        $i = 0;
-        foreach ($vendors as $key => $option) {
-            //ignore empty values
-            if (empty($option['value'])) {
-                continue;
-            }
-
-            //if value is in our offset add it to results
-            if ($i >= $offset) {
-                $result[$option['value']] = [
-                    'id' => $option['value'],
-                    'name' => $option['label'],
-                ];
-            }
-
-            $i++;
-            //check limit of results
-            if ($limit && count($result) === $limit) {
-                break;
-            }
-        }
-
-        if (empty($result)) {
-            $this->response->setStatusCode(204);
-        }
-
-        return $result;
-    }
-
-    /**
      * @param $storeId
      * @param $productModel
      * @return string
@@ -404,4 +469,5 @@ class Yoochoose implements YoochooseInterface
 
         return $result;
     }
+
 }
