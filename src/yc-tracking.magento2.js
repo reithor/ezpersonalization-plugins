@@ -11,6 +11,7 @@ function initYcTrackingModule(context) {
         responsesCount = 0,
         requestsSent = 0,
         itemType,
+        storeViewId,
         script,
         templates = YC_RECO_TEMPLATES;
 
@@ -300,7 +301,9 @@ function initYcTrackingModule(context) {
             language = ycObject ? ycObject.language : null;
             itemType = ycObject ? ycObject.itemType : null;
             enableSearch = ycObject ? ycObject.enableSearch : null;
+            storeViewId = ycObject ? ycObject.storeViewId : null;
 
+            YcTracking.setStoreViewId(storeViewId);
             YcTracking.trackLogin(trackId);
             trackClickAndRate();
             hookBasketHandlers();

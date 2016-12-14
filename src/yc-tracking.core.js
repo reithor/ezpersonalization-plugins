@@ -21,6 +21,7 @@ function initYcTrackingCore(context) {
      */
     var YcTracking = function () {
 
+
         /**
          * Holds customer Id. This should be automatically populated on server from request to js when serving js.
          * Request is in format https://cdn.yoochoose.net/v1/100001/tracking.js, where 100001 is customer id.
@@ -86,6 +87,34 @@ function initYcTrackingCore(context) {
             storeId = 'YCStore',
 
             /**
+             * Holds store view Id.
+             *
+             * @private
+             * @type {number}
+             */
+            storeViewId,
+
+            /**
+             * Gets store view id
+             *
+             * @private
+             * @returns {*}
+             */
+            _getStoreViewId = function () {
+                return storeViewId;
+            },
+
+            /**
+             * Sets store view id
+             *
+             * @param {number} value
+             * @private
+             */
+            _setStoreViewId = function (value) {
+                storeViewId = value;
+            },
+
+            /**
              * Checks if local storage can be used to store user data.
              * https://github.com/Modernizr/Modernizr/blob/master/feature-detects/storage/localstorage.js
              *
@@ -102,6 +131,7 @@ function initYcTrackingCore(context) {
                     return false;
                 }
             },
+            
 
             /**
              * Gets user data from local storage.
@@ -793,8 +823,16 @@ function initYcTrackingCore(context) {
                 }
             };
 
-
         /**
+         *  Public function for setting store view id
+         *  
+         *  @param {number} value
+         */
+        this.setStoreViewId = function (value) {
+            _setStoreViewId(value);
+        };
+            
+         /**
          * Resets user identifier. Should be called when user logs out.
          */
         this.resetUser = function () {
@@ -843,7 +881,8 @@ function initYcTrackingCore(context) {
             url += rating !== undefined ? '&rating=' + encodeURIComponent(rating) : '';
             url += timestamp ? '&overridetimestamp=' + encodeURIComponent(timestamp) : '';
             url += signature !== undefined ? '&signature=' + signature : '';
-
+            url += _getStoreViewId() !== undefined ? '&storeViewId=' + encodeURIComponent(_getStoreViewId()) : '';
+            
             _executeEventCall(url);
             return this;
         };
@@ -859,6 +898,9 @@ function initYcTrackingCore(context) {
          */
         this.trackRate = function (itemTypeId, itemId, rating, language) {
             var url = '/rate/' + _userId() + '/' + itemTypeId + '/' + itemId + '?rating=' + rating + '&lang=' + language;
+
+            url += _getStoreViewId() !== undefined ? '&storeViewId=' + encodeURIComponent(_getStoreViewId()) : '';
+
             _executeEventCall(url);
             return this;
         };
@@ -877,6 +919,7 @@ function initYcTrackingCore(context) {
 
             url += '?categorypath=' + (categoryPath ? encodeURIComponent(categoryPath) : '');
             url += '&lang=' + language;
+            url += _getStoreViewId() !== undefined ? '&storeViewId=' + encodeURIComponent(_getStoreViewId()) : '';
 
             _executeEventCall(url);
             return this;
@@ -899,6 +942,8 @@ function initYcTrackingCore(context) {
                 '?fullprice=' + (price + '').replace(',', '.') + currencyCode + '&quantity=' + quantity +
                 '&lang=' + language;
 
+            url += _getStoreViewId() !== undefined ? '&storeViewId=' + encodeURIComponent(_getStoreViewId()) : '';
+
             _executeEventCall(url);
             return this;
         };
@@ -910,9 +955,12 @@ function initYcTrackingCore(context) {
          * @return {YcTracking} This object's instance.
          */
         this.trackLogin = function (targetUserId) {
-            var userID = _userId();
+            var userID = _userId(), url;
             if (targetUserId && userID !== targetUserId) {
-                _executeEventCall('/login/' + userID + '/' + encodeURIComponent(targetUserId));
+                url = '/login/' + userID + '/' + encodeURIComponent(targetUserId);
+                url += _getStoreViewId() !== undefined ? '?storeViewId=' + encodeURIComponent(_getStoreViewId()) : '';
+
+                _executeEventCall(url);
                 _userId(targetUserId);
             }
 
@@ -951,6 +999,8 @@ function initYcTrackingCore(context) {
         this.trackClickRecommended = function (itemTypeId, itemId, scenario) {
             var url = '/clickrecommended/' + _userId() + '/' + itemTypeId + '/' + itemId + '?scenario=' + encodeURIComponent(scenario);
 
+            url += _getStoreViewId() !== undefined ? '&storeViewId=' + encodeURIComponent(_getStoreViewId()) : '';
+
             _executeEventCall(url);
             return this;
         };
@@ -966,7 +1016,11 @@ function initYcTrackingCore(context) {
          * @return {YcTracking} This object's instance.
          */
         this.trackConsume = function (itemTypeId, itemId, percentage) {
-            _executeEventCall('/consume/' + _userId() + '/' + itemTypeId + '/' + itemId + (percentage ? '?percentage=' + percentage : ''));
+            var url = '/consume/' + _userId() + '/' + itemTypeId + '/' + itemId + (percentage ? '?percentage=' + percentage : '');
+
+            url += _getStoreViewId() !== undefined ? '&storeViewId=' + encodeURIComponent(_getStoreViewId()) : '';
+
+            _executeEventCall(url);
             return this;
         };
 
@@ -979,9 +1033,12 @@ function initYcTrackingCore(context) {
          */
         this.trackBlacklist = function (itemTypeId, itemId) {
             var url = '/blacklist/' + _userId() + '/' + itemTypeId + '/' + itemId;
+
+            url += _getStoreViewId() !== undefined ? '?storeViewId=' + encodeURIComponent(_getStoreViewId()) : '';
             _executeEventCall(url);
             return this;
         };
+
 
         /**
          * Method for fetching product ids for recommendation scenario.
@@ -1004,6 +1061,7 @@ function initYcTrackingCore(context) {
             url += '&contextitems=' + (products ? encodeURIComponent(products) : '');
             url += '&categorypath=' + (categoryPath ? encodeURIComponent(categoryPath) : '');
             url += '&lang=' + (lang ? lang : '');
+            url += _getStoreViewId() !== undefined ? '&storeViewId=' + encodeURIComponent(_getStoreViewId()) : '';
 
             _executeJsonpCall(url);
             return this;
@@ -1147,7 +1205,6 @@ function initYcTrackingCore(context) {
                     return;
                 }
 
-
                 // Check if language code is in correct format
                 if (language === null || !language.match(/^[a-z]{2}(\-[a-z]{2})?$/i)) {
                     GLOBAL.console.warn('Language code "' + language + '" is not in the correct format, see http://www.rfc-editor.org/rfc/bcp/bcp47.txt for more info.');
@@ -1245,6 +1302,7 @@ function initYcTrackingCore(context) {
                     }
 
                     parameters.q = searchText = me.value;
+                    parameters.storeViewId = _getStoreViewId() !== undefined ? encodeURIComponent(_getStoreViewId()) : '';
                     _callFetchSearchResults(parameters);
                 }, false);
 
