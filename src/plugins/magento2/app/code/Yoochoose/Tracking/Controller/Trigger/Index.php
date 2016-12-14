@@ -50,8 +50,14 @@ class Index extends Action
      * @param Data $dataHelper
      * @param Logger $logger
      */
-    public function __construct(Context $context, JsonFactory $resultJsonFactory, ScopeConfigInterface $scope, Config $config, Data $dataHelper, Logger $logger)
-    {
+    public function __construct(
+        Context $context,
+        JsonFactory $resultJsonFactory,
+        ScopeConfigInterface $scope,
+        Config $config,
+        Data $dataHelper,
+        Logger $logger
+    ) {
         parent::__construct($context);
         $this->scope = $scope;
         $this->config = $config;
@@ -75,19 +81,22 @@ class Index extends Action
         $limit = $this->getRequest()->getParam('limit');
         $callbackUrl = $this->getRequest()->getParam('webHookUrl');
         $postPassword = $this->getRequest()->getParam('password');
+        $transaction = $this->getRequest()->getParam('transaction');
+        $storeData = json_decode($this->getRequest()->getParam('storeData'), true);
+        $customerId = $this->getRequest()->getParam('mandator');
+
         $password = $this->scope->getValue('yoochoose/export/password');
-        $customerId = $this->scope->getValue('yoochoose/general/customer_id');
-        $licenceKey = $this->scope->getValue('yoochoose/general/license_key');
+        $storeId = key($storeData);
+        $licenceKey = $this->scope->getValue('yoochoose/general/license_key', 'stores', $storeId);
 
         if ($password === $postPassword) {
             //lock
             $this->config->saveConfig('yoochoose/export/enable_flag', 1, 'default', 0);
-
             try {
                 $this->logger->info('Export has started for all resources.');
-                $postData = $this->helper->export($limit);
+                $postData = $this->helper->export($storeData, $transaction, $limit);
                 $this->logger->info('Export has finished for all resources.');
-                $this->setCallback($callbackUrl, $postData,$customerId, $licenceKey);
+                $this->setCallback($callbackUrl, $postData, $customerId, $licenceKey);
                 $response['success'] = true;
             } catch (\Exception $e) {
                 $response['success'] = false;
@@ -121,7 +130,7 @@ class Index extends Action
         curl_setopt($cURL, CURLOPT_URL, $url);
         curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($cURL, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($cURL, CURLOPT_USERPWD, $customerId.":".$licenceKey);
+        curl_setopt($cURL, CURLOPT_USERPWD, $customerId . ":" . $licenceKey);
         curl_setopt($cURL, CURLOPT_HTTPHEADER, [
             'Content-Type: application/json',
         ]);
@@ -136,7 +145,7 @@ class Index extends Action
         $header = substr($response, 0, $header_size);
         $header = str_replace("\r\n", '', $header);
         $body = substr($response, $header_size);
-        $this->logger->info('Callback header : '. $header .' Callback body : '. $body);
+        $this->logger->info('Callback header : ' . $header . ' Callback body : ' . $body);
         curl_close($cURL);
 
         return json_decode($response, true);

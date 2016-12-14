@@ -2,7 +2,6 @@
 
 namespace Yoochoose\Tracking\Model\Api;
 
-use Magento\Catalog\Helper\ImageFactory;
 use Magento\Catalog\Model\Product\Visibility;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\CatalogUrlRewrite\Model\CategoryUrlRewriteGenerator;
@@ -16,6 +15,7 @@ use Magento\UrlRewrite\Model\UrlFinderInterface;
 use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
 use Yoochoose\Tracking\Api\YoochooseInterface;
 use Zend_Db_Select;
+use Magento\Catalog\Helper\ImageFactory;
 
 class Yoochoose implements YoochooseInterface
 {
@@ -98,6 +98,34 @@ class Yoochoose implements YoochooseInterface
     }
 
     /**
+     * Returns list of store views with language codes
+     *
+     * @api
+     * @return mixed
+     */
+    public function getStoreViews()
+    {
+        $result = [];
+        $stores = $this->storeManager->getStores();
+
+        foreach ($stores as $store) {
+            $language = $this->config->getValue('general/locale/code', 'stores', $store->getCode());
+            $result[] = [
+                'id' => $store['store_id'],
+                'name' => $store['name'],
+                'item_type_id' => $this->config->getValue('yoochoose/general/item_type', 'store', $store->getCode()),
+                'language' => str_replace('_', '-', $language),
+            ];
+        }
+
+        if (empty($result)) {
+            $this->response->setStatusCode(204);
+        }
+
+        return $result;
+    }
+
+    /**
      * Returns list of subscribers
      *
      * @api
@@ -107,7 +135,7 @@ class Yoochoose implements YoochooseInterface
     {
         $limit = $this->request->getParam('limit');
         $offset = $this->request->getParam('offset');
-        $storeId = $this->request->getParam('storeView');
+        $storeId = $this->request->getParam('storeViewId');
 
         /** @deprecated storeId is deprecated */
         if (!isset($storeId) || empty($storeId)) {
@@ -160,10 +188,18 @@ class Yoochoose implements YoochooseInterface
         }
 
         if (!isset($storeId) || empty($storeId)) {
-            $storeIds = $this->getStoreViews();
             $result = array();
+            $storeIds = $this->getStoreViews();
+
+            /** Divides limit number evenly between store views */
+            $storeIdNumber = count($storeIds);
+            $limit /= $storeIdNumber;
+            $limit = floor($limit);
+            $limit > 1 ? : $limit = 1;
+
             foreach ($storeIds as $storeId) {
                 $result[] = $this->getCategoriesHelper($limit, $offset, $storeId['id']);
+
             }
             $result = call_user_func_array('array_merge', $result);
 
@@ -172,34 +208,6 @@ class Yoochoose implements YoochooseInterface
         } else {
             return $this->getCategoriesHelper($limit, $offset, $storeId);
         }
-    }
-
-    /**
-     * Returns list of store views with language codes
-     *
-     * @api
-     * @return mixed
-     */
-    public function getStoreViews()
-    {
-        $result = [];
-        $stores = $this->storeManager->getStores();
-
-        foreach ($stores as $store) {
-            $language = $this->config->getValue('general/locale/code', 'stores', $store->getCode());
-            $result[] = [
-                'id' => $store['store_id'],
-                'name' => $store['name'],
-                'item_type_id' => $this->config->getValue('yoochoose/general/item_type', 'store', $store->getCode()),
-                'language' => str_replace('_', '-', $language),
-            ];
-        }
-
-        if (empty($result)) {
-            $this->response->setStatusCode(204);
-        }
-
-        return $result;
     }
 
     /**
@@ -220,12 +228,18 @@ class Yoochoose implements YoochooseInterface
         }
 
         if (!isset($storeId) || empty($storeId)) {
+            $result = array();
             $storeIds = $this->getStoreViews();
-            $result = [];
+
+            /** Divides limit number evenly between store views */
+            $storeIdNumber = count($storeIds);
+            $limit /= $storeIdNumber;
+            $limit = floor($limit);
+            $limit > 1 ? : $limit = 1;
+
             foreach ($storeIds as $storeId) {
                 $result[] = $this->getProductsHelper($limit, $offset, $storeId['id']);
             }
-
             $result = call_user_func_array('array_merge', $result);
 
             return $result;
@@ -242,12 +256,17 @@ class Yoochoose implements YoochooseInterface
      */
     public function getVendors()
     {
-
         $limit = $this->request->getParam('limit');
         $offset = $this->request->getParam('offset');
+        $storeId = $this->request->getParam('storeViewId');
+
+        /** @deprecated storeId is deprecated */
+        if (!isset($storeId) || empty($storeId)) {
+            $storeId = $this->request->getParam('storeId');
+        }
 
         $eavConfig = $this->om->create('\Magento\Eav\Model\Config');
-        $attribute = $eavConfig->getAttribute('catalog_product', 'manufacturer');
+        $attribute = $eavConfig->getAttribute('catalog_product', 'manufacturer')->setStoreId($storeId);
         $vendors = $attribute->getSource()->getAllOptions();
 
         if ($limit && is_numeric($limit)) {
@@ -280,6 +299,43 @@ class Yoochoose implements YoochooseInterface
 
         if (empty($result)) {
             $this->response->setStatusCode(204);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param $storeId
+     * @param $productModel
+     * @return string
+     */
+    protected function makeSmallImage($storeId, $productModel)
+    {
+        $this->appEmulation->startEnvironmentEmulation($storeId, \Magento\Framework\App\Area::AREA_FRONTEND, true);
+        $resizedImage = $this->productImageHelper->create()->init($productModel, 'product_small_image')
+            ->constrainOnly(true)
+            ->keepAspectRatio(true)
+            ->keepTransparency(true)
+            ->keepFrame(false)
+            ->resize(100, 100)
+            ->getUrl();
+
+        $this->appEmulation->stopEnvironmentEmulation();
+
+        return $resizedImage;
+    }
+
+    /**
+     * @param $value
+     * @return string|array
+     */
+    protected function getCustomAttributeValue($value)
+    {
+        $result = '';
+        if (is_object($value)) {
+            $result = (get_class($value) === 'Magento\Framework\Phrase' ? $value->getText() : '');
+        } else if (is_array($value) || is_string($value)) {
+            $result = $value;
         }
 
         return $result;
@@ -339,7 +395,6 @@ class Yoochoose implements YoochooseInterface
     {
         $categoriesRel = [];
         $products = [];
-
         $storeCode = $this->storeManager->getStore($storeId)->getCode();
 
         /** @var \Magento\Catalog\Model\Product\Media\Config $helper */
@@ -431,43 +486,4 @@ class Yoochoose implements YoochooseInterface
 
         return $products;
     }
-
-    /**
-     * @param $storeId
-     * @param $productModel
-     * @return string
-     */
-    protected function makeSmallImage($storeId, $productModel)
-    {
-        $this->appEmulation->startEnvironmentEmulation($storeId, \Magento\Framework\App\Area::AREA_FRONTEND, true);
-        $resizedImage = $this->productImageHelper->create()->init($productModel, 'product_small_image')
-            ->constrainOnly(true)
-            ->keepAspectRatio(true)
-            ->keepTransparency(true)
-            ->keepFrame(false)
-            ->resize(100, 100)
-            ->save()
-            ->getUrl();
-
-        $this->appEmulation->stopEnvironmentEmulation();
-
-        return $resizedImage;
-    }
-
-    /**
-     * @param $value
-     * @return string|array
-     */
-    protected function getCustomAttributeValue($value)
-    {
-        $result = '';
-        if (is_object($value)) {
-            $result = (get_class($value) === 'Magento\Framework\Phrase' ? $value->getText() : '');
-        } else if (is_array($value) || is_string($value)) {
-            $result = $value;
-        }
-
-        return $result;
-    }
-
 }

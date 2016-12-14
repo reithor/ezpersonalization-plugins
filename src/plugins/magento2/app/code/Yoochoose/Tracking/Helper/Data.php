@@ -11,6 +11,7 @@ use Yoochoose\Tracking\Logger\Logger;
 use Magento\Framework\Filesystem\Io\File;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\Webapi\Rest\Request;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class Data extends AbstractHelper
 {
@@ -45,6 +46,11 @@ class Data extends AbstractHelper
     private $request;
 
     /**
+     * @var ScopeConfigInterface
+     */
+    private $config;
+
+    /**
      * @param Context $context
      * @param ObjectManagerInterface $om
      * @param Logger $logger
@@ -52,14 +58,21 @@ class Data extends AbstractHelper
      * @param StoreManagerInterface $store
      * @param Request $request
      */
-    public function __construct(Context $context, ObjectManagerInterface $om, Logger $logger, File $io, StoreManagerInterface $store, Request $request)
-    {
+    public function __construct(
+        Context $context,
+        ObjectManagerInterface $om,
+        Logger $logger,
+        File $io,
+        StoreManagerInterface $store,
+        Request $request
+    ) {
         parent::__construct($context);
         $this->om = $om;
         $this->logger = $logger;
         $this->io = $io;
         $this->store = $store;
         $this->request = $request;
+        $this->config = $context->getScopeConfig();
     }
 
     public function getHttpPage($url, $body, $customerId, $licenceKey)
@@ -121,43 +134,57 @@ class Data extends AbstractHelper
      * export to files
      *
      * @param int $limit
+     * @param array $storeData
+     * @param int $transaction
      * @return string postData
      */
-    public function export($limit)
+    public function export($storeData, $transaction, $limit)
     {
-        $ycResponseFormats = [
-            'MAGENTO2', 'MAGENTO2_CATEGORIES', 'MAGENTO2_VENDORS'
+        $formatsMap = [
+            'MAGENTO2' => 'Products',
+            'MAGENTO2_CATEGORIES' => 'Categories',
+            'MAGENTO2_VENDORS' => 'Vendors',
         ];
 
         $postData = [
-            'transaction' => null,
-            'events' => []
+            'transaction' => $transaction,
+            'events' => [],
         ];
 
-        foreach ($ycResponseFormats as $format){
-            $postData['events'][] = [
-                'action' => 'FULL',
-                'format' => $format,
-                'contentTypeId' => '1',
-                'credentials' => [
-                    'login' => null,
-                    'password' => null
-                ],
-                'uri' => []
-            ];
+        foreach ($formatsMap as $format => $method) {
+            if (!empty($storeData)) {
+                foreach ($storeData as $storeId => $language) {
+                    $postData['events'][] = [
+                        'action' => 'FULL',
+                        'format' => $format,
+                        'contentTypeId' => $this->config->getValue('yoochoose/general/item_type', 'store', $storeId),
+                        'lang' => $language,
+                        'credentials' => [
+                            'login' => null,
+                            'password' => null,
+                        ],
+                        'uri' => [],
+                    ];
+                }
+            }
         }
 
         $dir = $this->om->get('\Magento\Framework\App\Filesystem\DirectoryList');
         $directory = $dir->getPath('pub') . '/media/' . self::YC_DIRECTORY_NAME . '/';
         $this->io->rmdirRecursive($directory);
         $this->io->mkdir($directory, 0775);
+        $i = 0;
 
-        $postData = $this->exportData('Products', $postData, $directory, $limit, 0);
-        $postData = $this->exportData('Categories', $postData, $directory, $limit, 1);
-        $postData = $this->exportData('Vendors', $postData, $directory, $limit, 2);
+        foreach ($postData['events'] as $event) {
+            $method = $formatsMap[$event['format']] ?: null;
+            if ($method) {
+                $postData = $this->exportData($method, $postData, $directory, $limit, $i, $event['contentTypeId']);
+            }
+
+            $i++;
+        }
 
         return $postData;
-
     }
 
     /**
@@ -187,44 +214,43 @@ class Data extends AbstractHelper
      * @param string $directory
      * @param integer $limit
      * @param integer $exportIndex
+     * @param integer $storeId
      * @return array $postData
      */
-    private function exportData($method, $postData, $directory, $limit = 0, $exportIndex = 0){
+    private function exportData($method, $postData, $directory, $limit = 0, $exportIndex = 0, $storeId)
+    {
 
         $model = $this->om->get('\Yoochoose\Tracking\Model\Api\Yoochoose');
 
-        $baseUrl =  $this->store->getStore()->getBaseUrl();
+        $baseUrl = $this->store->getStore()->getBaseUrl();
         $fileUrl = $baseUrl . 'pub/media/' . self::YC_DIRECTORY_NAME . '/';
 
         $method = 'get' . $method;
         $this->request->setParam('limit', $limit);
+        $this->request->setParam('storeViewId', $storeId);
         $offset = 0;
+        $logNames = '';
 
         do {
             $this->request->setParam('offset', $offset);
             $results = $model->$method();
-            if (!empty($results)){
+            if (!empty($results)) {
                 $filename = $this->generateRandomString() . '.json';
                 $file = $directory . $filename;
                 $this->io->write($file, json_encode(array_values($results)));
                 $fileSize = filesize($file);
-                if ($fileSize >= self::YC_MAX_FILE_SIZE){
+                if ($fileSize >= self::YC_MAX_FILE_SIZE) {
                     $this->io->rm($file);
                     $this->request->setParam('limit', --$limit);
                 } else {
                     $postData['events'][$exportIndex]['uri'][] = $fileUrl . $filename;
                     $offset = $offset + $limit;
+                    $logNames .= $filename . ', ';
                 }
             }
         } while (!empty($results));
 
-        $arrayLogNames = array();
-        foreach ($postData['events'][$exportIndex]['uri'] as $uri){
-            $arrayLogNames[] = substr($uri, strrpos($uri, '/') + 1);
-        }
-
-        $logNames = implode(', ', $arrayLogNames);
-        $logNames!== '' ? $logNames : $logNames = 'there are no files';
+        $logNames = $logNames ?: 'there are no files';
         $this->logger->info('Export has finished for ' . $method . ' with file names : ' . $logNames);
 
         return $postData;

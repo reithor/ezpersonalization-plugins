@@ -51,13 +51,20 @@ class YoochooseExport implements YoochooseExportInterface
     private $om;
 
     /**
+     * @var Yoochoose
+     */
+    private $api;
+
+    /**
      * YoochooseExport constructor.
+     *
      * @param JsonFactory $resultJsonFactory
      * @param ScopeConfigInterface $scope
      * @param StoreManagerInterface $store
      * @param Config $config
      * @param Logger $logger
      * @param RequestInterface $request
+     * @param Yoochoose $api
      */
     public function __construct(
         JsonFactory $resultJsonFactory,
@@ -65,9 +72,9 @@ class YoochooseExport implements YoochooseExportInterface
         StoreManagerInterface $store,
         Config $config,
         Logger $logger,
-        RequestInterface $request
-    )
-    {
+        RequestInterface $request,
+        Yoochoose $api
+    ) {
         $this->resultJsonFactory = $resultJsonFactory;
         $this->scope = $scope;
         $this->store = $store;
@@ -75,6 +82,7 @@ class YoochooseExport implements YoochooseExportInterface
         $this->logger = $logger;
         $this->request = $request;
         $this->om = ObjectManager::getInstance();
+        $this->api = $api;
     }
 
     /**
@@ -89,24 +97,32 @@ class YoochooseExport implements YoochooseExportInterface
      */
     public function startExport()
     {
+        $post = [];
         $this->om->get('Magento\Framework\App\Config\ReinitableConfigInterface')->reinit();
         $enable = $this->scope->getValue('yoochoose/export/enable_flag');
-        $size = $this->request->getParam('size');
+        $post['limit'] = $this->request->getParam('size');
+        $post['mandator'] = $this->request->getParam('mandator');
+        $post['webHookUrl'] = $this->request->getParam('webHook');
 
-        /** Checks if size is set */
-        if (!isset($size) || empty($size)) {
-            throw new LocalizedException(__('Size must be set'));
+        /** Checks if size, mandator, web hook is set */
+        if (!isset($post['limit']) || empty($post['limit']) || !isset($post['webHookUrl'])
+            || empty($post['webHookUrl']) || !isset($post['mandator']) || empty($post['mandator'])) {
+            throw new LocalizedException(__('Size, mandator and webHook parameters must be set.'));
         } else {
             if ($enable != 1) {
                 $requestUri = $this->request->getRequestUri();
                 $queryString = substr($requestUri, strpos($requestUri, '?') + 1);
                 $this->logger->info('Export has started, with this query string : ' . $queryString);
 
-                $post = [];
-                $post['limit'] = $this->request->getParam('size');
-                $post['webHookUrl'] = $this->request->getParam('webHook');
-                $post['storeView'] = $this->request->getParam('storeView');
+                $post['transaction'] = $this->request->getParam('transaction');
                 $post['password'] = $this->generateRandomString();
+                $post['storeData'] = $this->getStoreData($post['mandator']);
+
+                if (empty($post['storeData'])) {
+                    throw new LocalizedException(__('Mandator is not correct!'));
+                } else {
+                    $post['storeData'] = json_encode($post['storeData']);
+                }
 
                 $this->config->saveConfig('yoochoose/export/password', $post['password'], 'default', 0);
 
@@ -147,12 +163,13 @@ class YoochooseExport implements YoochooseExportInterface
      * @param array $post
      * @return string execute
      */
-    private function triggerExport($url, $post = array()) {
+    private function triggerExport($url, $post = array())
+    {
 
         $cURL = curl_init();
         curl_setopt($cURL, CURLOPT_URL, $url);
         curl_setopt($cURL, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($cURL, CURLOPT_HEADER, false);
+        curl_setopt($cURL, CURLOPT_HEADER, ['Content-Type: application/json',]);
         curl_setopt($cURL, CURLOPT_NOBODY, true);
         curl_setopt($cURL, CURLOPT_POST, 1);
         curl_setopt($cURL, CURLOPT_POSTFIELDS, $post);
@@ -164,4 +181,25 @@ class YoochooseExport implements YoochooseExportInterface
         return curl_exec($cURL);
     }
 
+    /**
+     * Returns store ids as key and language as value based on madator id.
+     *
+     * @param array $mandator
+     * @return array
+     */
+    private function getStoreData($mandator)
+    {
+        $result = array();
+        $storeViews = $this->api->getStoreViews();
+
+        foreach ($storeViews as $storeView) {
+            $baseMandator = $this->scope->getValue('yoochoose/general/customer_id', 'stores', $storeView['id']);
+
+            if ($baseMandator == $mandator) {
+                $result[$storeView['id']] = str_replace('_', '-', $storeView['language']);
+            }
+        }
+
+        return $result;
+    }
 }
