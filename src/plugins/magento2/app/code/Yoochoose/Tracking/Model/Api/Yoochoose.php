@@ -2,11 +2,13 @@
 
 namespace Yoochoose\Tracking\Model\Api;
 
+use Magento\Catalog\Api\CategoryRepositoryInterface;
 use Magento\Catalog\Model\Product\Visibility;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\CatalogUrlRewrite\Model\CategoryUrlRewriteGenerator;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Url;
 use Magento\Framework\Webapi\Rest\Request;
 use Magento\Newsletter\Model\Subscriber;
 use Magento\Store\Model\App\Emulation;
@@ -312,7 +314,6 @@ class Yoochoose implements YoochooseInterface
      */
     protected function makeSmallImage($storeId, $productModel)
     {
-        $this->appEmulation->startEnvironmentEmulation($storeId);
         $resizedImage = $this->productImageHelper->create()->init($productModel, 'product_small_image')
             ->constrainOnly(true)
             ->keepAspectRatio(true)
@@ -320,8 +321,6 @@ class Yoochoose implements YoochooseInterface
             ->keepFrame(false)
             ->resize(100, 100)
             ->getUrl();
-
-        $this->appEmulation->stopEnvironmentEmulation();
 
         return $resizedImage;
     }
@@ -352,15 +351,17 @@ class Yoochoose implements YoochooseInterface
      */
     protected function getCategoriesHelper($limit, $offset, $storeId)
     {
+        $result = [];
         $this->appEmulation->startEnvironmentEmulation($storeId);
 
         $rootId = \Magento\Catalog\Model\Category::TREE_ROOT_ID;
         $id = $this->storeManager->getStore($storeId)->getRootCategoryId();
         /* @var \Magento\Catalog\Model\ResourceModel\Category\Collection $categoryCollection */
         $categoryCollection = $this->om->create('Magento\Catalog\Model\ResourceModel\Category\Collection');
-        $categoryCollection->setStore($this->storeManager->getStore($storeId))
+        $categoryCollection
+            ->setStoreId($storeId)
             ->addAttributeToFilter('is_active', 1)
-            ->addAttributeToFilter('path',['like'=> "$rootId/$id/%"])
+            ->addAttributeToFilter('path', ['like' => "$rootId/$id/%"])
             ->addAttributeToSelect(['url_path', 'name', 'level', 'store_id']);
 
         if ($limit && is_numeric($limit)) {
@@ -368,20 +369,23 @@ class Yoochoose implements YoochooseInterface
             $categoryCollection->getSelect()->limit($limit, $offset);
         }
 
-        $result = [];
+        $baseUrl = $this->storeManager->getStore()->getBaseUrl();
         /** @var \Magento\Catalog\Model\Category $category */
         foreach ($categoryCollection as $category) {
+            $category->setStoreId($storeId);
+            $category->getUrlInstance()->setScope($storeId);
+            $rewrite = $this->getCategoryUrlRewrite($category->getId(), $storeId);
             $result[] = [
                 'id' => $category->getId(),
                 'path' => $category->getPath(),
-                'url' => $category->getUrl(),
+                'url' => $rewrite ? $baseUrl . $rewrite->getRequestPath() : $category->getUrl(),
                 'name' => $category->getName(),
                 'level' => $category->getLevel(),
                 'parentId' => $category->getParentId(),
                 'storeViewId' => $storeId,
             ];
         }
-
+        $categoryCollection->clear();
         $this->appEmulation->stopEnvironmentEmulation();
 
         if (empty($result)) {
@@ -455,7 +459,6 @@ class Yoochoose implements YoochooseInterface
                 }
             }
 
-
             if ($temp['image']) {
                 $imageInfo = getimagesize($temp['image']);
                 if (is_array($imageInfo)) {
@@ -466,14 +469,9 @@ class Yoochoose implements YoochooseInterface
             // Categories
             /** @var \Magento\Catalog\Model\Category $category */
             foreach ($product->getCategoryCollection() as $category) {
-                $category->getUrl();
                 $categoryId = $category->getId();
                 if (!array_key_exists($categoryId, $categoriesRel)) {
-                    $rewrite = $this->urlFinder->findOneByData([
-                        UrlRewrite::ENTITY_ID => $categoryId,
-                        UrlRewrite::ENTITY_TYPE => CategoryUrlRewriteGenerator::ENTITY_TYPE,
-                        UrlRewrite::STORE_ID => $category->getStoreId(),
-                    ]);
+                    $rewrite = $this->getCategoryUrlRewrite($categoryId, $storeId);
 
                     if (!empty($rewrite)) {
                         // remove .html suffix if it exists
@@ -497,5 +495,23 @@ class Yoochoose implements YoochooseInterface
         }
 
         return $products;
+    }
+
+    /**
+     * Returns url rewrite for category
+     *
+     * @param $categoryId
+     * @param $storeId
+     * @return UrlRewrite|null
+     */
+    protected function getCategoryUrlRewrite($categoryId, $storeId)
+    {
+        $rewrite = $this->urlFinder->findOneByData([
+            UrlRewrite::ENTITY_ID => $categoryId,
+            UrlRewrite::ENTITY_TYPE => CategoryUrlRewriteGenerator::ENTITY_TYPE,
+            UrlRewrite::STORE_ID => $storeId,
+        ]);
+
+        return $rewrite;
     }
 }

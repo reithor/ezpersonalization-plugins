@@ -229,7 +229,7 @@ class Data extends AbstractHelper
     private function exportData($method, $postData, $directory, $limit = 0, $exportIndex = 0, $storeId)
     {
         $this->emulation->startEnvironmentEmulation($storeId, \Magento\Framework\App\Area::AREA_FRONTEND, true);
-        $model = $this->om->get('\Yoochoose\Tracking\Model\Api\Yoochoose');
+        $model = $this->om->create('\Yoochoose\Tracking\Model\Api\Yoochoose');
 
         $baseUrl = $this->store->getStore($storeId)->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
         $fileUrl = $baseUrl . self::YC_DIRECTORY_NAME . '/';
