@@ -82,7 +82,7 @@ class Index extends Action
         $callbackUrl = $this->getRequest()->getParam('webHookUrl');
         $postPassword = $this->getRequest()->getParam('password');
         $transaction = $this->getRequest()->getParam('transaction');
-        $storeData = json_decode($this->getRequest()->getParam('storeData'), true);
+        $storeData = json_decode($this->getRequest()->getParam('storeData', '[]'), true);
         $customerId = $this->getRequest()->getParam('mandator');
 
         $password = $this->scope->getValue('yoochoose/export/password');
