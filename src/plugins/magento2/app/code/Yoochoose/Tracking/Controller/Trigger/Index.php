@@ -94,7 +94,7 @@ class Index extends Action
             $this->config->saveConfig('yoochoose/export/enable_flag', 1, 'default', 0);
             try {
                 $this->logger->info('Export has started for all resources.');
-                $postData = $this->helper->export($storeData, $transaction, $limit);
+                $postData = $this->helper->export($storeData, $transaction, $limit, $customerId);
                 $this->logger->info('Export has finished for all resources.');
                 $this->setCallback($callbackUrl, $postData, $customerId, $licenceKey);
                 $response['success'] = true;

@@ -144,10 +144,12 @@ class Data extends AbstractHelper
      * @param int $limit
      * @param array $storeData
      * @param int $transaction
+     * @param int $mandatorId
      * @return string postData
      */
-    public function export($storeData, $transaction, $limit)
+    public function export($storeData, $transaction, $limit, $mandatorId)
     {
+        $storeIds = array();
         $formatsMap = [
             'MAGENTO2' => 'Products',
             'MAGENTO2_CATEGORIES' => 'Categories',
@@ -174,12 +176,13 @@ class Data extends AbstractHelper
                         ],
                         'uri' => [],
                     ];
+                    $storeIds [$method][] = $storeId;
                 }
             }
         }
 
         $dir = $this->om->get('\Magento\Framework\App\Filesystem\DirectoryList');
-        $directory = $dir->getPath('pub') . '/media/' . self::YC_DIRECTORY_NAME . '/';
+        $directory = $dir->getPath('pub') . '/media/' . self::YC_DIRECTORY_NAME . '/' . $mandatorId . '/';
         $this->io->rmdirRecursive($directory);
         $this->io->mkdir($directory, 0775);
         $i = 0;
@@ -187,10 +190,8 @@ class Data extends AbstractHelper
         foreach ($postData['events'] as $event) {
             $method = $formatsMap[$event['format']] ?: null;
             if ($method) {
-                $postData = $this->exportData($method, $postData, $directory, $limit, $i, $event['storeViewId']);
+                $postData = $this->exportData($method, $postData, $directory, $limit, $i, $event['storeViewId'], $mandatorId);
             }
-
-            $i++;
         }
 
         return $postData;
@@ -224,15 +225,16 @@ class Data extends AbstractHelper
      * @param integer $limit
      * @param integer $exportIndex
      * @param integer $storeId
+     * @param string $mandatorId
      * @return array $postData
      */
-    private function exportData($method, $postData, $directory, $limit = 0, $exportIndex = 0, $storeId)
+    private function exportData($method, $postData, $directory, $limit = 0, $exportIndex = 0, $storeId, $mandatorId)
     {
         $this->emulation->startEnvironmentEmulation($storeId, \Magento\Framework\App\Area::AREA_FRONTEND, true);
-        $model = $this->om->create('\Yoochoose\Tracking\Model\Api\Yoochoose');
+        $model = $this->om->get('\Yoochoose\Tracking\Model\Api\Yoochoose');
 
         $baseUrl = $this->store->getStore($storeId)->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
-        $fileUrl = $baseUrl . self::YC_DIRECTORY_NAME . '/';
+        $fileUrl = $baseUrl . self::YC_DIRECTORY_NAME . '/' . $mandatorId . '/';
 
         $method = 'get' . $method;
         $this->request->setParam('limit', $limit);
