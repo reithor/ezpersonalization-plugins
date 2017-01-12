@@ -1,0 +1,55 @@
+<?php
+
+namespace Shopware\Components;
+
+class YoochooseHelper
+{
+
+    const YOOCHOOSE_CDN_SCRIPT = '//event.yoochoose.net/cdn';
+    const AMAZON_CDN_SCRIPT = '//cdn.yoochoose.net';
+    const YOOCHOOSE_ADMIN_URL = '//admin.yoochoose.net/';
+
+    /**
+     * Fetches yoochoose config data
+     *
+     * @param string $name
+     * @param mixed $default
+     * @return mixed|string
+     */
+    public static function getYoochooseConfig($name, $default = '')
+    {
+        $element = Shopware()->Models()->getRepository('Shopware\Models\Yoochoose\Yoochoose')
+                ->findOneBy(array('name' => $name));
+
+        return $element ? $element->getValue() : $default;
+    }
+
+    /**
+     * Returns url of tracking js, css files
+     *
+     * @param string $type
+     * @return string
+     */
+    public static function getTrackingScript($type = '.js')
+    {
+        $customerId = self::getYoochooseConfig('customerId');
+        $licenceKey = self::getYoochooseConfig('licenseKey');
+        if (empty($customerId) || empty($licenceKey)) {
+            return '';
+        }
+
+        $scriptOverwrite = self::getYoochooseConfig('scriptUrl');
+        $pluginId = self::getYoochooseConfig('pluginId');
+        $plugin = $pluginId ? '/' . $pluginId : '';
+        $suffix = "/v1/{$customerId}{$plugin}/tracking";
+
+        if ($scriptOverwrite) {
+            $scriptOverwrite = (!preg_match('/^(http|\/\/)/', $scriptOverwrite) ? '//' : '') . $scriptOverwrite;
+            $scriptUrl = preg_replace('(^https?:)', '', $scriptOverwrite);
+        } else {
+            $scriptUrl = self::getYoochooseConfig('performance') == 2 ? self::AMAZON_CDN_SCRIPT : self::YOOCHOOSE_CDN_SCRIPT;
+        }
+
+        return rtrim($scriptUrl, '/') . $suffix . $type;
+    }
+}
