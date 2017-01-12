@@ -82,7 +82,7 @@ class Index extends Action
         $callbackUrl = $this->getRequest()->getParam('webHookUrl');
         $postPassword = $this->getRequest()->getParam('password');
         $transaction = $this->getRequest()->getParam('transaction');
-        $storeData = json_decode($this->getRequest()->getParam('storeData'), true);
+        $storeData = json_decode($this->getRequest()->getParam('storeData', '[]'), true);
         $customerId = $this->getRequest()->getParam('mandator');
 
         $password = $this->scope->getValue('yoochoose/export/password');
@@ -94,7 +94,7 @@ class Index extends Action
             $this->config->saveConfig('yoochoose/export/enable_flag', 1, 'default', 0);
             try {
                 $this->logger->info('Export has started for all resources.');
-                $postData = $this->helper->export($storeData, $transaction, $limit);
+                $postData = $this->helper->export($storeData, $transaction, $limit, $customerId);
                 $this->logger->info('Export has finished for all resources.');
                 $this->setCallback($callbackUrl, $postData, $customerId, $licenceKey);
                 $response['success'] = true;

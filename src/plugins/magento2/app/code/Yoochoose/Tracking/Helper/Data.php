@@ -7,6 +7,7 @@ use Magento\Framework\App\Helper\Context;
 use Magento\Framework\Validator\Exception;
 use Magento\Framework\Phrase;
 use Magento\Framework\ObjectManagerInterface;
+use Magento\Store\Model\App\Emulation;
 use Yoochoose\Tracking\Logger\Logger;
 use Magento\Framework\Filesystem\Io\File;
 use Magento\Store\Model\StoreManagerInterface;
@@ -49,6 +50,10 @@ class Data extends AbstractHelper
      * @var ScopeConfigInterface
      */
     private $config;
+    /**
+     * @var Emulation
+     */
+    private $emulation;
 
     /**
      * @param Context $context
@@ -57,6 +62,7 @@ class Data extends AbstractHelper
      * @param File $io
      * @param StoreManagerInterface $store
      * @param Request $request
+     * @param Emulation $emulation
      */
     public function __construct(
         Context $context,
@@ -64,7 +70,8 @@ class Data extends AbstractHelper
         Logger $logger,
         File $io,
         StoreManagerInterface $store,
-        Request $request
+        Request $request,
+        Emulation $emulation
     ) {
         parent::__construct($context);
         $this->om = $om;
@@ -73,6 +80,7 @@ class Data extends AbstractHelper
         $this->store = $store;
         $this->request = $request;
         $this->config = $context->getScopeConfig();
+        $this->emulation = $emulation;
     }
 
     public function getHttpPage($url, $body, $customerId, $licenceKey)
@@ -136,10 +144,12 @@ class Data extends AbstractHelper
      * @param int $limit
      * @param array $storeData
      * @param int $transaction
+     * @param int $mandatorId
      * @return string postData
      */
-    public function export($storeData, $transaction, $limit)
+    public function export($storeData, $transaction, $limit, $mandatorId)
     {
+        $storeIds = array();
         $formatsMap = [
             'MAGENTO2' => 'Products',
             'MAGENTO2_CATEGORIES' => 'Categories',
@@ -158,6 +168,7 @@ class Data extends AbstractHelper
                         'action' => 'FULL',
                         'format' => $format,
                         'contentTypeId' => $this->config->getValue('yoochoose/general/item_type', 'store', $storeId),
+                        'storeViewId' => $storeId,
                         'lang' => $language,
                         'credentials' => [
                             'login' => null,
@@ -165,12 +176,13 @@ class Data extends AbstractHelper
                         ],
                         'uri' => [],
                     ];
+                    $storeIds [$method][] = $storeId;
                 }
             }
         }
 
         $dir = $this->om->get('\Magento\Framework\App\Filesystem\DirectoryList');
-        $directory = $dir->getPath('pub') . '/media/' . self::YC_DIRECTORY_NAME . '/';
+        $directory = $dir->getPath('pub') . '/media/' . self::YC_DIRECTORY_NAME . '/' . $mandatorId . '/';
         $this->io->rmdirRecursive($directory);
         $this->io->mkdir($directory, 0775);
         $i = 0;
@@ -178,10 +190,8 @@ class Data extends AbstractHelper
         foreach ($postData['events'] as $event) {
             $method = $formatsMap[$event['format']] ?: null;
             if ($method) {
-                $postData = $this->exportData($method, $postData, $directory, $limit, $i, $event['contentTypeId']);
+                $postData = $this->exportData($method, $postData, $directory, $limit, $i, $event['storeViewId'], $mandatorId);
             }
-
-            $i++;
         }
 
         return $postData;
@@ -215,15 +225,16 @@ class Data extends AbstractHelper
      * @param integer $limit
      * @param integer $exportIndex
      * @param integer $storeId
+     * @param string $mandatorId
      * @return array $postData
      */
-    private function exportData($method, $postData, $directory, $limit = 0, $exportIndex = 0, $storeId)
+    private function exportData($method, $postData, $directory, $limit = 0, $exportIndex = 0, $storeId, $mandatorId)
     {
-
+        $this->emulation->startEnvironmentEmulation($storeId, \Magento\Framework\App\Area::AREA_FRONTEND, true);
         $model = $this->om->get('\Yoochoose\Tracking\Model\Api\Yoochoose');
 
-        $baseUrl = $this->store->getStore()->getBaseUrl();
-        $fileUrl = $baseUrl . 'pub/media/' . self::YC_DIRECTORY_NAME . '/';
+        $baseUrl = $this->store->getStore($storeId)->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA);
+        $fileUrl = $baseUrl . self::YC_DIRECTORY_NAME . '/' . $mandatorId . '/';
 
         $method = 'get' . $method;
         $this->request->setParam('limit', $limit);
@@ -250,6 +261,7 @@ class Data extends AbstractHelper
             }
         } while (!empty($results));
 
+        $this->emulation->stopEnvironmentEmulation();
         $logNames = $logNames ?: 'there are no files';
         $this->logger->info('Export has finished for ' . $method . ' with file names : ' . $logNames);
 
