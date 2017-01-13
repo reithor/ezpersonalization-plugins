@@ -13,7 +13,8 @@ function initYcTrackingModule(context) {
         itemType,
         storeViewId,
         script,
-        templates = YC_RECO_TEMPLATES;
+        templates = YC_RECO_TEMPLATES,
+        possibleRecoTemplatesPositions = ['APPEND', 'PREPEND', 'ABOVE', 'BELOW'];
 
     function getCategoriesFromBreadcrumb() {
         var crumbs = document.querySelectorAll(YC_BREADCRUMBS_SELECTOR),
@@ -147,16 +148,19 @@ function initYcTrackingModule(context) {
                 return;
             }
 
-            if (tpl.enabled && isValidRecoTemplate(tpl)) {
+            if (tpl.enabled){
+                if (!isValidRecoTemplate(tpl)) {
+                    allBoxes[i].priority = 999;
+                    return;
+                }
+
                 allBoxes[i].template = tpl;
                 allBoxes[i].priority = tpl.priority;
                 fncName = 'YcTracking_jsonpCallback' + allBoxes[i].id;
                 context[fncName] = fetchRecommendedProducts(allBoxes[i], url);
                 YcTracking.callFetchRecommendedProducts(itemType, tpl.scenario, tpl.rows * tpl.columns, products, category, fncName, language);
             }
-
         }
-
     }
 
     function hookRecommendedBasketHandlers() {
@@ -317,7 +321,12 @@ function initYcTrackingModule(context) {
     }
 
     function isValidRecoTemplate( recoTemplate ) {
-        // TODO: insert logoc
+        if (recoTemplate.hasOwnProperty('position')) {
+            if (possibleRecoTemplatesPositions.indexOf(recoTemplate.position) === -1)  {
+                GLOBAL.console.error('RECO_TEMPLATES "' + recoTemplate.scenario + '.position" value is invalid ("'+ recoTemplate.position +'"). Possible values are: ' + possibleRecoTemplatesPositions.toString());
+                return false;
+            }
+        }
         return true;
     }
 
