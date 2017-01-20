@@ -22,6 +22,7 @@ var YC_RECO_TEMPLATES = {
         "<a class='btn btn-primary' href='{{url}}'><span class='glyphicon glyphicon-eye-open'></span>{{{../../const.details}}}</a>" +
         "</div></div></div></div></li>{{/each}}{{/each}}</ul></div></div>",
         target: '.container .row .categoryView',
+        position: 'APPEND',
         priority: 0,
         rows: 2,
         columns: 5,
@@ -45,6 +46,7 @@ var YC_RECO_TEMPLATES = {
         "<a class='btn btn-primary' href='{{url}}'><span class='glyphicon glyphicon-eye-open'></span>{{{../../const.details}}}</a>" +
         "</div></div></div></div></li>{{/each}}{{/each}}</ul></div></div>",
         target: '.container .row .categoryView',
+        position: 'APPEND',
         priority: 1,
         rows: 2,
         columns: 5,
@@ -68,6 +70,7 @@ var YC_RECO_TEMPLATES = {
         "<a class='btn btn-primary' href='{{url}}'><span class='glyphicon glyphicon-eye-open'></span>{{{../../const.details}}}</a>" +
         "</div></div></div></div></li>{{/each}}{{/each}}</ul></div></div>",
         target: '.wrapper .singleItemView .row',
+        position: 'APPEND',
         priority: 0,
         rows: 2,
         columns: 5,
@@ -91,6 +94,7 @@ var YC_RECO_TEMPLATES = {
         "<a class='btn btn-primary' href='{{url}}'><span class='glyphicon glyphicon-eye-open'></span>{{{../../const.details}}}</a>" +
         "</div></div></div></div></li>{{/each}}{{/each}}</ul></div></div>",
         target: '.wrapper .singleItemView .row',
+        position: 'APPEND',
         priority: 1,
         rows: 2,
         columns: 5,
@@ -114,6 +118,7 @@ var YC_RECO_TEMPLATES = {
         "<a class='btn btn-primary' href='{{url}}'><span class='glyphicon glyphicon-eye-open'></span>{{{../../const.details}}}</a>" +
         "</div></div></div></div></li>{{/each}}{{/each}}</ul></div></div>",
         target: '.container.checkoutDetails.formControlWrapper',
+        position: 'APPEND',
         priority: 0,
         rows: 2,
         columns: 5,
@@ -137,6 +142,7 @@ var YC_RECO_TEMPLATES = {
         "<a class='btn btn-primary' href='{{url}}'><span class='glyphicon glyphicon-eye-open'></span>{{{../../const.details}}}</a>" +
         "</div></div></div></div></li>{{/each}}{{/each}}</ul></div></div>",
         target: '.container.categoryView .row',
+        position: 'APPEND',
         priority: 0,
         rows: 2,
         columns: 5,

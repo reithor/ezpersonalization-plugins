@@ -19,6 +19,7 @@ var YC_RECO_TEMPLATES = {
             "<span class='price'>{{price}}</span></span></div></li>{{/each}}" +
             "{{/each}}</ul></div>",
         target: '.main',
+        position: 'APPEND',
         priority: 0,
         consts: {
             title: {
@@ -44,6 +45,7 @@ var YC_RECO_TEMPLATES = {
             "<span class='price'>{{price}}</span></span></div></li>{{/each}}" +
             "{{/each}}</ul></div>",
         target: '.main',
+        position: 'APPEND',
         priority: 1,
         consts: {
             title: {
@@ -69,6 +71,7 @@ var YC_RECO_TEMPLATES = {
             "<span class='price'>{{price}}</span></span></div></li>{{/each}}" +
             "{{/each}}</ul></div>",
         target: '.main',
+        position: 'APPEND',
         priority: 1,
         consts: {
             title: {
@@ -94,6 +97,7 @@ var YC_RECO_TEMPLATES = {
             "<span class='price'>{{price}}</span></span></div></li>{{/each}}" +
             "{{/each}}</ul></div>",
         target: '.main',
+        position: 'APPEND',
         priority: 0,
         consts: {
             title: {
@@ -119,6 +123,7 @@ var YC_RECO_TEMPLATES = {
             "<span class='price'>{{price}}</span></span></div></li>{{/each}}" +
             "{{/each}}</ul></div>",
         target: '.main',
+        position: 'APPEND',
         priority: 0,
         consts: {
             title: {
@@ -144,6 +149,7 @@ var YC_RECO_TEMPLATES = {
             "<span class='price'>{{price}}</span></span></div></li>{{/each}}" +
             "{{/each}}</ul></div>",
         target: '.main',
+        position: 'APPEND',
         priority: 0,
         consts: {
             title: {

@@ -15,6 +15,7 @@ var YC_RECO_TEMPLATES = {
             "<span class='price'>{{{price}}}</span></p><div class='actions'><a href='{{link}}' class='more'>See details</a></div>" +
             "</div></div></div>{{/each}}{{/each}}</div>",
             target: '.container_20',
+            position: 'APPEND',
             consts: {
                 title: {'': 'Personal', de: 'Personal'}
             },
@@ -32,6 +33,7 @@ var YC_RECO_TEMPLATES = {
             "<span class='price'>{{{price}}}</span></p><div class='actions'><a href='{{link}}' class='more'>See details</a></div>" +
             "</div></div></div>{{/each}}{{/each}}</div>",
             target: '.container_20',
+            position: 'APPEND',
             priority: 0,
             rows: 1,
             consts: {
@@ -49,6 +51,7 @@ var YC_RECO_TEMPLATES = {
             "<span class='price'>{{{price}}}</span></p><div class='actions'><a href='{{link}}' class='more'>See details</a></div>" +
             "</div></div></div>{{/each}}{{/each}}</div>",
             target: '.container_20',
+            position: 'APPEND',
             priority: 0,
             consts: {
                 title: {'': 'Personalized', de: 'Personalized'}
@@ -66,6 +69,7 @@ var YC_RECO_TEMPLATES = {
             "<span class='price'>{{{price}}}</span></p><div class='actions'><a href='{{link}}' class='more'>See details</a></div>" +
             "</div></div></div>{{/each}}{{/each}}</div>",
             target: '.container_20',
+            position: 'APPEND',
             priority: 1,
             rows: 1,
             consts: {
@@ -83,6 +87,7 @@ var YC_RECO_TEMPLATES = {
             "<span class='price'>{{{price}}}</span></p><div class='actions'><a href='{{link}}' class='more'>See details</a></div>" +
             "</div></div></div>{{/each}}{{/each}}</div>",
             target: '.container_20',
+            position: 'APPEND',
             priority: 1,
             rows: 1,
             consts: {
@@ -100,6 +105,7 @@ var YC_RECO_TEMPLATES = {
             "<span class='price'>{{{price}}}</span></p><div class='actions'><a href='{{link}}' class='more'>See details</a></div>" +
             "</div></div></div>{{/each}}{{/each}}</div>",
             target: '.container_20',
+            position: 'APPEND',
             priority: 0,
             rows: 1,
             consts: {

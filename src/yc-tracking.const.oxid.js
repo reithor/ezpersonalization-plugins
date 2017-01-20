@@ -13,6 +13,7 @@ var YC_RECO_TEMPLATES = {
         "<img src='{{{image}}}' style='width: 80%;' alt='{{{title}}}'></div></a><div class='priceBlock'><strong>" +
         "{{{price}}}</strong></div></li>{{/each}}{{/each}}</ul>",
         target: '#content',
+        position: 'APPEND',
         priority: 0,
         consts: {
             title: {'': 'Personal', en: 'Personal'}
@@ -29,6 +30,7 @@ var YC_RECO_TEMPLATES = {
         "<img src='{{{image}}}' style='width: 80%;' alt='{{{title}}}'></div></a><div class='priceBlock'><strong>" +
         "{{{price}}}</strong></div></li>{{/each}}{{/each}}</ul>",
         target: '#content',
+        position: 'APPEND',
         priority: 1,
         rows: 2,
         consts: {
@@ -45,6 +47,7 @@ var YC_RECO_TEMPLATES = {
         "<img src='{{{image}}}' style='width: 80%;' alt='{{{title}}}'></div></a><div class='priceBlock'><strong>" +
         "{{{price}}}</strong></div></li>{{/each}}{{/each}}</ul>",
         target: '#content',
+        position: 'APPEND',
         priority: 1,
         rows: 2,
         consts: {
@@ -61,11 +64,12 @@ var YC_RECO_TEMPLATES = {
         "<img src='{{{image}}}' style='width: 80%;' alt='{{{title}}}'></div></a><div class='priceBlock'><strong>" +
         "{{{price}}}</strong></div></li>{{/each}}{{/each}}</ul>",
         target: '#content',
+        position: 'APPEND',
+        priority: 0,
+        rows: 2,
         consts: {
             title: {'': 'Related', en: 'Related'}
         },
-        priority: 0,
-        rows: 2,
         columns: 5,
         scenario: 'top_clicked',
         enabled: true
@@ -77,6 +81,7 @@ var YC_RECO_TEMPLATES = {
         "<img src='{{{image}}}' style='width: 80%;' alt='{{{title}}}'></div></a><div class='priceBlock'><strong>" +
         "{{{price}}}</strong></div></li>{{/each}}{{/each}}</ul>",
         target: '#content',
+        position: 'APPEND',
         priority: 0,
         rows: 2,
         consts: {
@@ -93,6 +98,7 @@ var YC_RECO_TEMPLATES = {
         "<img src='{{{image}}}' style='width: 80%;' alt='{{{title}}}'></div></a><div class='priceBlock'><strong>" +
         "{{{price}}}</strong></div></li>{{/each}}{{/each}}</ul>",
         target: '#content',
+        position: 'APPEND',
         priority: 0,
         rows: 2,
         consts: {

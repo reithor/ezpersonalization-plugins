@@ -2,7 +2,7 @@ var YC_CUSTOMER_ID = 904;
 
 var YC_CONSTS = {
     "currency" : 'GBP',
-    "currencySign" : '£'
+    "currencySign" : 'ï¿½'
 };
 
 var YC_RECO_TEMPLATES = {
@@ -16,6 +16,7 @@ var YC_RECO_TEMPLATES = {
         "{{{rating}}}<div class='price'>{{{price}}}</div></a></li>{{/each}}" +
         "{{/each}}</ul></div>",
         target: '#main',
+        position: 'APPEND',
         priority: 0,
         consts: {},
         enabled: true,
@@ -33,6 +34,7 @@ var YC_RECO_TEMPLATES = {
         "{{{rating}}}<div class='price'>{{{price}}}</div></a></li>{{/each}}" +
         "{{/each}}</ul></div>",
         target: '#main',
+        position: 'APPEND',
         priority: 0,
         consts: {},
         enabled: true,
@@ -50,6 +52,7 @@ var YC_RECO_TEMPLATES = {
         "{{{rating}}}<div class='price'>{{{price}}}</div></a></li>{{/each}}" +
         "{{/each}}</ul></div>",
         target: '#main',
+        position: 'APPEND',
         priority: 0,
         consts: {},
         enabled: true,
@@ -67,6 +70,7 @@ var YC_RECO_TEMPLATES = {
         "{{{rating}}}<div class='price'>{{{price}}}</div></a></li>{{/each}}" +
         "{{/each}}</ul></div>",
         target: '#main',
+        position: 'APPEND',
         priority: 1,
         consts: {},
         enabled: true,
@@ -84,6 +88,7 @@ var YC_RECO_TEMPLATES = {
         "{{{rating}}}<div class='price'>{{{price}}}</div></a></li>{{/each}}" +
         "{{/each}}</ul></div>",
         target: '#main',
+        position: 'APPEND',
         priority: 1,
         consts: {},
         enabled: true,
@@ -101,6 +106,7 @@ var YC_RECO_TEMPLATES = {
         "{{{rating}}}<div class='price'>{{{price}}}</div></a></li>{{/each}}" +
         "{{/each}}</ul></div>",
         target: '#main',
+        position: 'APPEND',
         priority: 0,
         consts: {},
         enabled: true,

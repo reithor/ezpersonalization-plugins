@@ -18,6 +18,7 @@ var YC_RECO_TEMPLATES = {
             "<span class='price--default is--nowrap'>{{{price}}}</span></div></div></div></div></div></div>{{/each}}" +
             "{{/each}}</div></div></div>",
             target: '.content-main--inner',
+            position: 'APPEND',
             consts: {
                 title: {'': 'Personal', de: 'Personal'}
             },
@@ -38,6 +39,7 @@ var YC_RECO_TEMPLATES = {
             "<span class='price--default is--nowrap'>{{{price}}}</span></div></div></div></div></div></div>{{/each}}" +
             "{{/each}}</div></div></div>",
             target: '.container_20',
+            position: 'APPEND',
             priority: 0,
             rows: 1,
             consts: {
@@ -58,6 +60,7 @@ var YC_RECO_TEMPLATES = {
             "<span class='price--default is--nowrap'>{{{price}}}</span></div></div></div></div></div></div>{{/each}}" +
             "{{/each}}</div></div></div>",
             target: '.content--wrapper',
+            position: 'APPEND',
             priority: 0,
             consts: {
                 title: {'': 'Personalized', de: 'Personalized'}
@@ -78,6 +81,7 @@ var YC_RECO_TEMPLATES = {
             "<span class='price--default is--nowrap'>{{{price}}}</span></div></div></div></div></div></div>{{/each}}" +
             "{{/each}}</div></div></div>",
             target: '.content-main--inner',
+            position: 'APPEND',
             priority: 1,
             rows: 2,
             consts: {
@@ -98,6 +102,7 @@ var YC_RECO_TEMPLATES = {
             "<span class='price--default is--nowrap'>{{{price}}}</span></div></div></div></div></div></div>{{/each}}" +
             "{{/each}}</div></div></div>",
             target: '.content--wrapper',
+            position: 'APPEND',
             priority: 1,
             rows: 2,
             consts: {
@@ -118,6 +123,7 @@ var YC_RECO_TEMPLATES = {
             "<span class='price--default is--nowrap'>{{{price}}}</span></div></div></div></div></div></div>{{/each}}" +
             "{{/each}}</div></div></div>",
             target: '.content.listing--content',
+            position: 'APPEND',
             priority: 0,
             rows: 1,
             consts: {
