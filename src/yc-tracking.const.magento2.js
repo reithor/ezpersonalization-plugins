@@ -25,6 +25,7 @@ var YC_RECO_TEMPLATES = {
             "<span>Add to Wish List</span></a>{{/if}}{{#if compareData}}<a href='#' class='action tocompare' data-post='{{{compareData}}}' title='Add to Compare'>" +
             "<span>Add to Compare</span></a>{{/if}}</div></div></div></div></li>{{/each}}{{/each}}</ol></div></div></div>",
         target: '.columns',
+        position: 'APPEND',
         priority: 0,
         consts: {
             title: {
@@ -56,6 +57,7 @@ var YC_RECO_TEMPLATES = {
             "<span>Add to Wish List</span></a>{{/if}}{{#if compareData}}<a href='#' class='action tocompare' data-post='{{compareData}}' title='Add to Compare'>" +
             "<span>Add to Compare</span></a>{{/if}}</div></div></div></div></li>{{/each}}{{/each}}</ol></div></div></div>",
         target: '.columns',
+        position: 'PREPEND',
         priority: 1,
         consts: {
             title: {
@@ -87,6 +89,7 @@ var YC_RECO_TEMPLATES = {
             "<span>Add to Wish List</span></a>{{/if}}{{#if compareData}}<a href='#' class='action tocompare' data-post='{{compareData}}' title='Add to Compare'>" +
             "<span>Add to Compare</span></a>{{/if}}</div></div></div></div></li>{{/each}}{{/each}}</ol></div></div></div>",
         target: '.columns',
+        position: 'ABOVE',
         priority: 1,
         consts: {
             title: {
@@ -122,6 +125,7 @@ var YC_RECO_TEMPLATES = {
             "<span>Add to Wish List</span></a>{{/if}}{{#if compareData}}<a href='#' class='action tocompare' data-post='{{compareData}}' title='Add to Compare'>" +
             "<span>Add to Compare</span></a>{{/if}}</div></div></div></div></li>{{/each}}{{/each}}</ol></div></div></div>",
         target: '.columns',
+        position: 'BELOW',
         consts: {
             title: {
                 '': 'Related',
@@ -157,6 +161,7 @@ var YC_RECO_TEMPLATES = {
             "<span>Add to Wish List</span></a>{{/if}}{{#if compareData}}<a href='#' class='action tocompare' data-post='{{compareData}}' title='Add to Compare'>" +
             "<span>Add to Compare</span></a>{{/if}}</div></div></div></div></li>{{/each}}{{/each}}</ol></div></div></div>",
         target: '.columns',
+        position: 'PREPEND',
         priority: 0,
         consts: {
             title: {
@@ -188,6 +193,7 @@ var YC_RECO_TEMPLATES = {
             "<span>Add to Wish List</span></a>{{/if}}{{#if compareData}}<a href='#' class='action tocompare' data-post='{{compareData}}' title='Add to Compare'>" +
             "<span>Add to Compare</span></a>{{/if}}</div></div></div></div></li>{{/each}}{{/each}}</ol></div></div></div>",
         target: '.columns',
+        position: 'PREPEND',
         priority: 1,
         consts: {
             title: {

@@ -1186,6 +1186,7 @@ function initYcTrackingCore(context) {
                 wrapper = GLOBAL.document.createElement('div'),
                 rows = [],
                 columns = [],
+                position = template && template.position ? template.position : null,
                 elem = template ? GLOBAL.document.querySelector(template.target) : null;
 
             if (!box || !box.products || !box.products.length || !elem) {
@@ -1214,7 +1215,28 @@ function initYcTrackingCore(context) {
             compiled = Handlebars.compile(section);
             wrapper.className = 'yc-recommendation-box';
             wrapper.innerHTML = compiled(box);
-            elem.appendChild(wrapper);
+
+            switch(position) {
+                case 'PREPEND':
+                    elem.insertBefore(wrapper, elem.firstChild);
+                    break;
+                case 'ABOVE':
+                    elem.parentNode.insertBefore(wrapper, elem);
+                    break;
+                case 'BELOW':
+                    if (elem.nextSibling) {
+                        elem.parentNode.insertBefore(wrapper, elem.nextSibling);
+                    } else {
+                        elem.parentNode.appendChild(wrapper);
+                    }
+                    break;
+                case 'APPEND':
+                    elem.appendChild(wrapper);
+                    break;
+                default:
+                    elem.appendChild(wrapper);
+                    break;
+            }
 
             linkProperty = (linkProperty ? linkProperty : 'link');
             box.products.forEach(function (product) {
