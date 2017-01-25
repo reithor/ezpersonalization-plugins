@@ -152,7 +152,7 @@ function initYcTrackingModule(context) {
                 allBoxes[i].priority = tpl.priority;
                 fncName = 'YcTracking_jsonpCallback' + allBoxes[i].id;
                 context[fncName] = fetchRecommendedProducts(allBoxes[i], url);
-                YcTracking.callFetchRecommendedProducts(itemType, tpl.scenario, tpl.rows * tpl.columns, products, category, fncName, language);
+                YcTracking.callFetchRecommendedProductsV21(itemType, tpl.scenario, tpl.rows * tpl.columns, products, category, fncName, language);
             }
 
         }
@@ -211,16 +211,37 @@ function initYcTrackingModule(context) {
 
     function fetchRecommendedProducts(box, url) {
         return function (response) {
-            var xmlHttp,
+            var div = document.createElement('div'),
+                element = GLOBAL.document.querySelectorAll(YC_VIEWERS_SELECTOR),
+                viewerElement = GLOBAL.document.querySelectorAll('#yc-viewers-number'),
+                translate = box.template.consts.viewers,
+                language_code = language ? language.substr(0, language.indexOf('-')) : '',
+                viewersNumber = '',
+                xmlHttp,
                 productIds = [];
-
-            if (!response.hasOwnProperty('recommendationResponseList')) {
+            
+            box.response = response;
+            
+            if (!response.hasOwnProperty('recommendationItems')) {
                 return;
             }
 
-            response.recommendationResponseList.forEach(function (product) {
-                productIds.push(product.itemId);
-            });
+            if (response.hasOwnProperty('recommendationItems')) {
+                response.recommendationItems.forEach(function (product) {
+                    productIds.push(product.itemId);
+                });
+                
+                if (response.contextItems.length > 0) {
+                    viewersNumber = response.contextItems[0].viewers;
+
+                    if (viewersNumber > 0 && viewerElement.length === 0) {
+                        div.innerHTML = viewersNumber;
+                        div.id = 'yc-viewers-number';
+                        div.innerHTML = div.innerHTML + ' ' + translate[language_code];
+                        element[0].firstElementChild.appendChild(div);
+                    }
+                }
+            }
 
             if (productIds.length === 0) {
                 return;
@@ -266,10 +287,17 @@ function initYcTrackingModule(context) {
                                 box.products.forEach(function (item) {
                                     idHistory.push(item.id);
                                     renderedIds.push(item.id);
-                                });
 
-                                YcTracking.trackRendered(itemType, renderedIds);
-                                YcTracking.renderRecommendation(box, language, trackFollowEvent);
+                                    box.response.recommendationItems.forEach(function (product) {
+                                        if (item.id == product.itemId) {
+                                            item.links = product.links;
+                                            YcTracking.trackRenderedV2(product.links.rendered, language);
+                                        }
+                                    });
+                                });
+                                
+                                YcTracking.renderRecommendationV2(box, language, trackFollowEventV2, false);
+
                             });
                             hookTrackFollowEvent();
                             hookRecommendedBasketHandlers();
@@ -287,6 +315,12 @@ function initYcTrackingModule(context) {
     function trackFollowEvent(product, scenario) {
         return function () {
             YcTracking.trackClickRecommended(itemType, product.id, scenario);
+        };
+    }
+
+    function trackFollowEventV2(url) {
+        return function () {
+            YcTracking.trackClickRecommendedV3(url);
         };
     }
 

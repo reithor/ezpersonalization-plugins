@@ -106,3 +106,10 @@ div[class^="row-"] {
     -webkit-order: 2;
     order: 2;
 }
+
+/* current context color */
+#yc-viewers-number {
+    color: red;
+    text-transform: none;
+    font-size: 90%;
+}

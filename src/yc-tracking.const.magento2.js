@@ -1,4 +1,4 @@
-var YC_CUSTOMER_ID = 909;
+var YC_CUSTOMER_ID = 1466;
 
 var YC_CONSTS = {
     "currency": 'EUR',
@@ -92,6 +92,10 @@ var YC_RECO_TEMPLATES = {
             title: {
                 '': 'Upselling',
                 en: 'Upselling'
+            },
+            viewers: {
+                '': 'Nutzer schauen gerade dieses Produkt an',
+                en: 'users are currently viewing this'
             }
         },
         rows: 1,
@@ -122,6 +126,10 @@ var YC_RECO_TEMPLATES = {
             title: {
                 '': 'Related',
                 en: 'Related'
+            },
+            viewers: {
+                '': 'Nutzer schauen gerade dieses Produkt an',
+                en: 'users are currently viewing this'
             }
         },
         priority: 0,

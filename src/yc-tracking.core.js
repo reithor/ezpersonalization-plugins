@@ -256,6 +256,8 @@ function initYcTrackingCore(context) {
                 return _userIdFromCookie(userId);
             },
 
+
+
             /**
              * Executes call to remote server by placing pixel image.
              *
@@ -266,6 +268,18 @@ function initYcTrackingCore(context) {
                 // event tracking is using pixel method because server does not support JSONP response
                 var img = new Image(1, 1);
                 img.src = eventHost + url;
+            },
+
+            /**
+             * Executes call to remote server by placing pixel image.
+             *
+             * @private
+             * @param {string} url - Url to call.
+             */
+            _executeEventCallV2 = function (url) {
+                // event tracking is using pixel method because server does not support JSONP response
+                var img = new Image(1, 1);
+                img.src = url;
             },
 
             /**
@@ -987,6 +1001,21 @@ function initYcTrackingCore(context) {
 
             return this;
         };
+        
+        /**
+         * Method for tracking Rendered event.
+         * 
+         * @param url
+         * @param lang
+         * @returns {YcTracking}
+         */
+        this.trackRenderedV2 = function (url, lang) {
+            url += _getStoreViewId() !== undefined ? '&storeViewId=' + encodeURIComponent(_getStoreViewId()) : '';
+            url += '&lang=' + (lang ? lang : '');
+            
+            _executeEventCallV2(url);
+            return this;
+        };
 
         /**
          * Method for tracking Click Recommended (Follow) event.
@@ -1002,6 +1031,17 @@ function initYcTrackingCore(context) {
             url += _getStoreViewId() !== undefined ? '&storeViewId=' + encodeURIComponent(_getStoreViewId()) : '';
 
             _executeEventCall(url);
+            return this;
+        };
+        
+        /**
+         * Method for tracking Click Recommended (Follow) event.
+         *
+         * @param url
+         * @returns {YcTracking}
+         */
+        this.trackClickRecommendedV3 = function (url) {
+            _executeEventCallV2(url);
             return this;
         };
 
@@ -1063,6 +1103,33 @@ function initYcTrackingCore(context) {
             url += '&lang=' + (lang ? lang : '');
             url += _getStoreViewId() !== undefined ? '&storeViewId=' + encodeURIComponent(_getStoreViewId()) : '';
 
+            _executeJsonpCall(url);
+            return this;
+        };
+
+        /**
+         * Method for fetching product ids for recommendation scenario.
+         * Generates JSONP call to server.
+         *
+         * @param {number} itemTypeId
+         * @param {object} scenario
+         * @param {number} count
+         * @param {string} products
+         * @param {string} categoryPath
+         * @param {string} callback Name of the callback function.
+         * @param {string} lang
+         * @returns {YcTracking} This object's instance.
+         */
+        this.callFetchRecommendedProductsV21 = function (itemTypeId, scenario, count, products, categoryPath, callback, lang) {
+            var url = recommendationHostV2 + '/' + _userId() + '/' + scenario +
+                '.jsonp?numrecs=' + (count * 2) + '&outputtypeid=' + itemTypeId +
+                '&jsonpcallback=' + callback;
+
+            url += '&contextitems=' + (products ? encodeURIComponent(products) : '');
+            url += '&categorypath=' + (categoryPath ? encodeURIComponent(categoryPath) : '');
+            url += '&lang=' + (lang ? lang : '');
+            url += _getStoreViewId() !== undefined ? '&storeViewId=' + encodeURIComponent(_getStoreViewId()) : '';
+            
             _executeJsonpCall(url);
             return this;
         };
@@ -1156,6 +1223,62 @@ function initYcTrackingCore(context) {
 
                 for (i = 0; i < myTags.length; i++) {
                     myTags[i].addEventListener('click', trackFunction(product, template.scenario));
+                }
+            });
+
+            return this;
+        };
+
+        this.renderRecommendationV2 = function (box, lang, trackFunction, linkProperty) {
+            var template = box ? box.template : null,
+                section = template ? template.html_template : null,
+                num = 0,
+                link = '',
+                compiled,
+                wrapper = GLOBAL.document.createElement('div'),
+                rows = [],
+                columns = [],
+                elem = template ? GLOBAL.document.querySelector(template.target) : null;
+
+            if (!box || !box.products || !box.products.length || !elem) {
+                return null;
+            }
+
+            _extractConstants(template.consts, box, lang);
+
+            box.products.forEach(function (product) {
+                num++;
+                columns.push(product);
+                if ((num % template.columns) === 0) {
+                    rows.push({
+                        'columns': columns
+                    });
+                    columns = [];
+                }
+                link = _getStoreViewId() !== undefined ? '&storeViewId=' + encodeURIComponent(_getStoreViewId()) : '';
+                link += '&lang=' + (lang ? lang : '');
+                product.links.clickRecommended  += link;
+                
+            });
+            if (columns.length) {
+                rows.push({
+                    'columns': columns
+                });
+            }
+
+            box.rows = rows;
+            compiled = Handlebars.compile(section);
+            wrapper.className = 'yc-recommendation-box';
+            wrapper.innerHTML = compiled(box);
+            elem.appendChild(wrapper);
+
+            linkProperty = (linkProperty ? linkProperty : 'link');
+            box.products.forEach(function (product) {
+                var myTags = wrapper.querySelectorAll('a[href="' + product[linkProperty] + '"]'),
+                    i;
+
+                for (i = 0; i < myTags.length; i++) {
+                    myTags[i].addEventListener('click', trackFunction(product.links.clickRecommended));
                 }
             });
 
