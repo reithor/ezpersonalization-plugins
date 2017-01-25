@@ -1341,6 +1341,7 @@ function initYcTrackingCore(context) {
                     functionName,
                     parameters = {
                         itemtype: 1,
+                        lang: language,
                         attribute: allAttributes
                     },
                     property,
