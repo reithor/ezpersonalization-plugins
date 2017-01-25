@@ -113,3 +113,31 @@ div[class^="row-"] {
     text-transform: none;
     font-size: 90%;
 }
+
+/* product bundle plus sign */
+.yc-recommendation-box .yc-plus {
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 100px;
+    color: #AAA;
+    font-size: 28px;
+    z-index: 9;
+}
+
+/* product bundle plus sign hide on last item */
+.yc-recommendation-box li:last-child .yc-plus {
+    display: none;
+}
+
+/* product bundle three items width */
+.yc-recommendation-box .block-products-list ol.product-items li.product-item.yc-product-item3{
+    width: 29%;
+    position: relative;
+}
+
+/* product bundle two items width */
+.yc-recommendation-box .block-products-list ol.product-items li.product-item.yc-product-item {
+    width: 47%;
+    position: relative;
+}

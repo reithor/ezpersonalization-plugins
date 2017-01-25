@@ -200,6 +200,51 @@ var YC_RECO_TEMPLATES = {
         scenario: 'category_page',
         enabled: true
     },
+    bundle3: {
+        html_template: "<div class='content-heading'><h2 class='title'>{{{const.title}}}</h2></span></div>" +
+            "<div class='block widget block-products-list grid'><div class='block-content'>" +
+            "<div class='products-grid grid'><ol class='product-items widget-product-grid'>{{#each rows}}{{#each columns}}" +
+            "<li class='product-item yc-product-item{{#if totalItems}}3{{/if}}'><div class='yc-product-item-info'>" +
+            "<div class='yc-product-item-info' data-container='product-grid'><a href='{{{link}}}' class='product photo product-item-photo' tabindex='-1'>" +
+            "<span class='product-image-container' style='width:240px;'><span class='product-image-wrapper' style='padding-bottom: 125%;'>" +
+            "<img class='product-image-photo' src='{{{image}}}' width='240' height='300' alt='{{{title}}}'></span></span></a>" +
+            "<div class='product details product-item-details'><strong class='product name product-item-name'>" +
+            "<a class='product-item-link' href='{{{link}}}'>{{{title}}}</a></strong><div class='price-box price-final_price' data-role='priceBox' data-product-id='{{id}}'>" +
+            "<span class='price-container price-final_price tax'>" +
+            "<input type='checkbox' class='yc-input-checkbox' value='{{price}}' data-product-id='{{id}}' data-post='{{postData}}' checked='checked'><span class='price'>{{{price}}}</span></span></span></div>" +
+            "<div class='swatch-opt-{{id}}'></div><div class='yc-product-item-inner'><div class='product actions product-item-actions'>" +
+            "<div class='actions-primary'><form class='tocart-form yc-tocart-form' data-role='tocart-form' data-product-id='{{id}}' action='{{{formAction}}}'><input type='hidden' name='product' value='{{id}}'>" +
+            "<input type='hidden' name='uenc' value='{{{uenc}}}'><input name='form_key' type='hidden' value='{{{formKey}}}'>" +
+            "</form></div></div></div>" +
+            "</div><span class='yc-plus'>+</div></li>{{/each}}{{/each}}</ol></div class='product-item-actions'>" +
+            "<div class='actions-secondary' data-role='add-to-links'><h4>{{{const.price}}}: <span id='yc-total-price-bundle'>0.00</span></h4>" +
+            "<button type='button' title='Add to Cart' class='action tocart primary yc-add-to-cart'><span class='yc-add-to-cart-text-one'>Add to Cart</span>" +
+            "<span class='yc-add-to-cart-text-two'>{{const.bundle2}}</span><span class='yc-add-to-cart-text-three'>{{const.bundle3}}</span></button></div><div></div></div></div>",
+        target: '.product-info-main',
+        priority: 1,
+        consts: {
+            title: {
+                '': 'Frequently brought together',
+                en: 'Frequently brought together'
+            },
+            price: {
+                '': 'Price',
+                en: 'Price'
+            },
+            bundle2 : {
+                '' : 'Add both items to cart',
+                "de" : 'Beide Produkte in den Warenkorb'
+            },
+            bundle3 : {
+                '' : 'Add all three items to cart',
+                "de" : 'Alle drei Produkte in den Warenkorb'
+            },
+        },
+        rows: 1,
+        columns: 3,
+        scenario: 'bundle3',
+        enabled: true
+    },
 };
 
 var YC_SEARCH_FIELDS = [{

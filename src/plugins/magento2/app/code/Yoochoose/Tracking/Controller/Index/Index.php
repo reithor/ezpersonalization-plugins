@@ -33,8 +33,12 @@ class Index extends Action
      * @param ScopeConfigInterface $scope
      * @param StoreManagerInterface $store
      */
-    public function __construct(Context $context, JsonFactory $resultJsonFactory, ScopeConfigInterface $scope, StoreManagerInterface $store)
-    {
+    public function __construct(
+        Context $context,
+        JsonFactory $resultJsonFactory,
+        ScopeConfigInterface $scope,
+        StoreManagerInterface $store
+    ) {
 
         $this->resultJsonFactory = $resultJsonFactory;
         parent::__construct($context);
@@ -51,6 +55,7 @@ class Index extends Action
     public function execute()
     {
         $productIds = $this->getRequest()->getParam('productIds');
+        $boxType = $this->getRequest()->getParam('type');
 
         /** @var \Magento\Catalog\Model\Product\Media\Config $helper */
         $helper = $this->_objectManager->get('Magento\Catalog\Model\Product\Media\Config');
@@ -79,13 +84,13 @@ class Index extends Action
         $block = $this->_objectManager->get('\Magento\CatalogWidget\Block\Product\ProductsList');
 
         /** @var \Magento\Catalog\Model\Product $product */
-        foreach ($collection as $product) {
+        foreach ($collection as $key => $product) {
             $postData = false;
             $compareData = false;
             $wishlistData = false;
             $image = $product->getData('thumbnail');
 
-            if ($product->isSaleable()){
+            if ($product->isSaleable()) {
                 /** @var \Magento\Framework\Data\Helper\PostHelper */
                 $postDataHelper = $this->_objectManager->get('Magento\Framework\Data\Helper\PostHelper');
                 $url = $block->getAddToCartUrl($product);
@@ -95,7 +100,7 @@ class Index extends Action
                 $postData = $this->changeUenc($postData, $newUenc);
             }
 
-            if ($block->getAddToCompareUrl()){
+            if ($block->getAddToCompareUrl()) {
                 /** @var \Magento\Catalog\Helper\Product\Compare */
                 $compareHelper = $this->_objectManager->get('Magento\Catalog\Helper\Product\Compare');
                 $compareData = $compareHelper->getPostDataParams($product);
@@ -103,11 +108,11 @@ class Index extends Action
             }
 
             /** @var \Magento\Wishlist\Helper\Data */
-            if ($this->_objectManager->get('Magento\Wishlist\Helper\Data')->isAllow()){
+            if ($this->_objectManager->get('Magento\Wishlist\Helper\Data')->isAllow()) {
                 $wishlistData = $block->getAddToWishlistParams($product);
             }
 
-            $products[] = [
+            $products[$key] = [
                 'id' => $product->getId(),
                 'link' => $product->getUrlModel()->getUrl($product),
                 'price' => $priceHelper->currency($product->getFinalPrice(), true, false),
@@ -117,9 +122,45 @@ class Index extends Action
                 'wishlistData' => $wishlistData,
                 'compareData' => $compareData,
             ];
-        }
 
-//        header('Content-Type: application/json;');
+            $productType = $product->getTypeId();
+
+            if ($boxType === 'bundle') {
+                $jsonSwatchConfig = false;
+                $jsonConfig = false;
+                $numberOfSwatches = false;
+            $mediaCallback = false;
+
+                /** @var \Magento\Framework\Data\Form\FormKey */
+                $formKeyObject = $this->_objectManager->get('Magento\Framework\Data\Form\FormKey');
+                $formKey = $formKeyObject->getFormKey();
+
+                /** @var \Magento\Catalog\Block\Product\ListProduct */
+                $listProduct = $this->_objectManager->get('\Magento\Catalog\Block\Product\ListProduct');
+                $listProduct->getProduct();
+                $postParams = $listProduct->getAddToCartPostParams($product);
+                $formAction = $postParams['action'];
+                $formUenc = $urlEncoder->encode($formAction);
+
+                if ($productType != 'simple') {
+                    $swatch = $this->_objectManager->get('Magento\Swatches\Block\Product\Renderer\Configurable\Interceptor');
+                    $swatch->setProduct($product);
+                    $swatchComplete = $swatch->getJsonConfig();
+                    $jsonConfig = $swatchComplete;
+                    $jsonSwatchConfig = $swatch->getJsonSwatchConfig();
+                    $numberOfSwatches = $swatch->getNumberSwatchesPerProduct();
+                    $mediaCallback = $swatch->getMediaCallback();
+                }
+                $products[$key]['formAction'] = $formAction;
+                $products[$key]['uenc'] = $formUenc;
+                $products[$key]['formKey'] = $formKey;
+                $products[$key]['numberToShow'] = $numberOfSwatches;
+                $products[$key]['jsonConfig'] = $jsonConfig;
+                $products[$key]['jsonSwatchConfig'] = $jsonSwatchConfig;
+                $products[$key]['mediaCallback'] = $mediaCallback;
+            }
+
+        }
 
         $result = $this->resultJsonFactory->create();
         $result->setData(array_values($products));

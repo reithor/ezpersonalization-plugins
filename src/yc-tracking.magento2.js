@@ -26,6 +26,33 @@ function initYcTrackingModule(context) {
 
         return categories.join('/');
     }
+    
+    function calculateBundlePrice(checkBoxes) {
+        var updatedTotalPrice = 0,
+            stionText = '',
+            priceOfBundleItem,
+            checked = 0,
+            addToCartText1 = GLOBAL.document.querySelectorAll('.yc-recommendation-box' + YC_BUNDLE_ADDTOCART_ONE_SELECTOR),
+            addToCartText2 = GLOBAL.document.querySelectorAll('.yc-recommendation-box' + YC_BUNDLE_ADDTOCART_TWO_SELECTOR),
+            addToCartText3 = GLOBAL.document.querySelectorAll('.yc-recommendation-box' + YC_BUNDLE_ADDTOCART_THREE_SELECTOR);
+
+        checkBoxes.forEach(function (checkBox){
+            if (checkBox.checked) {
+                checked++;
+                stionText = checkBox.value.replace(/[0-9]/g, '');
+                stionText = stionText.replace('.', '');
+                priceOfBundleItem = checkBox.value.replace(/[^0-9]/g, '');
+                updatedTotalPrice = updatedTotalPrice + parseInt(priceOfBundleItem);
+            }
+        });
+
+        checked > 2 ? addToCartText3[0].style.display = 'block' : addToCartText3[0].style.display = 'none';
+        checked === 2 ? addToCartText2[0].style.display = 'block' : addToCartText2[0].style.display = 'none';
+        checked <= 1 ? addToCartText1[0].style.display = 'block' : addToCartText1[0].style.display = 'none';
+
+        updatedTotalPrice = updatedTotalPrice / 100;
+        return stionText + Number(updatedTotalPrice).toFixed(2);
+    }
 
     function trackClickAndRate() {
         var category,
@@ -116,6 +143,9 @@ function initYcTrackingModule(context) {
                 allBoxes.push({
                     'id': 'related'
                 });
+                allBoxes.push({
+                    'id': 'bundle3'
+                });
                 category = getCategoriesFromBreadcrumb();
                 break;
             case 'home':
@@ -190,6 +220,7 @@ function initYcTrackingModule(context) {
                 if (!box['products']) {
                     return;
                 }
+
                 box.products.forEach(function (product) {
                     var buttons = elem.querySelectorAll('.yc-recommendation-box ' + YC_BASKET_LINKS_SELECTOR);
 
@@ -209,19 +240,25 @@ function initYcTrackingModule(context) {
         });
     }
 
+    function updateTotalPrice(checkBoxes, priceHolder) {
+        return function () {
+            priceHolder.innerHTML = calculateBundlePrice(checkBoxes);
+        }
+    }
+
     function fetchRecommendedProducts(box, url) {
         return function (response) {
             var div = document.createElement('div'),
                 element = GLOBAL.document.querySelectorAll(YC_VIEWERS_SELECTOR),
+                returnForm = (box.id == 'bundle3') ? 'bundle' : 'standard',
                 viewerElement = GLOBAL.document.querySelectorAll('#yc-viewers-number'),
                 translate = box.template.consts.viewers,
                 language_code = language ? language.substr(0, language.indexOf('-')) : '',
                 viewersNumber = '',
                 xmlHttp,
                 productIds = [];
-            
+
             box.response = response;
-            
             if (!response.hasOwnProperty('recommendationItems')) {
                 return;
             }
@@ -287,7 +324,7 @@ function initYcTrackingModule(context) {
                                 box.products.forEach(function (item) {
                                     idHistory.push(item.id);
                                     renderedIds.push(item.id);
-
+                                    item.totalItems = box.products.length === 3 ? '3' : false;
                                     box.response.recommendationItems.forEach(function (product) {
                                         if (item.id == product.itemId) {
                                             item.links = product.links;
@@ -298,18 +335,122 @@ function initYcTrackingModule(context) {
                                 
                                 YcTracking.renderRecommendationV2(box, language, trackFollowEventV2, false);
 
+                                YcTracking.renderRecommendationV2(box, language, trackFollowEventV2, false);
+                                
+                                box.products.forEach(function (item) {
+                                    if (item.jsonSwatchConfig && item.jsonConfig) {
+                                        require(['jquery', 'jquery/ui', 'Magento_Swatches/js/swatch-renderer'], function ($) {
+                                            $('.swatch-opt-' + item.id).SwatchRenderer({
+                                                selectorProduct: '.product-item-details',
+                                                onlySwatches: true,
+                                                enableControlLabel: item.enableControlLabel ? item.enableControlLabel : false,
+                                                numberToShow: item.numberToShow ? item.numberToShow : 16,
+                                                jsonConfig: JSON.parse(item.jsonConfig),
+                                                jsonSwatchConfig: JSON.parse(item.jsonSwatchConfig),
+                                                mediaCallback: item.mediaCallback
+                                            });
+                                        });
+                                    }
+                                });
                             });
+
                             hookTrackFollowEvent();
-                            hookRecommendedBasketHandlers();
+
+                            if (box.template.scenario !== 'bundle3') {
+                                hookRecommendedBasketHandlers();
+                            } else {
+                                hookBundleUpdatePriceHandlers();
+                                hookBundleBasketHandlers(box.template.target);
+                            }
                         }
                     }
                 }
             };
 
             requestsSent++;
-            xmlHttp.open('GET', url + '?productIds=' + productIds.join(), true);
+            xmlHttp.open('GET', url   + '?type=' + returnForm + '&productIds=' +  productIds.join(), true);
             xmlHttp.send();
         };
+    }
+
+    function hookBundleUpdatePriceHandlers() {
+        var checkBoxes = GLOBAL.document.querySelectorAll('.yc-recommendation-box ' + YC_BUNDLE_CHECKBOX_SELECTOR),
+            priceHolder = GLOBAL.document.querySelector('#yc-total-price-bundle');
+
+        checkBoxes[0].disabled = true;
+        priceHolder.innerHTML = calculateBundlePrice(checkBoxes);
+
+        checkBoxes.forEach(function (checkBox) {
+            checkBox.addEventListener('change', updateTotalPrice(checkBoxes, priceHolder));
+        });
+    }
+
+    function hookBundleBasketHandlers(target) {
+        var addToCart = GLOBAL.document.querySelectorAll(target + ' .yc-recommendation-box' + YC_BUNDLE_ADDTOCART_SELECTOR);
+
+        if (addToCart[0]) {
+            addToCart[0].addEventListener('click', function (e) {
+                var promises = [],
+                    checkboxes = GLOBAL.document.querySelectorAll('.yc-recommendation-box' + YC_BUNDLE_CHECKBOX_SELECTOR),
+                    forms = GLOBAL.document.querySelectorAll('.yc-recommendation-box' + YC_BUNDLE_FORM_SELECTOR);
+
+                e.currentTarget.disabled = true;
+                e.currentTarget.innerHTML = '<span>Adding...</span>';
+
+                checkboxes.forEach(function (checkBox) {
+                    var form = forms,
+                        promise = null,
+                        xmlHttp = new XMLHttpRequest(),
+                        categoryPath = getCategoriesFromBreadcrumb(),
+                        productId,
+                        params = '';
+
+                    if (checkBox.checked) {
+                        forms.forEach(function (f) {
+                            if (checkBox.attributes['data-product-id'].value === f.attributes['data-product-id'].value) {
+                                form = f;
+                            }
+                        });
+
+                        if (form) {
+                            productId = form.attributes['data-product-id'].value;
+                            promise = new Promise(function (resolve, reject) {
+
+                                YcTracking.trackBasket(itemType, productId, categoryPath, language);
+
+                                xmlHttp.onreadystatechange = function () {
+                                    if (xmlHttp.readyState === 4) {
+                                        if (xmlHttp.status === 200) {
+                                            resolve();
+                                        } else {
+                                            reject();
+                                        }
+                                    }
+                                };
+
+                                xmlHttp.open('POST', form.action, true);
+                                xmlHttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+                                for (var i = 0; i < form.children.length; i++) {
+                                    if (form.children[i].tagName === 'INPUT') {
+                                        params += [form.children[i].name] + '=' + form.children[i].value + '&';
+                                    }
+                                }
+
+                                params = params.substring(0, params.length - 1);
+                                xmlHttp.send(params);
+                            });
+
+                            promises.push(promise);
+                        }
+                    }
+                });
+
+                Promise.all(promises).then(function () {
+                    window.location.reload();
+                });
+            });
+        }
     }
 
     function trackFollowEvent(product, scenario) {
