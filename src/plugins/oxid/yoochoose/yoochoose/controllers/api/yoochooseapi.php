@@ -45,7 +45,7 @@ class Yoochooseapi extends oxUBase
 
         $licenceKey = $conf->getConfigParam('ycLicenseKey');
         $test = apache_request_headers();
-        $appSecret = $test['Authentication'];
+        $appSecret = str_replace('Bearer ', '', $test['Authentication']);
 
         if (md5($licenceKey) == $appSecret) {
             $this->limit = $conf->getRequestParameter('limit');
