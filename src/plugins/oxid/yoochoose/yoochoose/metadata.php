@@ -214,5 +214,8 @@ Arial, sans-serif;">&nbsp;&nbsp;</span><span style="line-height: 31px;">Personal
         'yoochooseusers' => 'yoochoose/yoochoose/controllers/api/yoochooseusers.php',
         'yoochooseapi' => 'yoochoose/yoochoose/controllers/api/yoochooseapi.php',
         'yoochooseEvents' => 'yoochoose/yoochoose/events/yoochooseevents.php',
+        'yoochooseexport' => 'yoochoose/yoochoose/controllers/api/yoochooseexport.php',
+        'yoochoosetrigger' => 'yoochoose/yoochoose/controllers/yoochoosetrigger.php',
+		'ycexportmodel' => 'yoochoose/yoochoose/models/ycexportmodel.php',
     ),
 );

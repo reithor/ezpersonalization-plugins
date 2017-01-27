@@ -22,6 +22,21 @@ class Yoochooseapi extends oxUBase
     protected $shopId;
 
     /**
+     * @var string
+     */
+    protected $mandator;
+
+    /**
+     * @var string
+     */
+    protected $webHook;
+
+    /**
+     * @var string
+     */
+    protected $transaction;
+
+    /**
      * Retrieves all request params and authenticates user
      */
     public function init()
@@ -29,13 +44,23 @@ class Yoochooseapi extends oxUBase
         $conf = $this->getConfig();
 
         $licenceKey = $conf->getConfigParam('ycLicenseKey');
-        $appSecret = $conf->getRequestParameter('appSecret');
+        $test = apache_request_headers();
+        $appSecret = $test['Authentication'];
 
         if (md5($licenceKey) == $appSecret) {
             $this->limit = $conf->getRequestParameter('limit');
             $this->offset = $conf->getRequestParameter('offset');
             $this->language = $conf->getRequestParameter('lang');
             $this->shopId = $conf->getRequestParameter('shop');
+            $this->mandator = $conf->getRequestParameter('mandator');
+            $this->webHook = $conf->getRequestParameter('webHookUrl');
+            $this->transaction = $conf->getRequestParameter('transaction');
+
+            if ($_GET['cl'] == 'yoochooseexport') {
+                if (!isset($this->limit) && !isset($this->mandator) && !isset($this->webHook)) {
+                    $this->sendResponse(array(), "Limit, mandator and webHook parameters must be set.", 400);
+                }
+            }
 
             if ($this->shopId && !in_array($this->shopId, oxRegistry::getConfig()->getShopIds())) {
                 $this->sendResponse(array(), "Shop with id ($this->shopId) not found.", 400);
@@ -163,6 +188,54 @@ class Yoochooseapi extends oxUBase
     public function setShopId($shopId)
     {
         $this->shopId = $shopId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMandator()
+    {
+        return $this->mandator;
+    }
+
+    /**
+     * @param $mandator
+     */
+    public function setMandator($mandator)
+    {
+        $this->mandator = $mandator;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWebHook()
+    {
+        return $this->webHook;
+    }
+
+    /**
+     * @param $webHook
+     */
+    public function setWebHook($webHook)
+    {
+        $this->webHook = $webHook;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTransaction()
+    {
+        return $this->transaction;
+    }
+
+    /**
+     * @param $transaction
+     */
+    public function setTransaction($transaction)
+    {
+        $this->transaction = $transaction;
     }
 
 }

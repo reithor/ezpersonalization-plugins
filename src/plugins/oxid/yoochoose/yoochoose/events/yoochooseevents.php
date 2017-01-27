@@ -13,6 +13,8 @@ class yoochooseEvents
         'Yoochoose/Shops/' => 'index.php?cl=yoochooseshops',
         'Yoochoose/Categories/' => 'index.php?cl=yoochoosecategories',
         'Yoochoose/Users/' => 'index.php?cl=yoochooseusers',
+        'Yoochoose/Export/' => 'index.php?cl=yoochooseexport',
+        'Yoochoose/Trigger/' => 'index.php?cl=yoochoosetrigger',
     );
 
     public static function onActivate()
