@@ -1,8 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../models/ycexportmodel.php';
-require_once __DIR__ . '/../models/yoochoosemodel.php';
-class Data
+class Yoochoosehelper extends oxUBase
 {
     const YC_MAX_FILE_SIZE = 52428800; // max file size size in bytes 50Mb
 
@@ -61,7 +59,7 @@ class Data
         foreach ($postData['events'] as $event) {
             $method = $formatsMap[$event['format']] ?: null;
             if ($method) {
-                $postData = Data::exportData($method, $postData, $directory, $limit, $i, $event['storeViewId'], $mandatorId, $event['lang']);
+                $postData = self::exportData($method, $postData, $directory, $limit, $i, $event['storeViewId'], $mandatorId, $event['lang']);
             }
             $i++;
         }
@@ -116,7 +114,7 @@ class Data
         do {
             $results = $model->$method($storeId, $offset, $limit, $lang);
             if (!empty($results)) {
-                $filename = Data::generateRandomString() . '.json';
+                $filename = self::generateRandomString() . '.json';
                 $file = $directory . $filename;
                 file_put_contents($file, json_encode(array_values($results)));
                 $fileSize = filesize($file);
@@ -132,7 +130,7 @@ class Data
         } while (!empty($results));
 
         $logNames = $logNames ?: 'there are no files';
-        Yoochoosemodel::logExport('Export has finished for ' . $method . ' with file names : ' . $logNames);
+        oxNew('yoochoosemodel')->log('Export has finished for ' . $method . ' with file names : ' . $logNames);
 
         return $postData;
     }

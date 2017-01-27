@@ -208,6 +208,7 @@ Arial, sans-serif;">&nbsp;&nbsp;</span><span style="line-height: 31px;">Personal
         'yoochoose' => 'yoochoose/yoochoose/controllers/admin/yoochoose.php',
         'yoochoosemodel' => 'yoochoose/yoochoose/models/yoochoosemodel.php',
         'ycproductexport' => 'yoochoose/yoochoose/controllers/ycproductexport.php',
+        'yoochoosetrigger' => 'yoochoose/yoochoose/controllers/yoochoosetrigger.php',
         'yoochoosearticles' => 'yoochoose/yoochoose/controllers/api/yoochoosearticles.php',
         'yoochoosecategories' => 'yoochoose/yoochoose/controllers/api/yoochoosecategories.php',
         'yoochooseshops' => 'yoochoose/yoochoose/controllers/api/yoochooseshops.php',
@@ -215,7 +216,7 @@ Arial, sans-serif;">&nbsp;&nbsp;</span><span style="line-height: 31px;">Personal
         'yoochooseapi' => 'yoochoose/yoochoose/controllers/api/yoochooseapi.php',
         'yoochooseEvents' => 'yoochoose/yoochoose/events/yoochooseevents.php',
         'yoochooseexport' => 'yoochoose/yoochoose/controllers/api/yoochooseexport.php',
-        'yoochoosetrigger' => 'yoochoose/yoochoose/controllers/yoochoosetrigger.php',
 		'ycexportmodel' => 'yoochoose/yoochoose/models/ycexportmodel.php',
+		'yoochoosehelper' => 'yoochoose/yoochoose/helpers/yoochoosehelper.php',
     ),
 );

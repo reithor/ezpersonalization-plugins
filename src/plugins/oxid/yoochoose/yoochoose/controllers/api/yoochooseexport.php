@@ -1,5 +1,4 @@
 <?php
-require_once __DIR__ . '/../../models/yoochoosemodel.php';
 
 class Yoochooseexport extends Yoochooseapi
 {
@@ -22,13 +21,15 @@ class Yoochooseexport extends Yoochooseapi
 
         $post = [];
         $oxConfig = oxNew('oxConfig');
+        /** @var Yoochoosemodel $model */
+        $model = oxNew('yoochoosemodel');
         $flag = $oxConfig->getShopConfVar('ycEnableFlag');
 
         if ($flag != 1) {
             $requestUri = $_SERVER['REQUEST_URI'];
             $queryString = substr($requestUri, strpos($requestUri, '?') + 1);
             $message = 'Export has started, with this query string : ' . $queryString;
-            Yoochoosemodel::logExport($message);
+            $model::log($message, '', '' ,'');
 
             $post['mandator'] = $this->getMandator();
             $post['limit'] = $this->getLimit();

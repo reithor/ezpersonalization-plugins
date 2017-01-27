@@ -1,14 +1,17 @@
 <?php
-require_once __DIR__ . '/../Helpers/Data.php';
-require_once __DIR__ . '/../models/yoochoosemodel.php';
 
-class yoochoosetrigger extends oxUBase
+class Yoochoosetrigger extends oxUBase
 {
+    /**
+     * @var Yoochoosemodel
+     */
+    private $ycModel;
+
     public function init()
     {
         $conf = $this->getConfig();
-        $helper = oxNew('Data');
-
+        $helper = oxNew('yoochoosehelper');
+        $this->ycModel = oxNew('yoochoosemodel');
 
         $limit = $conf->getRequestParameter('limit');
         $callbackUrl = $conf->getRequestParameter('webHook');
@@ -19,15 +22,15 @@ class yoochoosetrigger extends oxUBase
 
         $password = $conf->getShopConfVar('ycPassword');
         $storeId = key($storeData);
-        $licenceKey = $conf->getShopConfVar('ycPassword', $storeId);
+        $licenceKey = $conf->getConfigParam('ycLicenseKey', $storeData[$storeId]);
 
         if ($password === $postPassword) {
             $conf->saveShopConfVar('bool', 'ycEnableFlag', 1, $conf->getShopId(), 'module:yoochoose');
             try {
-                Yoochoosemodel::logExport('Export has started for all resources.');
+                $this->ycModel->log('Export has started for all resources.', '', '', '');
                 $postData = $helper->export($storeData, $transaction, $limit, $customerId);
 
-                Yoochoosemodel::logExport('Export has finished for all resources.');
+                $this->ycModel->log('Export has finished for all resources.', '', '', '');
                 $this->setCallback($callbackUrl, $postData, $customerId, $licenceKey);
                 $response['success'] = true;
             } catch (Exception $exc) {
@@ -59,7 +62,7 @@ class yoochoosetrigger extends oxUBase
         curl_setopt($cURL, CURLOPT_URL, $url);
         curl_setopt($cURL, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($cURL, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-        curl_setopt($cURL, CURLOPT_USERPWD, $customerId . ":" . $licenceKey);
+        curl_setopt($cURL, CURLOPT_USERPWD, "$customerId:$licenceKey");
         curl_setopt($cURL, CURLOPT_HTTPHEADER, ['Content-Type: application/json',]);
         curl_setopt($cURL, CURLOPT_POST, 1);
         curl_setopt($cURL, CURLOPT_POSTFIELDS, $postString);
@@ -72,7 +75,7 @@ class yoochoosetrigger extends oxUBase
         $header = substr($response, 0, $header_size);
         $header = str_replace("\r\n", '', $header);
         $body = substr($response, $header_size);
-        Yoochoosemodel::logExport('Callback header : ' . $header . ' Callback body : ' . $body);
+        $this->ycModel->log('Callback header : ' . $header . ' Callback body : ' . $body, '', '', '');
         curl_close($cURL);
 
         return json_decode($response, true);

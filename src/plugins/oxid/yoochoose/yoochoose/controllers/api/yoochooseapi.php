@@ -45,7 +45,7 @@ class Yoochooseapi extends oxUBase
 
         $licenceKey = $conf->getConfigParam('ycLicenseKey');
         $test = apache_request_headers();
-        $appSecret = str_replace('Bearer ', '', $test['Authentication']);
+        $appSecret = str_replace('Bearer ', '', $test['Authorization']);
 
         if (md5($licenceKey) == $appSecret) {
             $this->limit = $conf->getRequestParameter('limit');
@@ -53,7 +53,7 @@ class Yoochooseapi extends oxUBase
             $this->language = $conf->getRequestParameter('lang');
             $this->shopId = $conf->getRequestParameter('shop');
             $this->mandator = $conf->getRequestParameter('mandator');
-            $this->webHook = $conf->getRequestParameter('webHookUrl');
+            $this->webHook = $conf->getRequestParameter('webHook');
             $this->transaction = $conf->getRequestParameter('transaction');
 
             if ($_GET['cl'] == 'yoochooseexport') {

@@ -97,7 +97,7 @@ class Ycexportmodel extends oxUBase
                     'manufacturer' => $manufacturerLoaded ? $this->getManufacturer($val['OXMANUFACTURERID'],
                         $language) : null,
                     'categories' => $this->getCategoryList($categoryIds, $langId, $language),
-                    'tags' => $val['OXLONGDESC'],
+                    'tags' => $this->getTags($id),
                     'storeId' => $this->getConfig()->getShopId(),
                 );
             }
@@ -177,8 +177,9 @@ class Ycexportmodel extends oxUBase
     {
         $oArticleTagList = oxNew('oxarticletaglist');
         $oArticleTagList->load($id);
+        $tagsString = $oArticleTagList->get()->formString();
 
-        return $oArticleTagList->get()->formString();
+        return $tagsString ? explode(',', $tagsString) : array();
     }
 
     /**
