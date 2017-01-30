@@ -57,7 +57,7 @@ class Yoochooseapi extends oxUBase
             $this->transaction = $conf->getRequestParameter('transaction');
 
             if ($_GET['cl'] == 'yoochooseexport') {
-                if (!isset($this->limit) && !isset($this->mandator) && !isset($this->webHook)) {
+                if (empty($this->limit) || empty($this->mandator) || empty($this->webHook)) {
                     $this->sendResponse(array(), "Limit, mandator and webHook parameters must be set.", 400);
                 }
             }
@@ -147,7 +147,7 @@ class Yoochooseapi extends oxUBase
      */
     public function getLimit()
     {
-        return $this->limit;
+        return $this->limit ? $this->limit : 500;
     }
 
     /**
