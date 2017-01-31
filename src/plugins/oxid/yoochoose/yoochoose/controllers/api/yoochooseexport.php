@@ -19,7 +19,7 @@ class Yoochooseexport extends Yoochooseapi
     protected function startExport()
     {
 
-        $post = [];
+        $post = array();
         $oxConfig = oxNew('oxConfig');
         /** @var Yoochoosemodel $model */
         $model = oxNew('yoochoosemodel');
@@ -110,7 +110,7 @@ class Yoochooseexport extends Yoochooseapi
     private function getStoreData($storeIds, $mandator, $language)
     {
 
-        $result = [];
+        $result = array();
         $lang = oxNew('oxlang');
         $oxConfig = oxNew('oxConfig');
 

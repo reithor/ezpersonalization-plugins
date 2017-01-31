@@ -18,21 +18,21 @@ class Yoochoosehelper extends oxUBase
     {
         $conf = oxNew('oxConfig');
         $storeIds = array();
-        $formatsMap = [
+        $formatsMap = array(
             'OXID2' => 'Products',
             'OXID2_CATEGORIES' => 'Categories',
             'OXID2_VENDORS' => 'Vendors',
-        ];
+        );
 
-        $postData = [
+        $postData = array(
             'transaction' => $transaction,
-            'events' => [],
-        ];
+            'events' => array(),
+        );
 
         foreach ($formatsMap as $format => $method) {
             if (!empty($storeData)) {
                 foreach ($storeData as $language => $storeId) {
-                    $postData['events'][] = [
+                    $postData['events'][] = array(
                         'action' => 'FULL',
                         'format' => $format,
                         'contentTypeId' => $conf->getShopConfVar('ycItemType', $storeId),
@@ -42,8 +42,8 @@ class Yoochoosehelper extends oxUBase
                             'login' => null,
                             'password' => null,
                         ],
-                        'uri' => [],
-                    ];
+                        'uri' => array(),
+                    );
                     $storeIds [$method][] = $storeId;
                 }
             }
