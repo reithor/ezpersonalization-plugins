@@ -35,7 +35,7 @@ class Yoochoosehelper extends oxUBase
                     $postData['events'][] = [
                         'action' => 'FULL',
                         'format' => $format,
-                        'contentTypeId' => $conf->getShopConfVar('ycPassword', $storeId),
+                        'contentTypeId' => $conf->getShopConfVar('ycItemType', $storeId),
                         'storeViewId' => $storeId,
                         'lang' => $language,
                         'credentials' => [
