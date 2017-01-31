@@ -129,7 +129,7 @@ module.exports = function (grunt) {
             },
             dev_oxid_vojin: {
                 src: wrapModule('oxid'),
-                dest: 'c:/xampp/htdocs/v1/908/tracking.js'
+                dest: '/var/www/html/v1/908/tracking.js'
             }
         },
         uglify: {

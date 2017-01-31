@@ -7,102 +7,132 @@ var YC_CONSTS = {
 
 var YC_RECO_TEMPLATES = {
     personal: {
-        html_template: "<h3 class='lightHead sectionHead'>{{{const.title}}}</h3><ul class='gridView clear'>" +
-        "{{#each rows}}{{#each columns}}<li class='productData rendered-personal'><a href='{{{link}}}' " +
-        "class='titleBlock title fn' title='{{{title}}}'><span>{{{title}}}</span><div class='gridPicture'>" +
-        "<img src='{{{image}}}' style='width: 80%;' alt='{{{title}}}'></div></a><div class='priceBlock'><strong>" +
-        "{{{price}}}</strong></div></li>{{/each}}{{/each}}</ul>",
+        html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}</h2>' +
+        '</div><div class="list-container" id="cross">{{#each rows}}<div class="row gridView newItems">{{#each columns}}' +
+        '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><div class="picture text-center">' +
+        '<a href="{{{link}}}" title="{{{title}}}"><img src="{{{image}}}" data-src="{{{image}}}" alt="{{{title}}}" ' +
+        'class="img-responsive"></a></div><div class="listDetails text-center"><div class="title"><a id="cross_5" ' +
+        'href="{{{link}}}" class="title" title="{{{title}}}"><span>{{{title}}}</span></a></div><div class="price text-center">' +
+        '<div class="content"><span class="lead text-nowrap">{{{price}}}</span></div></div><div class="actions text-center">' +
+        '<div class="btn-group"><a class="btn btn-primary" href="{{{link}}}">{{{../../const.more_info}}}</a></div></div></div>' +
+        '</div>{{/each}}</div>{{/each}}</div></div>',
         target: '#content',
         position: 'APPEND',
         priority: 0,
         consts: {
-            title: {'': 'Personal', en: 'Personal'}
+            title: {'': 'Personal', en: 'Personal'},
+            more_info: {'': 'More info', en: 'More info'}
         },
-        rows: 2,
+        rows: 1,
         columns: 5,
         scenario: 'top_clicked',
         enabled: true
     },
     bestseller: {
-        html_template: "<h3 class='lightHead sectionHead'>{{{const.title}}}</h3><ul class='gridView clear'>" +
-        "{{#each rows}}{{#each columns}}<li class='productData rendered-bestseller'><a href='{{{link}}}' " +
-        "class='titleBlock title fn' title='{{{title}}}'><span>{{{title}}}</span><div class='gridPicture'>" +
-        "<img src='{{{image}}}' style='width: 80%;' alt='{{{title}}}'></div></a><div class='priceBlock'><strong>" +
-        "{{{price}}}</strong></div></li>{{/each}}{{/each}}</ul>",
+        html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}</h2>' +
+        '</div><div class="list-container" id="cross">{{#each rows}}<div class="row gridView newItems">{{#each columns}}' +
+        '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><div class="picture text-center">' +
+        '<a href="{{{link}}}" title="{{{title}}}"><img src="{{{image}}}" data-src="{{{image}}}" alt="{{{title}}}" ' +
+        'class="img-responsive"></a></div><div class="listDetails text-center"><div class="title"><a id="cross_5" ' +
+        'href="{{{link}}}" class="title" title="{{{title}}}"><span>{{{title}}}</span></a></div><div class="price text-center">' +
+        '<div class="content"><span class="lead text-nowrap">{{{price}}}</span></div></div><div class="actions text-center">' +
+        '<div class="btn-group"><a class="btn btn-primary" href="{{{link}}}">{{{../../const.more_info}}}</a></div></div></div>' +
+        '</div>{{/each}}</div>{{/each}}</div></div>',
         target: '#content',
         position: 'APPEND',
         priority: 1,
-        rows: 2,
+        rows: 1,
         consts: {
-            title: {'': 'Bestseller', en: 'Bestseller'}
+            title: {'': 'Bestseller', en: 'Bestseller'},
+            more_info: {'': 'More info', en: 'More info'}
         },
         columns: 5,
         scenario: 'top_clicked',
         enabled: true
     },
     upselling: {
-        html_template: "<h3 class='lightHead sectionHead'>{{{const.title}}}</h3><ul class='gridView clear'>" +
-        "{{#each rows}}{{#each columns}}<li class='productData rendered-upselling'><a href='{{{link}}}' " +
-        "class='titleBlock title fn' title='{{{title}}}'><span>{{{title}}}</span><div class='gridPicture'>" +
-        "<img src='{{{image}}}' style='width: 80%;' alt='{{{title}}}'></div></a><div class='priceBlock'><strong>" +
-        "{{{price}}}</strong></div></li>{{/each}}{{/each}}</ul>",
+        html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}</h2>' +
+        '</div><div class="list-container" id="cross">{{#each rows}}<div class="row gridView newItems">{{#each columns}}' +
+        '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><div class="picture text-center">' +
+        '<a href="{{{link}}}" title="{{{title}}}"><img src="{{{image}}}" data-src="{{{image}}}" alt="{{{title}}}" ' +
+        'class="img-responsive"></a></div><div class="listDetails text-center"><div class="title"><a id="cross_5" ' +
+        'href="{{{link}}}" class="title" title="{{{title}}}"><span>{{{title}}}</span></a></div><div class="price text-center">' +
+        '<div class="content"><span class="lead text-nowrap">{{{price}}}</span></div></div><div class="actions text-center">' +
+        '<div class="btn-group"><a class="btn btn-primary" href="{{{link}}}">{{{../../const.more_info}}}</a></div></div></div>' +
+        '</div>{{/each}}</div>{{/each}}</div></div>',
         target: '#content',
         position: 'APPEND',
         priority: 1,
-        rows: 2,
+        rows: 1,
         consts: {
-            title: {'': 'Upselling', en: 'Upselling'}
+            title: {'': 'Upselling', en: 'Upselling'},
+            more_info: {'': 'More info', en: 'More info'}
         },
         columns: 5,
         scenario: 'top_clicked',
         enabled: true
     },
     related: {
-        html_template: "<h3 class='lightHead sectionHead'>{{{const.title}}}</h3><ul class='gridView clear'>" +
-        "{{#each rows}}{{#each columns}}<li class='productData rendered-related'><a href='{{{link}}}' " +
-        "class='titleBlock title fn' title='{{{title}}}'><span>{{{title}}}</span><div class='gridPicture'>" +
-        "<img src='{{{image}}}' style='width: 80%;' alt='{{{title}}}'></div></a><div class='priceBlock'><strong>" +
-        "{{{price}}}</strong></div></li>{{/each}}{{/each}}</ul>",
+        html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}</h2>' +
+        '</div><div class="list-container" id="cross">{{#each rows}}<div class="row gridView newItems">{{#each columns}}' +
+        '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><div class="picture text-center">' +
+        '<a href="{{{link}}}" title="{{{title}}}"><img src="{{{image}}}" data-src="{{{image}}}" alt="{{{title}}}" ' +
+        'class="img-responsive"></a></div><div class="listDetails text-center"><div class="title"><a id="cross_5" ' +
+        'href="{{{link}}}" class="title" title="{{{title}}}"><span>{{{title}}}</span></a></div><div class="price text-center">' +
+        '<div class="content"><span class="lead text-nowrap">{{{price}}}</span></div></div><div class="actions text-center">' +
+        '<div class="btn-group"><a class="btn btn-primary" href="{{{link}}}">{{{../../const.more_info}}}</a></div></div></div>' +
+        '</div>{{/each}}</div>{{/each}}</div></div>',
         target: '#content',
         position: 'APPEND',
         priority: 0,
         rows: 2,
         consts: {
-            title: {'': 'Related', en: 'Related'}
+            title: {'': 'Related', en: 'Related'},
+            more_info: {'': 'More info', en: 'More info'}
         },
         columns: 5,
         scenario: 'top_clicked',
         enabled: true
     },
     crossselling: {
-        html_template: "<h3 class='lightHead sectionHead'>{{{const.title}}}</h3><ul class='gridView clear'>" +
-        "{{#each rows}}{{#each columns}}<li class='productData rendered-crossselling'><a href='{{{link}}}' " +
-        "class='titleBlock title fn' title='{{{title}}}'><span>{{{title}}}</span><div class='gridPicture'>" +
-        "<img src='{{{image}}}' style='width: 80%;' alt='{{{title}}}'></div></a><div class='priceBlock'><strong>" +
-        "{{{price}}}</strong></div></li>{{/each}}{{/each}}</ul>",
+        html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}</h2>' +
+        '</div><div class="list-container" id="cross">{{#each rows}}<div class="row gridView newItems">{{#each columns}}' +
+        '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><div class="picture text-center">' +
+        '<a href="{{{link}}}" title="{{{title}}}"><img src="{{{image}}}" data-src="{{{image}}}" alt="{{{title}}}" ' +
+        'class="img-responsive"></a></div><div class="listDetails text-center"><div class="title"><a id="cross_5" ' +
+        'href="{{{link}}}" class="title" title="{{{title}}}"><span>{{{title}}}</span></a></div><div class="price text-center">' +
+        '<div class="content"><span class="lead text-nowrap">{{{price}}}</span></div></div><div class="actions text-center">' +
+        '<div class="btn-group"><a class="btn btn-primary" href="{{{link}}}">{{{../../const.more_info}}}</a></div></div></div>' +
+        '</div>{{/each}}</div>{{/each}}</div></div>',
         target: '#content',
         position: 'APPEND',
         priority: 0,
-        rows: 2,
+        rows: 1,
         consts: {
-            title: {'': 'Cross Sell', en: 'Cross Sell'}
+            title: {'': 'Cross Sell', en: 'Cross Sell'},
+            more_info: {'': 'More info', en: 'More info'}
         },
         columns: 5,
         scenario: 'top_clicked',
         enabled: true
     },
     category_page: {
-        html_template: "<h3 class='lightHead sectionHead'>{{{const.title}}}</h3><ul class='gridView clear'>" +
-        "{{#each rows}}{{#each columns}}<li class='productData rendered-category_page'><a href='{{{link}}}' " +
-        "class='titleBlock title fn' title='{{{title}}}'><span>{{{title}}}</span><div class='gridPicture'>" +
-        "<img src='{{{image}}}' style='width: 80%;' alt='{{{title}}}'></div></a><div class='priceBlock'><strong>" +
-        "{{{price}}}</strong></div></li>{{/each}}{{/each}}</ul>",
+        html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}</h2>' +
+        '</div><div class="list-container" id="cross">{{#each rows}}<div class="row gridView newItems">{{#each columns}}' +
+        '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><div class="picture text-center">' +
+        '<a href="{{{link}}}" title="{{{title}}}"><img src="{{{image}}}" data-src="{{{image}}}" alt="{{{title}}}" ' +
+        'class="img-responsive"></a></div><div class="listDetails text-center"><div class="title"><a id="cross_5" ' +
+        'href="{{{link}}}" class="title" title="{{{title}}}"><span>{{{title}}}</span></a></div><div class="price text-center">' +
+        '<div class="content"><span class="lead text-nowrap">{{{price}}}</span></div></div><div class="actions text-center">' +
+        '<div class="btn-group"><a class="btn btn-primary" href="{{{link}}}">{{{../../const.more_info}}}</a></div></div></div>' +
+        '</div>{{/each}}</div>{{/each}}</div></div>',
         target: '#content',
         position: 'APPEND',
         priority: 0,
-        rows: 2,
+        rows: 1,
         consts: {
-            title: {'': 'Category', en: 'Category'}
+            title: {'': 'Category', en: 'Category'},
+            more_info: {'': 'More info', en: 'More info'}
         },
         columns: 5,
         scenario: 'top_clicked',

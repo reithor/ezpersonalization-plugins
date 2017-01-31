@@ -1,5 +1,5 @@
 // {id} will be changed with current product id
-var YC_BREADCRUMBS_SELECTOR = '#breadCrumb a',
+var YC_BREADCRUMBS_SELECTOR = '#breadcrumb a',
     YC_BREADCRUMBS_VALUE = 'text',
     YC_ARTICLE_RATING_FORM_SELECTOR = '#rating',
     YC_BASKET_FORMS_SELECTOR = 'input[name="fnc"][value="tobasket"]',

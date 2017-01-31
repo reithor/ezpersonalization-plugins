@@ -19,9 +19,9 @@ class Yoochoosehelper extends oxUBase
         $conf = oxNew('oxConfig');
         $storeIds = array();
         $formatsMap = [
-            'OXIDE' => 'Products',
-            'OXIDE_CATEGORIES' => 'Categories',
-            'OXIDE_VENDORS' => 'Vendors',
+            'OXID2' => 'Products',
+            'OXID2_CATEGORIES' => 'Categories',
+            'OXID2_VENDORS' => 'Vendors',
         ];
 
         $postData = [
@@ -57,10 +57,11 @@ class Yoochoosehelper extends oxUBase
         $i = 0;
 
         foreach ($postData['events'] as $event) {
-            $method = $formatsMap[$event['format']] ?: null;
+            $method = $formatsMap[$event['format']] ? $formatsMap[$event['format']] : null;
             if ($method) {
                 $postData = self::exportData($method, $postData, $directory, $limit, $i, $event['storeViewId'], $mandatorId, $event['lang']);
             }
+
             $i++;
         }
         return $postData;

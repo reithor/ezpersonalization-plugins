@@ -186,7 +186,7 @@ Arial, sans-serif;">&nbsp;&nbsp;</span><span style="line-height: 31px;">Personal
                           &#8226;&nbsp;&nbsp;Send automated reminders for recognizable replacement times<br></p><p>&nbsp;
                           &nbsp; &#8226;&nbsp;&nbsp;Identify high-revenue customers, and send them high-value product recommendations<br></p>',
     ),
-    'version' => '1.0.0',
+    'version' => '2.0.0',
     'author' => 'YOOCHOOSE GmbH',
     'url' => 'http://www.yoochoose.com',
     'email' => 'support@yoochoose.com',

@@ -48,7 +48,7 @@ function initYcTrackingModule(context) {
     function hookBasketHandlers() {
         var forms = document.querySelectorAll(YC_BASKET_FORMS_SELECTOR),
             links = document.querySelectorAll(YC_BASKET_LINKS_SELECTOR),
-            tempId, i,
+            tempId, i, category = getCategoriesFromBreadcrumb(),
             onClickLink = function (e) {
                 var tempar = e.target.search.split('&');
                 for (var i = 0; i < tempar.length; i++) {
@@ -59,11 +59,11 @@ function initYcTrackingModule(context) {
                     }
                 }
 
-                YcTracking.trackBasket(1, tempId, context.location.pathname, language);
+                YcTracking.trackBasket(1, tempId, category, language);
             },
             onFormSubmit = function () {
                 tempId = this.anid.value;
-                YcTracking.trackBasket(1, tempId, context.location.pathname, language);
+                YcTracking.trackBasket(1, tempId, category, language);
             };
 
         if (links) {
@@ -146,15 +146,28 @@ function initYcTrackingModule(context) {
     function fetchRecommendedProducts(box, url) {
         return function (response) {
             var xmlHttp,
-                productIds = [];
+                productIds = [
+                    'd86f775338da3228bec9e968f02e7551',
+                    'd86236918e1533cccb679208628eda32',
+                    '05848170643ab0deb9914566391c0c63',
+                    'adc920f4cbfa739803058c663a4a00b9',
+                    'adcb9deae73557006a8ac748f45288b4',
+                    'f4f0cb3606e231c3fdb34fcaee2d6d04',
+                    'f4f981b0d9e34d2aeda82d79412480a4',
+                    '6b6ac464656c16c90d671721c93dc6ba',
+                    '6b6099c305f591cb39d4314e9a823fc1',
+                    '531b537118f5f4d7a427cdb825440922',
+                    '6b66d82af984e5ad46b9cb27b1ef8aae',
+                    'b563ab240dc19b89fc0349866b2be9c0'
+                ];
 
             if (!response.hasOwnProperty('recommendationResponseList')) {
                 return;
             }
 
-            response.recommendationResponseList.forEach(function (product) {
-                productIds.push(product.itemId);
-            });
+            // response.recommendationResponseList.forEach(function (product) {
+            //     productIds.push(product.itemId);
+            // });
 
             if (productIds.length === 0) {
                 return;
