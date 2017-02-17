@@ -66,6 +66,17 @@ class Index extends Action
         $priceHelper = $this->_objectManager->get('Magento\Framework\Pricing\Helper\Data');
         $attributes = ['entity_id', 'name', 'thumbnail', 'price', 'url_path'];
 
+        $ids = explode(',', $productIds);
+        $sentIds = [];
+        foreach ($ids as &$id) {
+            $tempId = $id;
+            $catalogProductTypeConfigurable = $this->_objectManager->get('\Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable');
+            $parentByChild = $catalogProductTypeConfigurable->getParentIdsByChild($id);
+            $id = isset($parentByChild[0]) && !empty($parentByChild[0]) ? $parentByChild[0] : $id;
+            $sentIds[$id] = $tempId;
+        }
+        $productIds = implode(',', $ids);
+        
         /** @var \Magento\Catalog\Model\ResourceModel\Product\Collection $collection */
         $collection = $this->_objectManager->get('\Magento\Catalog\Model\ResourceModel\Product\Collection');
         $collection->setStoreId($this->store->getStore()->getId())
@@ -129,7 +140,7 @@ class Index extends Action
                 $jsonSwatchConfig = false;
                 $jsonConfig = false;
                 $numberOfSwatches = false;
-            $mediaCallback = false;
+                $mediaCallback = false;
 
                 /** @var \Magento\Framework\Data\Form\FormKey */
                 $formKeyObject = $this->_objectManager->get('Magento\Framework\Data\Form\FormKey');
@@ -141,12 +152,10 @@ class Index extends Action
                 $postParams = $listProduct->getAddToCartPostParams($product);
                 $formAction = $postParams['action'];
                 $formUenc = $urlEncoder->encode($formAction);
-
                 if ($productType != 'simple') {
-                    $swatch = $this->_objectManager->get('Magento\Swatches\Block\Product\Renderer\Configurable\Interceptor');
+                    $swatch = $this->_objectManager->create('Magento\Swatches\Block\Product\Renderer\Configurable\Interceptor');
                     $swatch->setProduct($product);
-                    $swatchComplete = $swatch->getJsonConfig();
-                    $jsonConfig = $swatchComplete;
+                    $jsonConfig = $swatch->getJsonConfig();
                     $jsonSwatchConfig = $swatch->getJsonSwatchConfig();
                     $numberOfSwatches = $swatch->getNumberSwatchesPerProduct();
                     $mediaCallback = $swatch->getMediaCallback();
@@ -159,6 +168,7 @@ class Index extends Action
                 $products[$key]['jsonSwatchConfig'] = $jsonSwatchConfig;
                 $products[$key]['mediaCallback'] = $mediaCallback;
             }
+            $products[$key]['sentId'] = $sentIds[$products[$key]['id']];
 
         }
 

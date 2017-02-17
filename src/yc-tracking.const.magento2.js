@@ -245,6 +245,11 @@ var YC_RECO_TEMPLATES = {
                 '' : 'Add all three items to cart',
                 "de" : 'Alle drei Produkte in den Warenkorb'
             },
+            viewers : {
+                "" : " users are currently viewing this",
+                "en" : " users are currently viewing this",
+                "de" : " Nutzer schauen gerade dieses Produkt an"
+            }
         },
         rows: 1,
         columns: 3,

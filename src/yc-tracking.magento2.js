@@ -330,15 +330,13 @@ function initYcTrackingModule(context) {
                                     renderedIds.push(item.id);
                                     item.totalItems = box.products.length === 3 ? '3' : false;
                                     box.response.recommendationItems.forEach(function (product) {
-                                        if (item.id == product.itemId) {
+                                        if (item.id == product.itemId || item.sentId == product.itemId) {
                                             item.links = product.links;
                                             YcTracking.trackRenderedV2(product.links.rendered, language);
                                         }
                                     });
                                 });
                                 
-                                YcTracking.renderRecommendationV2(box, language, trackFollowEventV2, false);
-
                                 YcTracking.renderRecommendationV2(box, language, trackFollowEventV2, false);
                                 
                                 box.products.forEach(function (item) {
