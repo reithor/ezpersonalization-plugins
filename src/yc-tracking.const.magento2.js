@@ -255,7 +255,7 @@ var YC_RECO_TEMPLATES = {
         columns: 3,
         scenario: 'bundle3',
         enabled: true
-    },
+    }
 };
 
 var YC_SEARCH_FIELDS = [{
