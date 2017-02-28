@@ -45,6 +45,21 @@ function initYcTrackingModule(context) {
         }
     }
 
+    function hookRecommendedBasketHandlers() {
+        var forms = document.querySelectorAll('.yc-recommendation-box ' + YC_BASKET_FORMS_SELECTOR),
+            tempId, i,
+            onFormSubmit = function () {
+                tempId = this.anid.value;
+                YcTracking.trackBasket(1, tempId, context.location.pathname, language);
+            };
+
+        if (forms) {
+            for (i = 0; i < forms.length; i++) {
+                forms[i].form.addEventListener('submit', onFormSubmit);
+            }
+        }
+    }
+
     function hookBasketHandlers() {
         var forms = document.querySelectorAll(YC_BASKET_FORMS_SELECTOR),
             links = document.querySelectorAll(YC_BASKET_LINKS_SELECTOR),
@@ -135,6 +150,7 @@ function initYcTrackingModule(context) {
 
             if (tpl.enabled) {
                 allBoxes[i].template = tpl;
+                allBoxes[i].template.currentPage = currentPage;
                 allBoxes[i].priority = tpl.priority;
                 fncName = 'YcTracking_jsonpCallback' + allBoxes[i].id;
                 context[fncName] = fetchRecommendedProducts(allBoxes[i], url);
@@ -201,11 +217,25 @@ function initYcTrackingModule(context) {
                                     idHistory.push(item.id);
                                     renderedIds.push(item.id);
                                 });
+                                switch (box.template.currentPage) {
+                                    case 'product' :
+                                        box.template.currentPage = 'details';
+                                        break;
+                                    case 'category' :
+                                        box.template.currentPage = 'alist';
+                                        break;
+                                    case 'home' :
+                                        box.template.currentPage = 'start';
+                                        break;
+                                    case 'cart' :
+                                        box.template.currentPage = 'details';
+                                        break;
+                                }
 
                                 YcTracking.trackRendered(itemType, renderedIds);
                                 YcTracking.renderRecommendation(box, language, trackFollowEvent);
                             });
-
+                            hookRecommendedBasketHandlers();
                         }
                     }
                 }

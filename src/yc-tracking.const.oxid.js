@@ -9,13 +9,21 @@ var YC_RECO_TEMPLATES = {
     personal: {
         html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}</h2>' +
         '</div><div class="list-container" id="cross">{{#each rows}}<div class="row gridView newItems">{{#each columns}}' +
-        '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><div class="picture text-center">' +
-        '<a href="{{{link}}}" title="{{{title}}}"><img src="{{{image}}}" data-src="{{{image}}}" alt="{{{title}}}" ' +
-        'class="img-responsive"></a></div><div class="listDetails text-center"><div class="title"><a id="cross_5" ' +
-        'href="{{{link}}}" class="title" title="{{{title}}}"><span>{{{title}}}</span></a></div><div class="price text-center">' +
-        '<div class="content"><span class="lead text-nowrap">{{{price}}}</span></div></div><div class="actions text-center">' +
-        '<div class="btn-group"><a class="btn btn-primary" href="{{{link}}}">{{{../../const.more_info}}}</a></div></div></div>' +
-        '</div>{{/each}}</div>{{/each}}</div></div>',
+        '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><form name="personal" class="yc-cart-form" ' +
+        ' action="{{{action}}}" method="post" style="inline-block"><div class="hidden"><input type="hidden" name="cnid"  ' +
+        'value="{{{cnid}}}"><input type="hidden" name="aid" value="{{{id}}}"><input type="hidden" name="anid" value="{{{anid}}}">' +
+        '<input type="hidden" name="listtype" value="list"> {{{stoken}}}<input type="hidden" name="fnc" value="{{{fnc}}}">' +
+        '<input type="hidden" name="pgNr" value="{{{pgNr}}}"><input type="hidden" name="am" value="{{{am}}}"><input ' +
+        'type="hidden" name="cl" value="{{{currentPage}}}"><input type="hidden" name="actcontrol" value="{{{currentPage}}}">' +
+        '</div><div class="picture text-center"><a href="{{{link}}}" title="{{{title}}}"><img src="{{{image}}}" ' +
+        'data-src="{{{image}}}" alt="{{{title}}}" class="img-responsive"></a></div><div class="listDetails text-center">' +
+        '<div class="title"><a id="cross_5" href="{{{link}}}" class="title" title="{{{title}}}"><span>{{{title}}}</span>' +
+        '</a></div><div class="price text-center"><div class="content"><span class="oldPrice text-muted">' +
+        '<del>{{{oldPrice}}}</del></span><span class="lead text-nowrap">{{{newPrice}}}</span></div></div><div ' +
+        'class="actions text-center"><div class="btn-group">{{#if showCartButton}}<button type="submit" class="btn btn-default hasTooltip" ' +
+        'data-placement="bottom" title data-original-title="To cart"><i class="fa fa-shopping-cart"></i></button>{{/if}}' +
+        '<a class="btn btn-primary" href="{{{link}}}">{{{../../const.more_info}}}</a></div></div></div>' +
+        '</form></div>{{/each}}</div>{{/each}}</div></div>',
         target: '#content',
         position: 'APPEND',
         priority: 0,
@@ -31,13 +39,21 @@ var YC_RECO_TEMPLATES = {
     bestseller: {
         html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}</h2>' +
         '</div><div class="list-container" id="cross">{{#each rows}}<div class="row gridView newItems">{{#each columns}}' +
-        '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><div class="picture text-center">' +
-        '<a href="{{{link}}}" title="{{{title}}}"><img src="{{{image}}}" data-src="{{{image}}}" alt="{{{title}}}" ' +
-        'class="img-responsive"></a></div><div class="listDetails text-center"><div class="title"><a id="cross_5" ' +
-        'href="{{{link}}}" class="title" title="{{{title}}}"><span>{{{title}}}</span></a></div><div class="price text-center">' +
-        '<div class="content"><span class="lead text-nowrap">{{{price}}}</span></div></div><div class="actions text-center">' +
-        '<div class="btn-group"><a class="btn btn-primary" href="{{{link}}}">{{{../../const.more_info}}}</a></div></div></div>' +
-        '</div>{{/each}}</div>{{/each}}</div></div>',
+        '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><form name="personal" class="yc-cart-form" ' +
+        ' action="{{{action}}}" method="post" style="inline-block"><div class="hidden"><input type="hidden" name="cnid"  ' +
+        'value="{{{cnid}}}"><input type="hidden" name="aid" value="{{{id}}}"><input type="hidden" name="anid" value="{{{anid}}}">' +
+        '<input type="hidden" name="listtype" value="list"> {{{stoken}}}<input type="hidden" name="fnc" value="{{{fnc}}}">' +
+        '<input type="hidden" name="pgNr" value="{{{pgNr}}}"><input type="hidden" name="am" value="{{{am}}}"><input ' +
+        'type="hidden" name="cl" value="{{{currentPage}}}"><input type="hidden" name="actcontrol" value="{{{currentPage}}}">' +
+        '</div><div class="picture text-center"><a href="{{{link}}}" title="{{{title}}}"><img src="{{{image}}}" ' +
+        'data-src="{{{image}}}" alt="{{{title}}}" class="img-responsive"></a></div><div class="listDetails text-center">' +
+        '<div class="title"><a id="cross_5" href="{{{link}}}" class="title" title="{{{title}}}"><span>{{{title}}}</span>' +
+        '</a></div><div class="price text-center"><div class="content"><span class="oldPrice text-muted">' +
+        '<del>{{{oldPrice}}}</del></span><span class="lead text-nowrap">{{{newPrice}}}</span></div></div><div ' +
+        'class="actions text-center"><div class="btn-group">{{#if showCartButton}}<button type="submit" class="btn btn-default hasTooltip" ' +
+        'data-placement="bottom" title data-original-title="To cart"><i class="fa fa-shopping-cart"></i></button>{{/if}}' +
+        '<a class="btn btn-primary" href="{{{link}}}">{{{../../const.more_info}}}</a></div></div></div>' +
+        '</form></div>{{/each}}</div>{{/each}}</div></div>',
         target: '#content',
         position: 'APPEND',
         priority: 1,
@@ -53,13 +69,21 @@ var YC_RECO_TEMPLATES = {
     upselling: {
         html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}</h2>' +
         '</div><div class="list-container" id="cross">{{#each rows}}<div class="row gridView newItems">{{#each columns}}' +
-        '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><div class="picture text-center">' +
-        '<a href="{{{link}}}" title="{{{title}}}"><img src="{{{image}}}" data-src="{{{image}}}" alt="{{{title}}}" ' +
-        'class="img-responsive"></a></div><div class="listDetails text-center"><div class="title"><a id="cross_5" ' +
-        'href="{{{link}}}" class="title" title="{{{title}}}"><span>{{{title}}}</span></a></div><div class="price text-center">' +
-        '<div class="content"><span class="lead text-nowrap">{{{price}}}</span></div></div><div class="actions text-center">' +
-        '<div class="btn-group"><a class="btn btn-primary" href="{{{link}}}">{{{../../const.more_info}}}</a></div></div></div>' +
-        '</div>{{/each}}</div>{{/each}}</div></div>',
+        '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><form name="personal" class="yc-cart-form" ' +
+        ' action="{{{action}}}" method="post" style="inline-block"><div class="hidden"><input type="hidden" name="cnid"  ' +
+        'value="{{{cnid}}}"><input type="hidden" name="aid" value="{{{id}}}"><input type="hidden" name="anid" value="{{{anid}}}">' +
+        '<input type="hidden" name="listtype" value="list"> {{{stoken}}}<input type="hidden" name="fnc" value="{{{fnc}}}">' +
+        '<input type="hidden" name="pgNr" value="{{{pgNr}}}"><input type="hidden" name="am" value="{{{am}}}"><input ' +
+        'type="hidden" name="cl" value="{{{currentPage}}}"><input type="hidden" name="actcontrol" value="{{{currentPage}}}">' +
+        '</div><div class="picture text-center"><a href="{{{link}}}" title="{{{title}}}"><img src="{{{image}}}" ' +
+        'data-src="{{{image}}}" alt="{{{title}}}" class="img-responsive"></a></div><div class="listDetails text-center">' +
+        '<div class="title"><a id="cross_5" href="{{{link}}}" class="title" title="{{{title}}}"><span>{{{title}}}</span>' +
+        '</a></div><div class="price text-center"><div class="content"><span class="oldPrice text-muted">' +
+        '<del>{{{oldPrice}}}</del></span><span class="lead text-nowrap">{{{newPrice}}}</span></div></div><div ' +
+        'class="actions text-center"><div class="btn-group">{{#if showCartButton}}<button type="submit" class="btn btn-default hasTooltip" ' +
+        'data-placement="bottom" title data-original-title="To cart"><i class="fa fa-shopping-cart"></i></button>{{/if}}' +
+        '<a class="btn btn-primary" href="{{{link}}}">{{{../../const.more_info}}}</a></div></div></div>' +
+        '</form></div>{{/each}}</div>{{/each}}</div></div>',
         target: '#content',
         position: 'APPEND',
         priority: 1,
@@ -75,17 +99,25 @@ var YC_RECO_TEMPLATES = {
     related: {
         html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}</h2>' +
         '</div><div class="list-container" id="cross">{{#each rows}}<div class="row gridView newItems">{{#each columns}}' +
-        '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><div class="picture text-center">' +
-        '<a href="{{{link}}}" title="{{{title}}}"><img src="{{{image}}}" data-src="{{{image}}}" alt="{{{title}}}" ' +
-        'class="img-responsive"></a></div><div class="listDetails text-center"><div class="title"><a id="cross_5" ' +
-        'href="{{{link}}}" class="title" title="{{{title}}}"><span>{{{title}}}</span></a></div><div class="price text-center">' +
-        '<div class="content"><span class="lead text-nowrap">{{{price}}}</span></div></div><div class="actions text-center">' +
-        '<div class="btn-group"><a class="btn btn-primary" href="{{{link}}}">{{{../../const.more_info}}}</a></div></div></div>' +
-        '</div>{{/each}}</div>{{/each}}</div></div>',
+        '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><form name="personal" class="yc-cart-form" ' +
+        ' action="{{{action}}}" method="post" style="inline-block"><div class="hidden"><input type="hidden" name="cnid"  ' +
+        'value="{{{cnid}}}"><input type="hidden" name="aid" value="{{{id}}}"><input type="hidden" name="anid" value="{{{anid}}}">' +
+        '<input type="hidden" name="listtype" value="list"> {{{stoken}}}<input type="hidden" name="fnc" value="{{{fnc}}}">' +
+        '<input type="hidden" name="pgNr" value="{{{pgNr}}}"><input type="hidden" name="am" value="{{{am}}}"><input ' +
+        'type="hidden" name="cl" value="{{{currentPage}}}"><input type="hidden" name="actcontrol" value="{{{currentPage}}}">' +
+        '</div><div class="picture text-center"><a href="{{{link}}}" title="{{{title}}}"><img src="{{{image}}}" ' +
+        'data-src="{{{image}}}" alt="{{{title}}}" class="img-responsive"></a></div><div class="listDetails text-center">' +
+        '<div class="title"><a id="cross_5" href="{{{link}}}" class="title" title="{{{title}}}"><span>{{{title}}}</span>' +
+        '</a></div><div class="price text-center"><div class="content"><span class="oldPrice text-muted">' +
+        '<del>{{{oldPrice}}}</del></span><span class="lead text-nowrap">{{{newPrice}}}</span></div></div><div ' +
+        'class="actions text-center"><div class="btn-group">{{#if showCartButton}}<button type="submit" class="btn btn-default hasTooltip" ' +
+        'data-placement="bottom" title data-original-title="To cart"><i class="fa fa-shopping-cart"></i></button>{{/if}}' +
+        '<a class="btn btn-primary" href="{{{link}}}">{{{../../const.more_info}}}</a></div></div></div>' +
+        '</form></div>{{/each}}</div>{{/each}}</div></div>',
         target: '#content',
         position: 'APPEND',
         priority: 0,
-        rows: 2,
+        rows: 1,
         consts: {
             title: {'': 'Related', en: 'Related'},
             more_info: {'': 'More info', en: 'More info'}
@@ -97,13 +129,21 @@ var YC_RECO_TEMPLATES = {
     crossselling: {
         html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}</h2>' +
         '</div><div class="list-container" id="cross">{{#each rows}}<div class="row gridView newItems">{{#each columns}}' +
-        '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><div class="picture text-center">' +
-        '<a href="{{{link}}}" title="{{{title}}}"><img src="{{{image}}}" data-src="{{{image}}}" alt="{{{title}}}" ' +
-        'class="img-responsive"></a></div><div class="listDetails text-center"><div class="title"><a id="cross_5" ' +
-        'href="{{{link}}}" class="title" title="{{{title}}}"><span>{{{title}}}</span></a></div><div class="price text-center">' +
-        '<div class="content"><span class="lead text-nowrap">{{{price}}}</span></div></div><div class="actions text-center">' +
-        '<div class="btn-group"><a class="btn btn-primary" href="{{{link}}}">{{{../../const.more_info}}}</a></div></div></div>' +
-        '</div>{{/each}}</div>{{/each}}</div></div>',
+        '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><form name="personal" class="yc-cart-form" ' +
+        ' action="{{{action}}}" method="post" style="inline-block"><div class="hidden"><input type="hidden" name="cnid"  ' +
+        'value="{{{cnid}}}"><input type="hidden" name="aid" value="{{{id}}}"><input type="hidden" name="anid" value="{{{anid}}}">' +
+        '<input type="hidden" name="listtype" value="list"> {{{stoken}}}<input type="hidden" name="fnc" value="{{{fnc}}}">' +
+        '<input type="hidden" name="pgNr" value="{{{pgNr}}}"><input type="hidden" name="am" value="{{{am}}}"><input ' +
+        'type="hidden" name="cl" value="{{{currentPage}}}"><input type="hidden" name="actcontrol" value="{{{currentPage}}}">' +
+        '</div><div class="picture text-center"><a href="{{{link}}}" title="{{{title}}}"><img src="{{{image}}}" ' +
+        'data-src="{{{image}}}" alt="{{{title}}}" class="img-responsive"></a></div><div class="listDetails text-center">' +
+        '<div class="title"><a id="cross_5" href="{{{link}}}" class="title" title="{{{title}}}"><span>{{{title}}}</span>' +
+        '</a></div><div class="price text-center"><div class="content"><span class="oldPrice text-muted">' +
+        '<del>{{{oldPrice}}}</del></span><span class="lead text-nowrap">{{{newPrice}}}</span></div></div><div ' +
+        'class="actions text-center"><div class="btn-group">{{#if showCartButton}}<button type="submit" class="btn btn-default hasTooltip" ' +
+        'data-placement="bottom" title data-original-title="To cart"><i class="fa fa-shopping-cart"></i></button>{{/if}}' +
+        '<a class="btn btn-primary" href="{{{link}}}">{{{../../const.more_info}}}</a></div></div></div>' +
+        '</form></div>{{/each}}</div>{{/each}}</div></div>',
         target: '#content',
         position: 'APPEND',
         priority: 0,
@@ -119,13 +159,21 @@ var YC_RECO_TEMPLATES = {
     category_page: {
         html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}</h2>' +
         '</div><div class="list-container" id="cross">{{#each rows}}<div class="row gridView newItems">{{#each columns}}' +
-        '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><div class="picture text-center">' +
-        '<a href="{{{link}}}" title="{{{title}}}"><img src="{{{image}}}" data-src="{{{image}}}" alt="{{{title}}}" ' +
-        'class="img-responsive"></a></div><div class="listDetails text-center"><div class="title"><a id="cross_5" ' +
-        'href="{{{link}}}" class="title" title="{{{title}}}"><span>{{{title}}}</span></a></div><div class="price text-center">' +
-        '<div class="content"><span class="lead text-nowrap">{{{price}}}</span></div></div><div class="actions text-center">' +
-        '<div class="btn-group"><a class="btn btn-primary" href="{{{link}}}">{{{../../const.more_info}}}</a></div></div></div>' +
-        '</div>{{/each}}</div>{{/each}}</div></div>',
+        '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><form name="personal" class="yc-cart-form" ' +
+        ' action="{{{action}}}" method="post" style="inline-block"><div class="hidden"><input type="hidden" name="cnid"  ' +
+        'value="{{{cnid}}}"><input type="hidden" name="aid" value="{{{id}}}"><input type="hidden" name="anid" value="{{{anid}}}">' +
+        '<input type="hidden" name="listtype" value="list"> {{{stoken}}}<input type="hidden" name="fnc" value="{{{fnc}}}">' +
+        '<input type="hidden" name="pgNr" value="{{{pgNr}}}"><input type="hidden" name="am" value="{{{am}}}"><input ' +
+        'type="hidden" name="cl" value="{{{currentPage}}}"><input type="hidden" name="actcontrol" value="{{{currentPage}}}">' +
+        '</div><div class="picture text-center"><a href="{{{link}}}" title="{{{title}}}"><img src="{{{image}}}" ' +
+        'data-src="{{{image}}}" alt="{{{title}}}" class="img-responsive"></a></div><div class="listDetails text-center">' +
+        '<div class="title"><a id="cross_5" href="{{{link}}}" class="title" title="{{{title}}}"><span>{{{title}}}</span>' +
+        '</a></div><div class="price text-center"><div class="content"><span class="oldPrice text-muted">' +
+        '<del>{{{oldPrice}}}</del></span><span class="lead text-nowrap">{{{newPrice}}}</span></div></div><div ' +
+        'class="actions text-center"><div class="btn-group">{{#if showCartButton}}<button type="submit" class="btn btn-default hasTooltip" ' +
+        'data-placement="bottom" title data-original-title="To cart"><i class="fa fa-shopping-cart"></i></button>{{/if}}' +
+        '<a class="btn btn-primary" href="{{{link}}}">{{{../../const.more_info}}}</a></div></div></div>' +
+        '</form></div>{{/each}}</div>{{/each}}</div></div>',
         target: '#content',
         position: 'APPEND',
         priority: 0,

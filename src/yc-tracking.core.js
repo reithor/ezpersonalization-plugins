@@ -1195,6 +1195,12 @@ function initYcTrackingCore(context) {
 
             _extractConstants(template.consts, box, lang);
 
+            if (template && typeof (template.currentPage) !== 'undefined') {
+                box.products.forEach(function (product) {
+                    product.currentPage = template.currentPage;
+                });
+            }
+
             box.products.forEach(function (product) {
                 num++;
                 columns.push(product);
