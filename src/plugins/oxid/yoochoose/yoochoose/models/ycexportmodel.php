@@ -19,10 +19,14 @@ class Ycexportmodel extends oxUBase
      */
     public function getCategories($shopId, $offset, $limit, $language)
     {
+        $conf = $this->getConfig();
         $categories = array();
         $langId = $this->getLanguageId($language);
-        $sql = "SELECT OXID, OXTITLE FROM oxv_oxcategories_$language 
-        WHERE OXACTIVE=1 AND OXSHOPID='$shopId' " . $this->getLimitSQL($offset, $limit);
+        $sCatTable = getViewName('oxcategories', $language, $shopId);
+        $conf->setShopId($shopId);
+
+        $sql = "SELECT OXID, OXTITLE FROM $sCatTable 
+        WHERE OXACTIVE=1 " . $this->getLimitSQL($offset, $limit);
         $result = oxDb::getDb(oxDb::FETCH_MODE_ASSOC)->getAll($sql);
 
         foreach ($result as $val) {
@@ -38,7 +42,7 @@ class Ycexportmodel extends oxUBase
                 'level' => $this->getCategoryLevel($oCategory),
                 'parentId' => $parent ? $parent->getId() : null,
                 'path' => $this->getCategoryPath($oCategory, $langId),
-                'storeId' => $this->getConfig()->getShopId(),
+                'shopId' => $this->getConfig()->getShopId(),
             );
         }
 
@@ -56,12 +60,15 @@ class Ycexportmodel extends oxUBase
      */
     public function getProducts($shopId, $offset, $limit, $language)
     {
+        $conf = $this->getConfig();
         $langId = $this->getLanguageId($language);
         $this->shopUrl = $this->getConfig()->getShopMainUrl();
+        $sArtTable = getViewName('oxarticles', $language, $shopId);
+        $conf->setShopId($shopId);
 
-        $sql = "SELECT * FROM oxv_oxarticles_$language AS art 
+        $sql = "SELECT * FROM $sArtTable AS art 
         LEFT JOIN oxv_oxartextends_$language artExt ON artExt.OXID = art.OXID 
-        WHERE OXPARENTID='' AND art.OXSHOPID='$shopId' " . $this->getLimitSQL($offset, $limit);
+        WHERE OXPARENTID='' " . $this->getLimitSQL($offset, $limit);
 
         $result = oxDb::getDb(oxDb::FETCH_MODE_ASSOC)->getAll($sql);
         $articles = array();
@@ -98,7 +105,7 @@ class Ycexportmodel extends oxUBase
                         $language) : null,
                     'categories' => $this->getCategoryList($categoryIds, $langId, $language),
                     'tags' => $this->getTags($id),
-                    'storeId' => $this->getConfig()->getShopId(),
+                    'shopId' => $this->getConfig()->getShopId(),
                 );
             }
         }
@@ -117,9 +124,12 @@ class Ycexportmodel extends oxUBase
      */
     public function getVendors($shopId, $offset, $limit, $language)
     {
+        $conf = $this->getConfig();
         $vendors = array();
-        $sql = "SELECT * FROM oxv_oxmanufacturers_$language WHERE OXSHOPID='$shopId' " . $this->getLimitSQL($offset,
-                $limit);
+        $conf->setShopId($shopId);
+        $sVenTable = getViewName('oxmanufacturers', $language, $shopId);
+
+        $sql = "SELECT * FROM $sVenTable " . $this->getLimitSQL($offset, $limit);
         $result = oxDb::getDb(oxDb::FETCH_MODE_ASSOC)->getAll($sql);
 
         foreach ($result as $val) {
@@ -156,7 +166,6 @@ class Ycexportmodel extends oxUBase
                 $category->load($catId);
                 $temp = str_replace($this->shopUrl, "", $category->getLink($langId));
                 $temp = str_replace($abbr . '/', '', $temp);
-
 
                 $this->loadedCategories[$catId] = $temp;
             }

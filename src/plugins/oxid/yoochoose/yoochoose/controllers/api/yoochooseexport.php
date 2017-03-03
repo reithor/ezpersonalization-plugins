@@ -23,7 +23,7 @@ class Yoochooseexport extends Yoochooseapi
         $oxConfig = oxNew('oxConfig');
         /** @var Yoochoosemodel $model */
         $model = oxNew('yoochoosemodel');
-        $flag = $oxConfig->getShopConfVar('ycEnableFlag');
+        $flag = $oxConfig->getConfigParam('ycLicenseKey', $oxConfig->getShopId(), 'module:yoochoose');
 
         if ($flag != 1) {
             $requestUri = $_SERVER['REQUEST_URI'];
@@ -36,13 +36,13 @@ class Yoochooseexport extends Yoochooseapi
             $post['webHook'] = $this->getWebHook();
             $post['password'] = $this->generateRandomString();
             $post['transaction'] = $this->getTransaction();
-            $storeIds = $oxConfig->getShopIds();
+            $shopIds = $oxConfig->getShopIds();
             $lang = $this->getLanguage();
             $lang = (-1 ? '' : $lang);
 
-            $post['storeData'] = $this->getStoreData($storeIds, $post['mandator'], $lang);
+            $post['shopData'] = $this->getStoreData($shopIds, $post['mandator'], $lang);
 
-            if (empty($post['storeData'])) {
+            if (empty($post['shopData'])) {
                 $this->sendResponse(array(), "Mandator is not correct!", 400);
             }
 
@@ -102,27 +102,32 @@ class Yoochooseexport extends Yoochooseapi
     /**
      * Returns array of languages and shop ids filtered by mandator
      *
-     * @param array $storeIds
+     * @param array $shopIds
      * @param integer $mandator
      * @param string $language
      * @return array
      */
-    private function getStoreData($storeIds, $mandator, $language)
+    private function getStoreData($shopIds, $mandator, $language)
     {
 
         $result = array();
         $lang = oxNew('oxlang');
         $oxConfig = oxNew('oxConfig');
 
-        foreach ($storeIds as $storeId) {
-            $baseMandator = $oxConfig->getShopConfVar('ycCustomerId', $storeId, 'module:yoochoose');
+        $i = 0;
+        foreach ($shopIds as $shopId) {
+            $baseMandator = $oxConfig->getShopConfVar('ycCustomerId', $shopId, 'module:yoochoose');
             if ($baseMandator == $mandator) {
-                if ($language != '') {
-                    $result[$language] = $storeId;
+                if (!empty($language)) {
+                    $result[$i]['shopId'] = $shopId;
+                    $result[$i]['language'] = $language;
+                    $i++;
                 } else {
-                    $langIds = $lang->getLanguageIds($storeId);
+                    $langIds = $lang->getLanguageIds($shopId);
                     foreach ($langIds as $langId) {
-                        $result[$langId] = $storeId;
+                        $result[$i]['shopId'] = $shopId;
+                        $result[$i]['language'] = $langId;
+                        $i++;
                     }
                 }
             }

@@ -100,9 +100,8 @@ class Yoochoose extends Module_Config
                 if ($key != 'ycCustomerId' && $key != 'ycLicenseKey') {
                     $config->saveShopConfVar('str', $key, $serializedValue, $config->getShopId(), $sModuleId);
                 } else {
-                    foreach (oxRegistry::getConfig()->getShopIds() as $shopId) {
-                        $config->saveShopConfVar('str', $key, $serializedValue, $shopId, $sModuleId);
-                    }
+                    $shopId = oxRegistry::getConfig()->getShopId();
+                    $config->saveShopConfVar('str', $key, $serializedValue, $shopId, $sModuleId);
                 }
             }
 

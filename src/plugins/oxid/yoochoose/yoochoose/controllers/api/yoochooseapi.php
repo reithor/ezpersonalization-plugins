@@ -43,9 +43,29 @@ class Yoochooseapi extends oxUBase
     {
         $conf = $this->getConfig();
 
-        $licenceKey = $conf->getConfigParam('ycLicenseKey');
-        $test = apache_request_headers();
-        $appSecret = str_replace('Bearer ', '', $test['Authorization']);
+        if ($_GET['cl'] == 'yoochooseexport') {
+            $licenceKey = null;
+            $shopIds = $conf->getShopIds();
+            $mandator = $conf->getRequestParameter('mandator');
+            $limit = $conf->getRequestParameter('limit');
+            $webHook = $conf->getRequestParameter('webHook');
+            if (isset($mandator) && isset($limit) && isset($webHook)) {
+                foreach ($shopIds as $shopId) {
+                    $this->setShopId((string)$shopId);
+                    if ($mandator == $conf->getShopConfVar('ycCustomerId', $shopId, 'module:yoochoose')) {
+                        $licenceKey = $conf->getShopConfVar('ycLicenseKey', $shopId, 'module:yoochoose');
+                        break;
+                    }
+                }
+            } else {
+                $this->sendResponse(array(), "Limit, mandator and webHook parameters must be set.", 400);
+            }
+        } else {
+            $licenceKey = $conf->getShopConfVar('ycLicenseKey');
+        }
+
+        $header = apache_request_headers();
+        $appSecret = str_replace('Bearer ', '', $header['Authorization']);
 
         if (md5($licenceKey) == $appSecret) {
             $this->limit = $conf->getRequestParameter('limit');
@@ -55,12 +75,6 @@ class Yoochooseapi extends oxUBase
             $this->mandator = $conf->getRequestParameter('mandator');
             $this->webHook = $conf->getRequestParameter('webHook');
             $this->transaction = $conf->getRequestParameter('transaction');
-
-            if ($_GET['cl'] == 'yoochooseexport') {
-                if (empty($this->limit) || empty($this->mandator) || empty($this->webHook)) {
-                    $this->sendResponse(array(), "Limit, mandator and webHook parameters must be set.", 400);
-                }
-            }
 
             if ($this->shopId && !in_array($this->shopId, oxRegistry::getConfig()->getShopIds())) {
                 $this->sendResponse(array(), "Shop with id ($this->shopId) not found.", 400);

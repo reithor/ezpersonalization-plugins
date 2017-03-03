@@ -17,18 +17,18 @@ class Yoochoosetrigger extends oxUBase
         $callbackUrl = $conf->getRequestParameter('webHook');
         $postPassword = $conf->getRequestParameter('password');
         $transaction = $conf->getRequestParameter('transaction');
-        $storeData = $conf->getRequestParameter('storeData');
+        $shopData = $conf->getRequestParameter('shopData');
         $customerId = $conf->getRequestParameter('mandator');
 
         $password = $conf->getShopConfVar('ycPassword');
-        $storeId = key($storeData);
-        $licenceKey = $conf->getConfigParam('ycLicenseKey', $storeData[$storeId]);
+        $shopId = key($shopData[0]);
+        $licenceKey = $conf->getConfigParam('ycLicenseKey', $shopData[0][$shopId], 'module:yoochoose');
 
         if ($password === $postPassword) {
             $conf->saveShopConfVar('bool', 'ycEnableFlag', 1, $conf->getShopId(), 'module:yoochoose');
             try {
                 $this->ycModel->log('Export has started for all resources.', '', '', '');
-                $postData = $helper->export($storeData, $transaction, $limit, $customerId);
+                $postData = $helper->export($shopData, $transaction, $limit, $customerId);
 
                 $this->ycModel->log('Export has finished for all resources.', '', '', '');
                 $this->setCallback($callbackUrl, $postData, $customerId, $licenceKey);

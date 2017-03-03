@@ -9,15 +9,15 @@ class Yoochoosehelper extends oxUBase
      * export to files
      *
      * @param int $limit
-     * @param array $storeData
+     * @param array $shopData
      * @param int $transaction
      * @param int $mandatorId
      * @return string postData
      */
-    static function export($storeData, $transaction, $limit, $mandatorId)
+    static function export($shopData, $transaction, $limit, $mandatorId)
     {
         $conf = oxNew('oxConfig');
-        $storeIds = array();
+        $shopIds = array();
         $formatsMap = array(
             'OXID2' => 'Products',
             'OXID2_CATEGORIES' => 'Categories',
@@ -30,21 +30,21 @@ class Yoochoosehelper extends oxUBase
         );
 
         foreach ($formatsMap as $format => $method) {
-            if (!empty($storeData)) {
-                foreach ($storeData as $language => $storeId) {
+            if (!empty($shopData)) {
+                foreach ($shopData as $shop) {
                     $postData['events'][] = array(
                         'action' => 'FULL',
                         'format' => $format,
-                        'contentTypeId' => $conf->getShopConfVar('ycItemType', $storeId),
-                        'storeViewId' => $storeId,
-                        'lang' => $language,
+                        'contentTypeId' => $conf->getShopConfVar('ycItemType', $shop['shopId']),
+                        'shopViewId' => $shop['shopId'],
+                        'lang' => $shop['language'],
                         'credentials' => [
                             'login' => null,
                             'password' => null,
                         ],
                         'uri' => array(),
                     );
-                    $storeIds [$method][] = $storeId;
+                    $shopIds [$method][] = $shop['shopId'];
                 }
             }
         }
@@ -59,7 +59,7 @@ class Yoochoosehelper extends oxUBase
         foreach ($postData['events'] as $event) {
             $method = $formatsMap[$event['format']] ? $formatsMap[$event['format']] : null;
             if ($method) {
-                $postData = self::exportData($method, $postData, $directory, $limit, $i, $event['storeViewId'], $mandatorId, $event['lang']);
+                $postData = self::exportData($method, $postData, $directory, $limit, $i, $event['shopViewId'], $mandatorId, $event['lang']);
             }
 
             $i++;
@@ -94,11 +94,11 @@ class Yoochoosehelper extends oxUBase
      * @param string $directory
      * @param integer $limit
      * @param integer $exportIndex
-     * @param integer $storeId
+     * @param integer $shopId
      * @param string $mandatorId
      * @return array $postData
      */
-    private function exportData($method, $postData, $directory, $limit = 0, $exportIndex = 0, $storeId, $mandatorId, $lang)
+    private function exportData($method, $postData, $directory, $limit = 0, $exportIndex = 0, $shopId, $mandatorId, $lang)
     {
 
         /* @var Ycexportmodel $model */
@@ -113,7 +113,7 @@ class Yoochoosehelper extends oxUBase
         $logNames = '';
 
         do {
-            $results = $model->$method($storeId, $offset, $limit, $lang);
+            $results = $model->$method($shopId, $offset, $limit, $lang);
             if (!empty($results)) {
                 $filename = self::generateRandomString() . '.json';
                 $file = $directory . $filename;
