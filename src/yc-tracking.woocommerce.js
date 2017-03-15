@@ -26,6 +26,12 @@ function initYcTrackingModule(context) {
         return category.join('/');
     }
 
+    function getCategoryNameFromBreadcrumb(crumbs) {
+        var split = crumbs.split("/");
+
+        return split[split.length - 1];
+    }
+
     function trackClickAndRate() {
         var itemId = ycObject ? ycObject.productIds : null,
             reviewForm = document.querySelector(YC_ARTICLE_RATING_FORM_SELECTOR),
@@ -171,6 +177,7 @@ function initYcTrackingModule(context) {
 
             xmlHttp.onreadystatechange = function () {
                 var allBoxes = context.yc_config_object.boxes,
+                    currentPage = ycObject ? ycObject.currentPage : null,
                     idHistory = [];
 
                 if (xmlHttp.readyState === 4) {
@@ -189,6 +196,14 @@ function initYcTrackingModule(context) {
                                 if (!box.products) {
                                     return;
                                 }
+
+                                if (currentPage === 'category') {
+                                    box.template.consts.category_path = categoryFromBreadcrumb(YC_BC_OFFSETS.category.left, YC_BC_OFFSETS.category.right);
+                                } else {
+                                    box.template.consts.category_path = categoryFromBreadcrumb(YC_BC_OFFSETS.product.left, YC_BC_OFFSETS.product.right);
+                                }
+
+                                box.template.consts.category_name = getCategoryNameFromBreadcrumb(box.template.consts.category_path);
 
                                 //select products that weren't rendered in higher priority boxes
                                 box.products.forEach(function (item) {

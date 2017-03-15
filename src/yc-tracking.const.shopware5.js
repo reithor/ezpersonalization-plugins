@@ -9,7 +9,7 @@ var YC_CONSTS = {
 var YC_RECO_TEMPLATES = {
         related: {
             html_template: "<div class='panel has--border' style='float:left;width: 100%;'><div class='topseller--title panel--title is--underline'>" +
-            "{{{const.title}}}</div><div class='topseller--content panel--body product-slider' data-product-slider-yc='true'>" +
+            "{{{const.title}}}{{#if const.category_path}} in {{{const.category_path}}}{{/if}}</div><div class='topseller--content panel--body product-slider' data-product-slider-yc='true'>" +
             "<div class='product-slider--container is--horizontal'>{{#each rows}}{{#each columns}}<div class='product-slider--item " +
             "rendered-related'><div class='product--box box--slider'><div class='box--content'><div class='product--info'>" +
             "<a href='{{link}}' class='product--image' title='{{{title}}}'><span class='image--element'><span class='image--media'>" +
@@ -30,7 +30,7 @@ var YC_RECO_TEMPLATES = {
         },
         crossselling: {
             html_template: "<div class='panel has--border' style='float:left;width: 100%;'><div class='topseller--title panel--title is--underline'>" +
-            "{{{const.title}}}</div><div class='topseller--content panel--body product-slider' data-product-slider-yc='true'>" +
+            "{{{const.title}}}{{#if const.category_path}} in {{{const.category_path}}}{{/if}}</div><div class='topseller--content panel--body product-slider' data-product-slider-yc='true'>" +
             "<div class='product-slider--container is--horizontal'>{{#each rows}}{{#each columns}}<div class='product-slider--item " +
             "rendered-crossselling'><div class='product--box box--slider'><div class='box--content'><div class='product--info'>" +
             "<a href='{{link}}' class='product--image' title='{{{title}}}'><span class='image--element'><span class='image--media'>" +
@@ -51,7 +51,7 @@ var YC_RECO_TEMPLATES = {
         },
         personal : {
             html_template: "<div class='panel has--border' style='float:left;width: 100%;'><div class='topseller--title panel--title is--underline'>" +
-            "{{{const.title}}}</div><div class='topseller--content panel--body product-slider' data-product-slider-yc='true'>" +
+            "{{{const.title}}}{{#if const.category_path}} in {{{const.category_path}}}{{/if}}</div><div class='topseller--content panel--body product-slider' data-product-slider-yc='true'>" +
             "<div class='product-slider--container is--horizontal'>{{#each rows}}{{#each columns}}<div class='product-slider--item " +
             "rendered-personal'><div class='product--box box--slider'><div class='box--content'><div class='product--info'>" +
             "<a href='{{link}}' class='product--image' title='{{{title}}}'><span class='image--element'><span class='image--media'>" +
@@ -72,7 +72,7 @@ var YC_RECO_TEMPLATES = {
         },
         upselling: {
             html_template: "<div class='panel has--border' style='float:left;width: 100%;'><div class='topseller--title panel--title is--underline'>" +
-            "{{{const.title}}}</div><div class='topseller--content panel--body product-slider' data-product-slider-yc='true'>" +
+            "{{{const.title}}}{{#if const.category_path}} in {{{const.category_path}}}{{/if}}</div><div class='topseller--content panel--body product-slider' data-product-slider-yc='true'>" +
             "<div class='product-slider--container is--horizontal'>{{#each rows}}{{#each columns}}<div class='product-slider--item " +
             "rendered-upselling'><div class='product--box box--slider'><div class='box--content'><div class='product--info'>" +
             "<a href='{{link}}' class='product--image' title='{{{title}}}'><span class='image--element'><span class='image--media'>" +
@@ -93,7 +93,7 @@ var YC_RECO_TEMPLATES = {
         },
         bestseller: {
             html_template: "<div class='panel has--border' style='float:left;width: 100%;'><div class='topseller--title panel--title is--underline'>" +
-            "{{{const.title}}}</div><div class='topseller--content panel--body product-slider' data-product-slider-yc='true'>" +
+            "{{{const.title}}}{{#if const.category_path}} in {{{const.category_path}}}{{/if}}</div><div class='topseller--content panel--body product-slider' data-product-slider-yc='true'>" +
             "<div class='product-slider--container is--horizontal'>{{#each rows}}{{#each columns}}<div class='product-slider--item " +
             "rendered-bestseller'><div class='product--box box--slider'><div class='box--content'><div class='product--info'>" +
             "<a href='{{link}}' class='product--image' title='{{{title}}}'><span class='image--element'><span class='image--media'>" +
@@ -114,7 +114,7 @@ var YC_RECO_TEMPLATES = {
         },
         category_page: {
             html_template: "<div class='panel has--border' style='float:left;width: 100%;'><div class='topseller--title panel--title is--underline'>" +
-            "{{{const.title}}}</div><div class='topseller--content panel--body product-slider' data-product-slider-yc='true'>" +
+            "{{{const.title}}}{{#if const.category_name}} in {{{const.category_name}}}{{/if}}</div><div class='topseller--content panel--body product-slider' data-product-slider-yc='true'>" +
             "<div class='product-slider--container is--horizontal'>{{#each rows}}{{#each columns}}<div class='product-slider--item " +
             "rendered-category_page'><div class='product--box box--slider'><div class='box--content'><div class='product--info'>" +
             "<a href='{{link}}' class='product--image' title='{{{title}}}'><span class='image--element'><span class='image--media'>" +

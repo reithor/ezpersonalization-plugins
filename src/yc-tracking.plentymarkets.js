@@ -25,6 +25,12 @@ function initYcTrackingModule(context) {
         return categories.join('/');
     }
 
+    function getCategoryName(crumbs) {
+        var split = crumbs.split("/");
+
+        return split[split.length - 1];
+    }
+
     function trackClick() {
         var product = document.querySelector(YC_ARTICLE_ID_SELECTOR),
             yc = context['yc_config_object'] ? context['yc_config_object'] : null;
@@ -259,6 +265,9 @@ function initYcTrackingModule(context) {
                     if (!box.products) {
                         return;
                     }
+
+                    box.template.consts.category_path = getCategory();
+                    box.template.consts.category_name = getCategoryName(box.template.consts.category_path);
 
                     //select products that weren't rendered in any of higher priority boxes
                     box.products.forEach(function (item) {

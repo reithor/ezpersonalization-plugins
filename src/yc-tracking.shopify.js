@@ -29,6 +29,12 @@ function initYcTrackingModule(context) {
         return category;
     }
 
+    function getCategoryNameFromBreadcrumb(crumbs) {
+        var split = crumbs.split("/");
+
+        return split[split.length - 1];
+    }
+
     function trackClickAndRate() {
         var currentPage = syObject ? syObject.p : null,
             pageUrl = syObject ? syObject.pageurl : null,
@@ -214,6 +220,9 @@ function initYcTrackingModule(context) {
                                 if (!box.products) {
                                     return;
                                 }
+
+                                box.template.consts.category_path = categoryFromBreadcrumb();
+                                box.template.consts.category_name = getCategoryNameFromBreadcrumb(box.template.consts.category_path);
 
                                 //select products that weren't rendered in any of higher priority boxes
                                 box.products.forEach(function (item) {

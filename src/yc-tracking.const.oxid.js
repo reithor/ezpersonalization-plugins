@@ -7,7 +7,8 @@ var YC_CONSTS = {
 
 var YC_RECO_TEMPLATES = {
     personal: {
-        html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}</h2>' +
+        html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}' +
+        '{{#if const.category_name}} in {{{const.category_name}}}{{/if}}</h2>' +
         '</div><div class="list-container" id="cross">{{#each rows}}<div class="row gridView newItems">{{#each columns}}' +
         '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><form name="personal" class="yc-cart-form" ' +
         ' action="{{{action}}}" method="post" style="inline-block"><div class="hidden"><input type="hidden" name="cnid"  ' +
@@ -37,7 +38,8 @@ var YC_RECO_TEMPLATES = {
         enabled: true
     },
     bestseller: {
-        html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}</h2>' +
+        html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}' +
+        '{{#if const.category_name}} in {{{const.category_name}}}{{/if}}</h2>' +
         '</div><div class="list-container" id="cross">{{#each rows}}<div class="row gridView newItems">{{#each columns}}' +
         '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><form name="personal" class="yc-cart-form" ' +
         ' action="{{{action}}}" method="post" style="inline-block"><div class="hidden"><input type="hidden" name="cnid"  ' +
@@ -67,7 +69,8 @@ var YC_RECO_TEMPLATES = {
         enabled: true
     },
     upselling: {
-        html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}</h2>' +
+        html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}' +
+        '{{#if const.category_name}} in {{{const.category_name}}}{{/if}}</h2>' +
         '</div><div class="list-container" id="cross">{{#each rows}}<div class="row gridView newItems">{{#each columns}}' +
         '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><form name="personal" class="yc-cart-form" ' +
         ' action="{{{action}}}" method="post" style="inline-block"><div class="hidden"><input type="hidden" name="cnid"  ' +
@@ -97,7 +100,8 @@ var YC_RECO_TEMPLATES = {
         enabled: true
     },
     related: {
-        html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}</h2>' +
+        html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}' +
+        '{{#if const.category_name}} in {{{const.category_name}}}{{/if}}</h2>' +
         '</div><div class="list-container" id="cross">{{#each rows}}<div class="row gridView newItems">{{#each columns}}' +
         '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><form name="personal" class="yc-cart-form" ' +
         ' action="{{{action}}}" method="post" style="inline-block"><div class="hidden"><input type="hidden" name="cnid"  ' +
@@ -127,7 +131,8 @@ var YC_RECO_TEMPLATES = {
         enabled: true
     },
     crossselling: {
-        html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}</h2>' +
+        html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}' +
+        '{{#if const.category_name}} in {{{const.category_name}}}{{/if}}</h2>' +
         '</div><div class="list-container" id="cross">{{#each rows}}<div class="row gridView newItems">{{#each columns}}' +
         '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><form name="personal" class="yc-cart-form" ' +
         ' action="{{{action}}}" method="post" style="inline-block"><div class="hidden"><input type="hidden" name="cnid"  ' +
@@ -157,7 +162,8 @@ var YC_RECO_TEMPLATES = {
         enabled: true
     },
     category_page: {
-        html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}</h2>' +
+        html_template: '<div class="boxwrapper" id="boxwrapper_cross"><div class="page-header"><h2>{{{const.title}}}' +
+        '{{#if const.category_name}} in {{{const.category_name}}}{{/if}}</h2>' +
         '</div><div class="list-container" id="cross">{{#each rows}}<div class="row gridView newItems">{{#each columns}}' +
         '<div class="productData col-xs-12 col-sm-6 col-md-3 productBox"><form name="personal" class="yc-cart-form" ' +
         ' action="{{{action}}}" method="post" style="inline-block"><div class="hidden"><input type="hidden" name="cnid"  ' +

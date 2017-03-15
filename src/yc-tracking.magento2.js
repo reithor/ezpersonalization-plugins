@@ -27,6 +27,12 @@ function initYcTrackingModule(context) {
 
         return categories.join('/');
     }
+
+    function getCategoryNameFromBreadcrumb(crumbs) {
+        var split = crumbs.split("/");
+
+        return split[split.length - 1];
+    }
     
     function calculateBundlePrice(checkBoxes) {
         var updatedTotalPrice = 0,
@@ -313,6 +319,9 @@ function initYcTrackingModule(context) {
                                 if (!box.products) {
                                     return;
                                 }
+
+                                box.template.consts.category_path = getCategoriesFromBreadcrumb();
+                                box.template.consts.category_name = getCategoryNameFromBreadcrumb(box.template.consts.category_path);
 
                                 //select products that weren't rendered in higher priority boxes
                                 box.products.forEach(function (item) {

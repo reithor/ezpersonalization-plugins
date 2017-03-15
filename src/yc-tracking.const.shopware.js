@@ -8,7 +8,8 @@ var YC_CONSTS = {
 
 var YC_RECO_TEMPLATES = {
         related: {
-            html_template: "<div><h2 class='heading'>{{{const.title}}}</h2>{{#each rows}}{{#each columns}}" +
+            html_template: "<div><h2 class='heading'>{{{const.title}}}{{#if const.category_path}} in " +
+            "{{{const.category_path}}}{{/if}}</h2>{{#each rows}}{{#each columns}}" +
             "<div class='article-element'><div class='artbox rendered-related' style='height: 250px;'><div class='inner'>" +
             "<a href='{{link}}' title='{{{title}}}' style='text-align: center;'><img src='{{image}}' width='157' height='160' />" +
             "</a><a href='{{link}}' class='title' title='{{{title}}}' style='width: 157px;'>{{{title}}}</a><p>" +
@@ -26,7 +27,8 @@ var YC_RECO_TEMPLATES = {
             enabled : true
         },
         crossselling: {
-            html_template: "<div><h2 class='heading'>{{{const.title}}}</h2>{{#each rows}}{{#each columns}}" +
+            html_template: "<div><h2 class='heading'>{{{const.title}}}{{#if const.category_path}} in " +
+            "{{{const.category_path}}}{{/if}}</h2>{{#each rows}}{{#each columns}}" +
             "<div class='article-element'><div class='artbox rendered-crossselling' style='height: 250px;'><div class='inner'>" +
             "<a href='{{link}}' title='{{{title}}}' style='text-align: center;'><img src='{{image}}' width='157' height='160' />" +
             "</a><a href='{{link}}' class='title' title='{{{title}}}' style='width: 157px;'>{{{title}}}</a><p>" +
@@ -44,7 +46,8 @@ var YC_RECO_TEMPLATES = {
             enabled : true
         },
         personal : {
-            html_template: "<div><h2 class='heading'>{{{const.title}}}</h2>{{#each rows}}{{#each columns}}" +
+            html_template: "<div><h2 class='heading'>{{{const.title}}}{{#if const.category_path}} in " +
+            "{{{const.category_path}}}{{/if}}</h2>{{#each rows}}{{#each columns}}" +
             "<div class='article-element'><div class='artbox rendered-personal' style='height: 250px;'><div class='inner'>" +
             "<a href='{{link}}' title='{{{title}}}' style='text-align: center;'><img src='{{image}}' width='157' height='160' />" +
             "</a><a href='{{link}}' class='title' title='{{{title}}}' style='width: 157px;'>{{{title}}}</a><p>" +
@@ -62,7 +65,8 @@ var YC_RECO_TEMPLATES = {
             enabled : true
         },
         upselling: {
-            html_template: "<div><h2 class='heading'>{{{const.title}}}</h2>{{#each rows}}{{#each columns}}" +
+            html_template: "<div><h2 class='heading'>{{{const.title}}}{{#if const.category_path}} in " +
+            "{{{const.category_path}}}{{/if}}</h2>{{#each rows}}{{#each columns}}" +
             "<div class='article-element'><div class='artbox rendered-upselling' style='height: 250px;'><div class='inner'>" +
             "<a href='{{link}}' title='{{{title}}}' style='text-align: center;'><img src='{{image}}' width='157' height='160' />" +
             "</a><a href='{{link}}' class='title' title='{{{title}}}' style='width: 157px;'>{{{title}}}</a><p>" +
@@ -80,7 +84,8 @@ var YC_RECO_TEMPLATES = {
             enabled : true
         },
         bestseller: {
-            html_template: "<div><h2 class='heading'>{{{const.title}}}</h2>{{#each rows}}{{#each columns}}" +
+            html_template: "<div><h2 class='heading'>{{{const.title}}}{{#if const.category_path}} in " +
+            "{{{const.category_path}}}{{/if}}</h2>{{#each rows}}{{#each columns}}" +
             "<div class='article-element'><div class='artbox rendered-bestseller' style='height: 250px;'><div class='inner'>" +
             "<a href='{{link}}' title='{{{title}}}' style='text-align: center;'><img src='{{image}}' width='157' height='160' />" +
             "</a><a href='{{link}}' class='title' title='{{{title}}}' style='width: 157px;'>{{{title}}}</a><p>" +
@@ -98,7 +103,8 @@ var YC_RECO_TEMPLATES = {
             enabled : true
         },
         category_page: {
-            html_template: "<div><h2 class='heading'>{{{const.title}}}</h2>{{#each rows}}{{#each columns}}" +
+            html_template: "<div><h2 class='heading'>{{{const.title}}}{{#if const.category_path}} in " +
+            "{{{const.category_path}}}{{/if}}</h2>{{#each rows}}{{#each columns}}" +
             "<div class='article-element'><div class='artbox rendered-category_page' style='height: 250px;'><div class='inner'>" +
             "<a href='{{link}}' title='{{{title}}}' style='text-align: center;'><img src='{{image}}' width='157' height='160' />" +
             "</a><a href='{{link}}' class='title' title='{{{title}}}' style='width: 157px;'>{{{title}}}</a><p>" +

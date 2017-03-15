@@ -1,7 +1,8 @@
 var YC_CUSTOMER_ID = 905,
     YC_RECO_TEMPLATES = {
         related: {
-            html_template: "<div class='products'><h2>{{{title}}}</h2><ul " +
+            html_template: "<div class='products'><h2>{{{title}}}{{#if const.category_path}} in " +
+            "{{{const.category_path}}}{{/if}}</h2><ul " +
             "class='products'>{{#each rows}}{{#each columns}}<li class='product" +
             " rendered-related type-product {{#if onsale}}sale{{/if}} last'><a href='{{link}}' " +
             "title='{{{title}}}'>{{#if onsale}}<span class='onsale'>Sale!</span>" +
@@ -19,7 +20,8 @@ var YC_CUSTOMER_ID = 905,
             display: 1
         },
         crossselling: {
-            html_template: "<div class='products'><h2>{{{title}}}</h2><ul " +
+            html_template: "<div class='products'><h2>{{{title}}}{{#if const.category_path}} in " +
+            "{{{const.category_path}}}{{/if}}</h2><ul " +
             "class='products'>{{#each rows}}{{#each columns}}<li class='product" +
             " rendered-crossselling type-product {{#if onsale}}sale{{/if}} last'><a href='{{link}}' " +
             "title='{{{title}}}'>{{#if onsale}}<span class='onsale'>Sale!</span>" +
@@ -37,7 +39,8 @@ var YC_CUSTOMER_ID = 905,
             display: 1
         },
         personal: {
-            html_template: "<div class='products'><h2>{{{title}}}</h2><ul " +
+            html_template: "<div class='products'><h2>{{{title}}}{{#if const.category_path}} in " +
+            "{{{const.category_path}}}{{/if}}</h2><ul " +
             "class='products'>{{#each rows}}{{#each columns}}<li class='product" +
             " rendered-personal type-product {{#if onsale}}sale{{/if}} last'><a href='{{link}}' " +
             "title='{{{title}}}'>{{#if onsale}}<span class='onsale'>Sale!</span>" +
@@ -55,7 +58,8 @@ var YC_CUSTOMER_ID = 905,
             display: 1
         },
         upselling: {
-            html_template: "<div class='products'><h2>{{{title}}}</h2><ul " +
+            html_template: "<div class='products'><h2>{{{title}}}{{#if const.category_path}} in " +
+            "{{{const.category_path}}}{{/if}}</h2><ul " +
             "class='products'>{{#each rows}}{{#each columns}}<li class='product" +
             " rendered-upselling type-product {{#if onsale}}sale{{/if}} last'><a href='{{link}}' " +
             "title='{{{title}}}'>{{#if onsale}}<span class='onsale'>Sale!</span>" +
@@ -73,7 +77,8 @@ var YC_CUSTOMER_ID = 905,
             display: 1
         },
         bestseller: {
-            html_template: "<div class='products'><h2>{{{title}}}</h2><ul " +
+            html_template: "<div class='products'><h2>{{{title}}}{{#if const.category_path}} in " +
+            "{{{const.category_path}}}{{/if}}</h2><ul " +
             "class='products'>{{#each rows}}{{#each columns}}<li class='product" +
             " rendered-bestseller type-product {{#if onsale}}sale{{/if}} last'><a href='{{link}}' " +
             "title='{{{title}}}'>{{#if onsale}}<span class='onsale'>Sale!</span>" +
@@ -91,7 +96,8 @@ var YC_CUSTOMER_ID = 905,
             display: 1
         },
         category_page: {
-            html_template: "<div class='products'><h2>{{{title}}}</h2><ul " +
+            html_template: "<div class='products'><h2>{{{title}}}{{#if const.category_path}} in " +
+            "{{{const.category_path}}}{{/if}}</h2><ul " +
             "class='products'>{{#each rows}}{{#each columns}}<li class='product" +
             " rendered-category_page type-product {{#if onsale}}sale{{/if}} last'>" + 
             "<a href='{{link}}' title='{{{title}}}'>{{#if onsale}}<span " + 

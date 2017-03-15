@@ -7,7 +7,8 @@ var YC_CONSTS = {
 
 var YC_RECO_TEMPLATES = {
     personal: {
-        html_template: "<div><h2 class='subtitle'>{{{title}}}</h2><ul " +
+        html_template: "<div><h2 class='subtitle'>{{{title}}}{{#if const.category_path}} in " +
+            "{{{const.category_path}}}{{/if}}</h2><ul " +
             "class='products-grid products-grid--max-5-col'>" +
             "{{#each rows}}{{#each columns}}" +
             "<li class='rendered-personal item last'><a href='{{url_path}}' " +
@@ -33,7 +34,8 @@ var YC_RECO_TEMPLATES = {
         scenario: 'personal'
     },
     bestseller: {
-        html_template: "<div><h2 class='subtitle'>{{{title}}}</h2><ul " +
+        html_template: "<div><h2 class='subtitle'>{{{title}}}{{#if const.category_path}} in " +
+            "{{{const.category_path}}}{{/if}}</h2><ul " +
             "class='products-grid products-grid--max-5-col'>" +
             "{{#each rows}}{{#each columns}}" +
             "<li class='rendered-bestseller item last'><a href='{{url_path}}' " +
@@ -59,7 +61,8 @@ var YC_RECO_TEMPLATES = {
         scenario: 'bestseller'
     },
     upselling: {
-        html_template: "<div><h2 class='subtitle'>{{{title}}}</h2><ul " +
+        html_template: "<div><h2 class='subtitle'>{{{title}}}{{#if const.category_path}} in " +
+            "{{{const.category_path}}}{{/if}}</h2><ul " +
             "class='products-grid products-grid--max-5-col'>" +
             "{{#each rows}}{{#each columns}}" +
             "<li class='rendered-upselling item last'><a href='{{url_path}}' " +
@@ -85,7 +88,8 @@ var YC_RECO_TEMPLATES = {
         scenario: 'up_selling'
     },
     related: {
-        html_template: "<div><h2 class='subtitle'>{{{title}}}</h2><ul " +
+        html_template: "<div><h2 class='subtitle'>{{{title}}}{{#if const.category_path}} in " +
+            "{{{const.category_path}}}{{/if}}</h2><ul " +
             "class='products-grid products-grid--max-5-col'>" +
             "{{#each rows}}{{#each columns}}" +
             "<li class='rendered-related item last'><a href='{{url_path}}' " +
@@ -111,7 +115,8 @@ var YC_RECO_TEMPLATES = {
         scenario: 'related_products'
     },
     crossselling: {
-        html_template: "<div><h2 class='subtitle'>{{{title}}}</h2><ul " +
+        html_template: "<div><h2 class='subtitle'>{{{title}}}{{#if const.category_path}} in " +
+            "{{{const.category_path}}}{{/if}}</h2><ul " +
             "class='products-grid products-grid--max-5-col'>" +
             "{{#each rows}}{{#each columns}}" +
             "<li class='rendered-crossselling item last'><a href='{{url_path}}' " +
@@ -137,7 +142,8 @@ var YC_RECO_TEMPLATES = {
         scenario: 'cross_selling'
     },
     category_page: {
-        html_template: "<div><h2 class='subtitle'>{{{title}}}</h2><ul " +
+        html_template: "<div><h2 class='subtitle'>{{{title}}}{{#if const.category_path}} in " +
+            "{{{const.category_path}}}{{/if}}</h2><ul " +
             "class='products-grid products-grid--max-5-col'>" +
             "{{#each rows}}{{#each columns}}" +
             "<li class='rendered-category_page item last'><a href='{{url_path}}' " +

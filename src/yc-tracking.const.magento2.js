@@ -7,7 +7,8 @@ var YC_CONSTS = {
 
 var YC_RECO_TEMPLATES = {
     personal: {
-        html_template: "<div class='content-heading'><h2 class='title'>{{{const.title}}}</h2></div>" +
+        html_template: "<div class='content-heading'><h2 class='title'>{{{const.title}}}" +
+            "{{#if const.category_name}} in {{{const.category_name}}}{{/if}}</h2></div>" +
             "<div class='block widget block-products-list grid'><div class='block-content'><div class='products-grid grid'>" +
             "<ol class='product-items widget-product-grid'>{{#each rows}}{{#each columns}}<li class='product-item'>" +
             "<div class='product-item-info'><a href='{{{link}}}' class='product-item-photo'><span class='product-image-container'" +
@@ -39,7 +40,8 @@ var YC_RECO_TEMPLATES = {
         enabled: true
     },
     bestseller: {
-        html_template: "<div class='content-heading'><h2 class='title'>{{{const.title}}}</h2></div>" +
+        html_template: "<div class='content-heading'><h2 class='title'>{{{const.title}}}" +
+            "{{#if const.category_name}} in {{{const.category_name}}}{{/if}}</h2></div>" +
             "<div class='block widget block-products-list grid'><div class='block-content'><div class='products-grid grid'>" +
             "<ol class='product-items widget-product-grid'>{{#each rows}}{{#each columns}}<li class='product-item'>" +
             "<div class='product-item-info'><a href='{{{link}}}' class='product-item-photo'><span class='product-image-container'" +
@@ -71,7 +73,8 @@ var YC_RECO_TEMPLATES = {
         enabled: true
     },
     upselling: {
-        html_template: "<div class='content-heading'><h2 class='title'>{{{const.title}}}</h2></div>" +
+        html_template: "<div class='content-heading'><h2 class='title'>{{{const.title}}}" +
+            "{{#if const.category_name}} in {{{const.category_name}}}{{/if}}</h2></div>" +
             "<div class='block widget block-products-list grid'><div class='block-content'><div class='products-grid grid'>" +
             "<ol class='product-items widget-product-grid'>{{#each rows}}{{#each columns}}<li class='product-item'>" +
             "<div class='product-item-info'><a href='{{{link}}}' class='product-item-photo'><span class='product-image-container'" +
@@ -107,7 +110,8 @@ var YC_RECO_TEMPLATES = {
         enabled: true
     },
     related: {
-        html_template: "<div class='content-heading'><h2 class='title'>{{{const.title}}}</h2></div>" +
+        html_template: "<div class='content-heading'><h2 class='title'>{{{const.title}}}" +
+            "{{#if const.category_name}} in {{{const.category_name}}}{{/if}}</h2></div>" +
             "<div class='block widget block-products-list grid'><div class='block-content'><div class='products-grid grid'>" +
             "<ol class='product-items widget-product-grid'>{{#each rows}}{{#each columns}}<li class='product-item'>" +
             "<div class='product-item-info'><a href='{{{link}}}' class='product-item-photo'><span class='product-image-container'" +
@@ -143,7 +147,8 @@ var YC_RECO_TEMPLATES = {
         enabled: true
     },
     crossselling: {
-        html_template: "<div class='content-heading'><h2 class='title'>{{{const.title}}}</h2></div>" +
+        html_template: "<div class='content-heading'><h2 class='title'>{{{const.title}}}" +
+            "{{#if const.category_name}} in {{{const.category_name}}}{{/if}}</h2></div>" +
             "<div class='block widget block-products-list grid'><div class='block-content'><div class='products-grid grid'>" +
             "<ol class='product-items widget-product-grid'>{{#each rows}}{{#each columns}}<li class='product-item'>" +
             "<div class='product-item-info'><a href='{{{link}}}' class='product-item-photo'><span class='product-image-container'" +
@@ -175,7 +180,8 @@ var YC_RECO_TEMPLATES = {
         enabled: true
     },
         category_page: {
-        html_template: "<div class='content-heading'><h2 class='title'>{{{const.title}}}</h2></div>" +
+        html_template: "<div class='content-heading'><h2 class='title'>{{{const.title}}}" +
+            "{{#if const.category_path}} in {{{const.category_path}}}{{/if}}</h2></div>" +
             "<div class='block widget block-products-list grid'><div class='block-content'><div class='products-grid grid'>" +
             "<ol class='product-items widget-product-grid'>{{#each rows}}{{#each columns}}<li class='product-item'>" +
             "<div class='product-item-info'><a href='{{{link}}}' class='product-item-photo'><span class='product-image-container'" +
