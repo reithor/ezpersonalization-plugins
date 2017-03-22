@@ -55,7 +55,7 @@ class Yoochoose_JsTracking_ExportController extends Mage_Core_Controller_Front_A
                 $configModel = Mage::getModel('core/config');
                 $enable = Mage::getStoreConfig('yoochoose/export/enable_flag');
 
-                if (1) {
+                if ($enable != 1) {
                     $requestUri = $this->getRequest()->getRequestUri();
                     $queryString = substr($requestUri, strpos($requestUri, '?') + 1);
                     Mage::log('Export has started, with this query string : ' . $queryString, Zend_Log::INFO,
