@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Yoochoose_JsTracking>
-            <version>2.0.5</version>
+            <version>3.0.0</version>
         </Yoochoose_JsTracking>
     </modules>
     <global>

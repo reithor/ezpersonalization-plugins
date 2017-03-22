@@ -37,60 +37,76 @@ class Yoochoose_JsTracking_ExportController extends Mage_Core_Controller_Front_A
 
     public function indexAction()
     {
+        $header = apache_request_headers();
+        $appSecret = str_replace('Bearer ', '', $header['Authorization']);
+        $licenceKey = Mage::getStoreConfig('yoochoose/general/license_key');
 
-        $configModel = Mage::getModel('core/config');
-        $enable = Mage::getStoreConfig('yoochoose/export/enable_flag');
-
-        if ($enable != 1) {
-            $requestUri = $this->getRequest()->getRequestUri();
-            $queryString = substr($requestUri, strpos($requestUri, '?') + 1);
-            Mage::log('Export has started, with this query string : '.$queryString, Zend_Log::INFO, 'yoochoose.log');
-
-            $post = [];
+        if (md5($licenceKey) == $appSecret) {
             $post['limit'] = $this->getRequest()->getParam('size');
             $post['webHookUrl'] = $this->getRequest()->getParam('webHook');
-            $post['password'] = $this->generateRandomString();
+            $post['mandator'] = $this->getRequest()->getParam('mandator');
 
-            $configModel->saveConfig('yoochoose/export/password', $post['password'], 'default', 0);
+            /** Checks if size, mandator, web hook is set */
+            if (!isset($post['limit']) || empty($post['limit']) || !isset($post['webHookUrl'])
+                || empty($post['webHookUrl']) || !isset($post['mandator']) || empty($post['mandator'])
+            ) {
+                $this->sendResponse(false, 'Size, mandator and webHook parameters must be set!');
+            } else {
+                $configModel = Mage::getModel('core/config');
+                $enable = Mage::getStoreConfig('yoochoose/export/enable_flag');
 
-            $baseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
+                if (1) {
+                    $requestUri = $this->getRequest()->getRequestUri();
+                    $queryString = substr($requestUri, strpos($requestUri, '?') + 1);
+                    Mage::log('Export has started, with this query string : ' . $queryString, Zend_Log::INFO,
+                        'yoochoose.log');
 
-            $this->triggerExport($baseUrl . 'yoochoose/trigger', $post);
+                    $post['password'] = Mage::helper('yoochoose_jstracking')->generateRandomString();
+                    $post['storeData'] = $this->getStoreData($post['mandator']);
 
-            $response = [
-                'success' => true
-            ];
+                    if (empty($post['storeData'])) {
+                        $this->sendResponse(false, 'Mandator is not correct!');
+                    } else {
+                        $post['storeData'] = json_encode($post['storeData']);
+                    }
 
+
+                    $configModel->saveConfig('yoochoose/export/password', $post['password'], 'default', 0);
+                    $baseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_WEB);
+                    $this->triggerExport($baseUrl . 'yoochoose/trigger', $post);
+
+                } else {
+                    $this->sendResponse(false, 'Job not sent!');
+                }
+            }
         } else {
-
-            $response = [
-                'success' => false,
-                'message' => 'Job not sent'
-            ];
+            $this->sendResponse(false, 'Authentication failed!');
         }
 
-        header('Content-Type: application/json;');
-        exit(json_encode(array_values($response)));
+        $this->sendResponse(true);
     }
 
     /**
-     * Generates random string with $length characters
+     * Helper method for sending response
      *
-     * @param int $length
-     * @return string
+     * @param $success
+     * @param string $message
      */
-    private function generateRandomString($length = 20)
+    protected function sendResponse($success, $message = '')
     {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $charactersLength = strlen($characters);
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        $result = array();
+        header('Content-Type: application/json');
+
+        if ($success) {
+            $result['success'] = true;
+        } else {
+            $result['success'] = $success;
+            $result['message'] = $message;
         }
 
-        return $randomString;
+        echo json_encode(array_values($result));
+        exit;
     }
-
 
     /**
      * triggerExport
@@ -99,8 +115,8 @@ class Yoochoose_JsTracking_ExportController extends Mage_Core_Controller_Front_A
      * @param array $post
      * @return cURL execute
      */
-    private function triggerExport($url, $post = array()) {
-
+    private function triggerExport($url, $post = array())
+    {
         $cURL = curl_init();
         curl_setopt($cURL, CURLOPT_URL, $url);
         curl_setopt($cURL, CURLOPT_FOLLOWLOCATION, true);
@@ -114,6 +130,28 @@ class Yoochoose_JsTracking_ExportController extends Mage_Core_Controller_Front_A
         curl_setopt($cURL, CURLOPT_TIMEOUT, 1);
 
         return curl_exec($cURL);
+    }
+
+    /**
+     *
+     *
+     * @param $mandator
+     * @return array
+     */
+    private function getStoreData($mandator)
+    {
+        $result = array();
+        $storeViews = Mage::getModel('yoochoose_jstracking/YoochooseExport')->getStoreViews();
+
+        foreach ($storeViews as $storeView) {
+            $baseMandator = Mage::getStoreConfig('yoochoose/general/customer_id', $storeView['id']);
+
+            if ($baseMandator == $mandator) {
+                $result[$storeView['id']] = $storeView['language'];
+            }
+        }
+
+        return $result;
     }
 
 }

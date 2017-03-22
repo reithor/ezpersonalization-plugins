@@ -50,10 +50,12 @@ class Yoochoose_JsTracking_Model_Observer
                     'type' => 'MAGENTO',
                     'pluginId' => Mage::getStoreConfig('yoochoose/general/plugin_id'),
                     'endpoint' => Mage::getStoreConfig('yoochoose/general/endpoint'),
-                    ), 
+                    'token' => md5($licenseKey),
+                ),
                 'frontend' => array(
                     'design' => Mage::getStoreConfig('yoochoose/general/design'),
-                ));
+                )
+            );
 
             $url = self::YOOCHOOSE_LICENSE_URL . $customerId . '/plugin/';
             $url .= (Mage::getStoreConfig('yoochoose/general/endpoint_overwrite') ? 'update?createIfNeeded' : 'create?recheckType') . '=true&fallbackDesign=true';

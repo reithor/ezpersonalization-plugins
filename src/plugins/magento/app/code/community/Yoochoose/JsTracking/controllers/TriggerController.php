@@ -43,10 +43,14 @@ class Yoochoose_JsTracking_TriggerController extends Mage_Core_Controller_Front_
         $limit = $this->getRequest()->getParam('limit');
         $callbackUrl = $this->getRequest()->getParam('webHookUrl');
         $postPassword = $this->getRequest()->getParam('password');
+        $transaction = $this->getRequest()->getParam('transaction');
+        $storeData = json_decode($this->getRequest()->getParam('storeData'), true);
+        $customerId = $this->getRequest()->getParam('mandator');
 
-        $customerId = Mage::getStoreConfig('yoochoose/general/customer_id');
-        $licenceKey = Mage::getStoreConfig('yoochoose/general/license_key');
-        $password = Mage::getStoreConfig('yoochoose/export/password');
+        $shopId = key($storeData);
+        $licenceKey = Mage::getStoreConfig('yoochoose/general/license_key', $shopId);
+        Mage::app()->cleanCache();
+        $password = Mage::getStoreConfig('yoochoose/export/password', 0);
 
         if ($password === $postPassword) {
             $configModel->saveConfig('yoochoose/export/enable_flag', 1, 'default', 0);
@@ -54,15 +58,21 @@ class Yoochoose_JsTracking_TriggerController extends Mage_Core_Controller_Front_
             Mage::log('Export has started for all resources. ', Zend_Log::INFO, 'yoochoose.log');
 
             try {
-                $postData = Mage::helper('yoochoose_jstracking')->export($limit);
+                $postData = Mage::helper('yoochoose_jstracking')->export($storeData, $transaction, $limit, $customerId);
                 Mage::log('Export has finished for all resources.', Zend_Log::INFO, 'yoochoose.log');
-
                 $this->setCallback($callbackUrl, $postData, $customerId, $licenceKey);
+                $response['success'] = true;
+            } catch (Exception $exc) {
+                $response['success'] = false;
+                $response['message'] = $exc->getMessage();
             } finally {
                 $configModel->saveConfig('yoochoose/export/enable_flag', 0, 'default', 0);
             }
+        } else {
+            $response['message'] = 'Passwords do not match!';
         }
 
+        return json_encode($response);
     }
 
     /**

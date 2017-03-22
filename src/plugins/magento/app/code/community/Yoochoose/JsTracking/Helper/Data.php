@@ -64,45 +64,62 @@ class Yoochoose_JsTracking_Helper_Data extends Mage_Core_Helper_Abstract
     }
 
     /**
-     * export to files
+     * export to file
      *
-     * @param int $limit
-     * @return string postData
+     * @param $storeData
+     * @param $transaction
+     * @param $limit
+     * @param $mandatorId
+     * @return array
      */
-    public function export($limit)
+    public function export($storeData, $transaction, $limit, $mandatorId)
     {
         $ycResponseFormats = [
-            'MAGENTO2', 'MAGENTO2_CATEGORIES', 'MAGENTO2_VENDORS'
+            'MAGENTO' => 'Products',
+            'MAGENTO_CATEGORIES' => 'Categories',
+            'MAGENTO_VENDORS' => 'Vendors'
         ];
 
         $postData = [
-            'transaction' => null,
+            'transaction' => $transaction,
             'events' => []
         ];
 
-        foreach ($ycResponseFormats as $format){
-            $postData['events'][] = [
-                'action' => 'FULL',
-                'format' => $format,
-                'contentTypeId' => '1',
-                'credentials' => [
-                    'login' => null,
-                    'password' => null
-                ],
-                'uri' => []
-            ];
+        foreach ($ycResponseFormats as $format => $method){
+            if (!empty($storeData)) {
+                foreach ($storeData as $storeId => $language) {
+                    $postData['events'][] = [
+                        'action' => 'FULL',
+                        'format' => $format,
+                        'contentTypeId' => Mage::getStoreConfig('yoochoose/general/customer_id', $storeId),
+                        'storeViewId' => $storeId,
+                        'lang' => $language,
+                        'credentials' => [
+                            'login' => null,
+                            'password' => null
+                        ],
+                        'uri' => []
+                    ];
+                    $storeIds [$method][] = $storeId;
+                }
+            }
         }
 
-        $directory = Mage::getBaseDir('media') . '/' . self::YC_DIRECTORY_NAME . '/';
+        $directory = Mage::getBaseDir('media') . '/' . self::YC_DIRECTORY_NAME . '/' . $mandatorId . '/';
 
         $file = new Varien_Io_File();
 
         $file->rmdirRecursive($directory);
         $file->mkdir($directory, 0775);
+        $i = 0;
 
-        $postData = $this->exportData('Products', $postData, $directory, $limit, 0);
-        $postData = $this->exportData('Categories', $postData, $directory, $limit, 1);
-        $postData = $this->exportData('Vendors', $postData, $directory, $limit, 2);
+        foreach ($postData['events'] as $event) {
+            $method = $ycResponseFormats[$event['format']] ?: null;
+            if ($method) {
+                $postData = $this->exportData($method, $postData, $directory, $limit, $i, $event['storeViewId'], $mandatorId);
+                $i++;
+            }
+        }
 
         return $postData;
 
@@ -114,7 +131,7 @@ class Yoochoose_JsTracking_Helper_Data extends Mage_Core_Helper_Abstract
      * @param int $length
      * @return string
      */
-    private function generateRandomString($length = 20)
+    public function generateRandomString($length = 20)
     {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
@@ -135,23 +152,37 @@ class Yoochoose_JsTracking_Helper_Data extends Mage_Core_Helper_Abstract
      * @param string $directory
      * @param integer $limit
      * @param integer $exportIndex
+     * @param integer $storeId
      * @return array $postData
      */
-    private function exportData($method, $postData, $directory, $limit = 0, $exportIndex = 0){
+    private function exportData($method, $postData, $directory, $limit = 0, $exportIndex = 0, $storeId, $mandatorId){
 
         $io = new Varien_Io_File();
-        $baseUrl =  Mage::getBaseUrl('media');
-        $fileUrl = $baseUrl . self::YC_DIRECTORY_NAME . '/';
+
+        $baseUrl =  Mage::app()->getStore($storeId)->getBaseUrl('media');
+        $fileUrl = $baseUrl . self::YC_DIRECTORY_NAME. '/' . $mandatorId . '/';
 
         $method = 'get' . $method;
         Mage::app()->getRequest()->setParam('limit', $limit);
+        Mage::app()->getRequest()->setParam('storeViewId', $storeId);
         $offset = 0;
+        $logNames = '';
+        $emulationModel = Mage::getSingleton('core/app_emulation');
 
         do {
             Mage::app()->getRequest()->setParam('offset', $offset);
+
+            // start emulation for store view
+            $initialEnvironmentInfo = $emulationModel->startEnvironmentEmulation($storeId);
+
+            // execute export action
             $results = Mage::getModel('yoochoose_jstracking/YoochooseExport')->$method();
+
+            // stop emulation for store view
+            $emulationModel->stopEnvironmentEmulation($initialEnvironmentInfo);
+
             if (!empty($results)){
-                $filename = $this->generateRandomString();
+                $filename = $this->generateRandomString() . '.json';
                 $file = $directory . $filename;
                 $io->write($file, json_encode($results));
                 $fileSize = filesize($file);
@@ -161,16 +192,12 @@ class Yoochoose_JsTracking_Helper_Data extends Mage_Core_Helper_Abstract
                 } else {
                     $postData['events'][$exportIndex]['uri'][] = $fileUrl . $filename;
                     $offset = $offset + $limit;
+                    $logNames .= $filename . ', ';
                 }
             }
         } while (!empty($results));
 
-        foreach ($postData['events'][$exportIndex]['uri'] as $uri){
-            $arrayLogNames[] = substr($uri, strrpos($uri, '/') + 1);
-        }
-		
-        $logNames = implode(', ', $arrayLogNames);
-        $logNames!== null ? $logNames : $logNames = 'there are no files';
+        $logNames = $logNames ?: 'there are no files';
         Mage::log('Export has finished for ' . $method . ' with file names : ' . $logNames, Zend_Log::INFO, 'yoochoose.log');
 
         return $postData;
