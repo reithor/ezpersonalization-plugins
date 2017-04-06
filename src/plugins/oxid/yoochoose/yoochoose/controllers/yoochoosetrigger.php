@@ -25,6 +25,7 @@ class Yoochoosetrigger extends oxUBase
         $licenceKey = $conf->getConfigParam('ycLicenseKey', $shopData[0][$shopId], 'module:yoochoose');
 
         if ($password === $postPassword) {
+            set_time_limit(0);
             $conf->saveShopConfVar('bool', 'ycEnableFlag', 1, $conf->getShopId(), 'module:yoochoose');
             try {
                 $this->ycModel->log('Export has started for all resources.', '', '', '');
@@ -36,6 +37,7 @@ class Yoochoosetrigger extends oxUBase
             } catch (Exception $exc) {
                 $response['success'] = false;
                 $response['message'] = $exc->getMessage();
+                oxNew('yoochoosemodel')->log('Export has failed ' . $exc->getMessage());
             } finally {
                 $conf->saveShopConfVar('bool', 'ycEnableFlag', 0, $conf->getShopId(), 'module:yoochoose');
             }

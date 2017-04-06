@@ -45,6 +45,7 @@ class Yoochoosehelper extends oxUBase
                         'uri' => array(),
                     );
                     $shopIds [$method][] = $shop['shopId'];
+
                 }
             }
         }
@@ -103,9 +104,9 @@ class Yoochoosehelper extends oxUBase
 
         /* @var Ycexportmodel $model */
         $model = oxNew('ycexportmodel');
-        $oxConfig = oxNew('oxConfig');
-
-        $baseUrl = $oxConfig->getShopMainUrl();
+        /** @var oxViewConfig $oxViewConfig */
+        $oxViewConfig = oxNew('oxViewConfig');
+        $baseUrl = $oxViewConfig->getBaseDir();
         $fileUrl = $baseUrl . 'out/' . self::YC_DIRECTORY_NAME . '/' . $mandatorId . '/';
 
         $method = 'get' . $method;
@@ -120,15 +121,15 @@ class Yoochoosehelper extends oxUBase
                 file_put_contents($file, json_encode(array_values($results)));
                 $fileSize = filesize($file);
                 if ($fileSize >= self::YC_MAX_FILE_SIZE) {
-                    delete($file);
-                    $limit = --$limit;
+                    unlink($file);
+                    $limit--;
                 } else {
                     $postData['events'][$exportIndex]['uri'][] = $fileUrl . $filename;
                     $offset = $offset + $limit;
                     $logNames .= $filename . ', ';
                 }
             }
-        } while (!empty($results));
+        } while(!empty($results));
 
         $logNames = $logNames ?: 'there are no files';
         oxNew('yoochoosemodel')->log('Export has finished for ' . $method . ' with file names : ' . $logNames);

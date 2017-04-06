@@ -23,7 +23,11 @@ class Yoochooseexport extends Yoochooseapi
         $oxConfig = oxNew('oxConfig');
         /** @var Yoochoosemodel $model */
         $model = oxNew('yoochoosemodel');
-        $flag = $oxConfig->getConfigParam('ycLicenseKey', $oxConfig->getShopId(), 'module:yoochoose');
+        if ($this->getConfig()->getRequestParameter('forceStart')) {
+            $this->getConfig()->saveShopConfVar('bool', 'ycEnableFlag', 0, $oxConfig->getShopId(), 'module:yoochoose');
+        }
+
+        $flag = $oxConfig->getConfigParam('ycEnableFlag', $oxConfig->getShopId(), 'module:yoochoose');
 
         if ($flag != 1) {
             $requestUri = $_SERVER['REQUEST_URI'];
@@ -38,7 +42,7 @@ class Yoochooseexport extends Yoochooseapi
             $post['transaction'] = $this->getTransaction();
             $shopIds = $oxConfig->getShopIds();
             $lang = $this->getLanguage();
-            $lang = (-1 ? '' : $lang);
+            $lang = ($lang == -1 ? '' : $lang);
 
             $post['shopData'] = $this->getStoreData($shopIds, $post['mandator'], $lang);
 
