@@ -50,7 +50,8 @@ class Yoochoose_JsTracking_Model_Observer
                     'type' => 'MAGENTO',
                     'pluginId' => Mage::getStoreConfig('yoochoose/general/plugin_id'),
                     'endpoint' => Mage::getStoreConfig('yoochoose/general/endpoint'),
-                    'token' => md5($licenseKey),
+                    'appKey' => '',
+                    'appSecret' => md5($licenseKey),
                 ),
                 'frontend' => array(
                     'design' => Mage::getStoreConfig('yoochoose/general/design'),
