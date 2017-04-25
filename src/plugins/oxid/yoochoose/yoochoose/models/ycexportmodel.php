@@ -68,7 +68,7 @@ class Ycexportmodel extends oxUBase
 
         $sql = "SELECT * FROM $sArtTable AS art 
         LEFT JOIN oxv_oxartextends_$language artExt ON artExt.OXID = art.OXID 
-        WHERE OXPARENTID='' " . $this->getLimitSQL($offset, $limit);
+        WHERE OXPARENTID='' AND OXACTIVE='1' " . $this->getLimitSQL($offset, $limit);
 
         $result = oxDb::getDb(oxDb::FETCH_MODE_ASSOC)->getAll($sql);
         $articles = array();

@@ -10,8 +10,6 @@ class Ycproductexport extends oxUBase
         /** @var oxConfig $conf */
         $conf = $this->getConfig();
         $result = array();
-        /** @var oxArticle $oArticle */
-        $oArticle = oxNew('oxarticle');
         /** @var oxViewConfig $viewConf */
         $viewConf = oxNew('oxViewConfig');
         /** @var oxUBase $oxBase */
@@ -25,7 +23,13 @@ class Ycproductexport extends oxUBase
         $products = $conf->getRequestParameter('products');
 
         foreach (explode(',', $products) as $id) {
+            /** @var oxArticle $oArticle */
+            $oArticle = oxNew('oxarticle');
             if ($oArticle->load($id)) {
+                if (!$oArticle->_aInnerLazyCache['OXACTIVE']) {
+                    continue;
+                }
+
                 $variants = $oArticle->getVariantIds();
                 $result[] = array(
                     'id' => $id,
@@ -52,8 +56,6 @@ class Ycproductexport extends oxUBase
                     'showCartButton' => empty($variants) ? true : false,
                 );
             }
-
-            $oArticle = oxNew('oxarticle');
         }
 
         header('Content-Type: application/json');
