@@ -4,6 +4,7 @@ namespace Yoochoose\Tracking\Model\Observer;
 
 use Magento\Authorization\Model\Role;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use \Magento\Store\Model\ScopeInterface;
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
 use Magento\Framework\ObjectManagerInterface;
@@ -60,10 +61,20 @@ class ConfigUpdate implements ObserverInterface
             'Magento_Catalog::categories'
         ];
 
-        $storeId= $this->request->getParam('store');
+        $postData = $observer->getEvent()->getData();
+        if (empty($postData['store']) && $postData['website']) {
+            $scopeId = $postData['website'];
+            $scopeName = ScopeInterface::SCOPE_WEBSITES;
+        } else if ($postData['store']) {
+            $scopeId = $postData['store'];
+            $scopeName = ScopeInterface::SCOPE_STORES;
+        } else {
+            return;
+        }
 
-        $customerId = $this->config->getValue('yoochoose/general/customer_id', 'stores', $storeId);
-        $licenseKey = $this->config->getValue('yoochoose/general/license_key', 'stores', $storeId);
+        $customerId = $this->config->getValue('yoochoose/general/customer_id', $scopeName, $scopeId);
+        $licenseKey = $this->config->getValue('yoochoose/general/license_key', $scopeName, $scopeId);
+
         $hasRole = false;
 
         if (!$customerId && !$licenseKey) {

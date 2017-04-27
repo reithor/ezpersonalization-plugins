@@ -30,16 +30,30 @@ class Yoochoose_JsTracking_Model_Observer
      */
     public function adminSystemConfigChangedSectionYoochoose($observer)
     {
-        $code = Mage::getSingleton('adminhtml/config_data')->getStore();
-        $scopeId = Mage::getModel('core/store')->load($code)->getId();
-        $customerId = Mage::getStoreConfig('yoochoose/general/customer_id', $scopeId);
-        $licenseKey = Mage::getStoreConfig('yoochoose/general/license_key', $scopeId);
+        $postData = $observer->getEvent()->getData();
+        $configScope = null;
 
-        if ($scopeId === null) {
+        if (is_null($postData['store']) && $postData['website']) {
+            $scopeId = Mage::getModel('core/website')->load($postData['website'])->getId();
+            $configScope = Mage::app()->getWebsite($scopeId);
+            $scopeName = 'websites';
+        } else if ($postData['store']) {
+            $scopeId = Mage::getModel('core/store')->load($postData['store'])->getId();
+            $configScope = Mage::app()->getStore($scopeId);
+            $scopeName = 'stores';
+        } else {
             $scopeId = 0;
+            $scopeName = 'default';
         }
 
-        $scopeName = $scopeId === 0 ? 'default' : 'stores';
+        if (is_null($configScope)) {
+            $customerId = Mage::getStoreConfig('yoochoose/general/customer_id');
+            $licenseKey = Mage::getStoreConfig('yoochoose/general/license_key');
+        }  else {
+            $customerId = $configScope->getConfig('yoochoose/general/customer_id');
+            $licenseKey = $configScope->getConfig('yoochoose/general/license_key');
+        }
+
         if (!$customerId && !$licenseKey) {
             return;
         }
