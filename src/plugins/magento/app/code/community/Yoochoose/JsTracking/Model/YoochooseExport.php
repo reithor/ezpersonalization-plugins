@@ -170,7 +170,7 @@ class  Yoochoose_JsTracking_Model_YoochooseExport extends Mage_Core_Model_Config
             http_response_code(204);
         }
 
-        return $products;
+        return array_values($products);
     }
 
 

@@ -91,7 +91,7 @@ class Yoochoose_JsTracking_Helper_Data extends Mage_Core_Helper_Abstract
                     $postData['events'][] = [
                         'action' => 'FULL',
                         'format' => $format,
-                        'contentTypeId' => Mage::getStoreConfig('yoochoose/general/customer_id', $storeId),
+                        'contentTypeId' => Mage::getStoreConfig('yoochoose/general/itemtypeid', $storeId),
                         'storeViewId' => $storeId,
                         'lang' => $language,
                         'credentials' => [
