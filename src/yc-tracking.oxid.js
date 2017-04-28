@@ -55,7 +55,7 @@ function initYcTrackingModule(context) {
         var forms = document.querySelectorAll('.yc-recommendation-box ' + YC_BASKET_FORMS_SELECTOR),
             tempId, i,
             onFormSubmit = function () {
-                tempId = this.anid.value;
+                tempId = this.parentid ? this.parentid.value : this.anid.value
                 YcTracking.trackBasket(1, tempId, context.location.pathname, language);
             };
 
@@ -83,7 +83,7 @@ function initYcTrackingModule(context) {
                 YcTracking.trackBasket(1, tempId, category, language);
             },
             onFormSubmit = function () {
-                tempId = this.anid.value;
+                tempId = this.parentid ? this.parentid.value : this.anid.value;
                 YcTracking.trackBasket(1, tempId, category, language);
             };
 
@@ -101,11 +101,43 @@ function initYcTrackingModule(context) {
     }
 
     function trackBuy() {
-        var orders = ycObject ? ycObject.orders : null;
+        var orders = ycObject ? ycObject.orders : null,
+            url = ycObject ? ycObject.url : null;
+
+        if (!url) {
+            return;
+        }
+
+        url = url.replace('http:', context.location.protocol) + 'Yoochoose/';
 
         if (currentPage === 'buyout' && orders) {
+
             orders.forEach(function (order) {
-                YcTracking.trackBuy(itemType, order.itemId, order.quantity, order.price, order.currency, language);
+                var xmlHttp;
+
+                if (context.XMLHttpRequest) {
+                    xmlHttp = new XMLHttpRequest();
+                } else {
+                    xmlHttp = new ActiveXObject('Microsoft.XMLHTTP');
+                }
+
+                xmlHttp.onreadystatechange = function () {
+                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+                        var products = JSON.parse(xmlHttp.responseText);
+                        if (!products) {
+                            return;
+                        }
+
+                        products.forEach(function (product) {
+                            if (product.id) {
+                                YcTracking.trackBuy(itemType, product.id, order.quantity, order.price, order.currency, language);
+                            }
+                        });
+                    }
+                };
+
+                xmlHttp.open('GET', url + '?products=' + order.itemId, true);
+                xmlHttp.send();
             });
         }
     }

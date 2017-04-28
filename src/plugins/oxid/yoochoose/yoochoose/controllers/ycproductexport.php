@@ -26,13 +26,21 @@ class Ycproductexport extends oxUBase
             /** @var oxArticle $oArticle */
             $oArticle = oxNew('oxarticle');
             if ($oArticle->load($id)) {
+                // if article has parent it's variation, so load parent instead
+                if (!empty($oArticle->getParentId())) {
+                    /** @var oxArticle $oArticle */
+                    $parentId = $oArticle->getParentId();
+                    $oArticle = oxNew('oxarticle');
+                    $oArticle->load($parentId);
+                }
+
                 if (!$oArticle->_aInnerLazyCache['OXACTIVE']) {
                     continue;
                 }
 
                 $variants = $oArticle->getVariantIds();
-                $result[] = array(
-                    'id' => $id,
+                $result[$oArticle->getID()] = array(
+                    'id' => $oArticle->getID(),
                     'title' => $oArticle->oxarticles__oxtitle->value,
                     'image' => $oArticle->getPictureUrl(),
                     'link' => $oArticle->getLink(),
@@ -59,6 +67,6 @@ class Ycproductexport extends oxUBase
         }
 
         header('Content-Type: application/json');
-        exit(json_encode($result));
+        exit(json_encode(array_values($result)));
     }
 }
