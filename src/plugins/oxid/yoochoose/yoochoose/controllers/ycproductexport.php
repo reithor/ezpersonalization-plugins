@@ -27,14 +27,13 @@ class Ycproductexport extends oxUBase
             $oArticle = oxNew('oxarticle');
             if ($oArticle->load($id)) {
                 // if article has parent it's variation, so load parent instead
-                if (!empty($oArticle->getParentId())) {
-                    /** @var oxArticle $oArticle */
-                    $parentId = $oArticle->getParentId();
+                $parentId = $oArticle->getParentId();
+                if (!empty($parentId)) {
                     $oArticle = oxNew('oxarticle');
                     $oArticle->load($parentId);
                 }
 
-                if (!$oArticle->_aInnerLazyCache['OXACTIVE']) {
+                if (!$oArticle->isVisible()) {
                     continue;
                 }
 

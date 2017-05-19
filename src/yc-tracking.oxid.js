@@ -98,6 +98,18 @@ function initYcTrackingModule(context) {
                 forms[i].form.addEventListener('submit', onFormSubmit);
             }
         }
+
+        setInterval(function () {
+            var form;
+
+            forms = document.querySelectorAll(YC_BASKET_FORMS_SELECTOR);
+            for (i = 0; i < forms.length; i++) {
+                form = forms[i].form;
+                form.removeEventListener('submit', onFormSubmit);
+                form.addEventListener('submit', onFormSubmit);
+            }
+
+        }, 500);
     }
 
     function trackBuy() {

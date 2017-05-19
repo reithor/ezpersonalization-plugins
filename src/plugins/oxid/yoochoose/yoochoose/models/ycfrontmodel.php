@@ -67,7 +67,7 @@ class Ycfrontmodel extends Ycfrontmodel_parent
         $basketItems = $session->getBasket()->getContents();
         $items = array();
         foreach ($basketItems as $val) {
-            $items[] = $val->getProductId();
+            $items[] = $this->getParentArticleId($val->getProductId());
         }
 
         return implode(',', $items);
@@ -96,12 +96,30 @@ class Ycfrontmodel extends Ycfrontmodel_parent
     {
         switch ($page) {
             case 'product':
-                return $this->getActArticleId();
+                return $this->getParentArticleId($this->getActArticleId());
             case 'cart':
                 return $this->getBasketItems();
             default:
                 return null;
         }
+    }
+
+    /**
+     * Returns parent article id.
+     *
+     * @param string $articleId
+     * @return string
+     */
+    private function getParentArticleId($articleId)
+    {
+        /** @var oxArticle $oArticle */
+        $oArticle = oxNew('oxarticle');
+        if ($oArticle->load($articleId)) {
+            $parentId = $oArticle->getParentId();
+            $articleId = empty($parentId) ? $articleId : $parentId;
+        }
+
+        return $articleId;
     }
 
 }
