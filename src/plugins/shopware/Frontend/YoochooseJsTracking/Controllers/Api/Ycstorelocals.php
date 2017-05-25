@@ -19,7 +19,7 @@ class Shopware_Controllers_Api_Ycstorelocals extends Shopware_Controllers_Api_Re
     public function indexAction()
     {
         try {
-            $limit  = $this->Request()->getParam('limit', 1000);
+            $limit = $this->Request()->getParam('limit', 1000);
             $offset = $this->Request()->getParam('start', 0);
 
             $result = $this->resource->getList($offset, $limit);
@@ -30,12 +30,11 @@ class Shopware_Controllers_Api_Ycstorelocals extends Shopware_Controllers_Api_Re
                 $this->View()->assign($result);
                 $this->View()->assign('success', true);
             }
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             $this->Response()->setHttpResponseCode(400);
             $this->View()->assign(array('message' => $e->getMessage()));
             $this->View()->assign(array('code' => $e->getCode()));
             $this->View()->assign('success', false);
         }
     }
-
 }

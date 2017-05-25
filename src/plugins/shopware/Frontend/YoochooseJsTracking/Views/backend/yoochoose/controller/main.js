@@ -22,48 +22,74 @@ Ext.define('Shopware.apps.Yoochoose.controller.Main', {
 
         me.callParent(arguments);
     },
-    onSaveForm: function (window) {
+    onSaveForm: function () {
         var me = this,
-            message,
+            message, form, fields,
+            items = [],
+            formsValid = true,
             str = [],
-            form = window.down('form').getForm(),
-            fields = form.getFields();
+            panels = Ext.ComponentQuery.query('panel[cls=swag-update-yoochoose-panel]');
 
-        if (form.isValid()) {
-            me.saveFormConfig(fields);
-        } else {
-            fields.items.forEach(function(item){
-                if (!item.wasValid) {
-                    str.push(item.name);
+        Ext.each(panels, function (panel) {
+            if (panel.hidden === false) {
+                form = panel.getForm();
+                fields = form.getFields();
+                if (form.isValid() && formsValid) {
+                    items.push(fields.items);
+                } else {
+                    formsValid = false;
+                    fields.items.forEach(function (item) {
+                        if (!item.wasValid) {
+                            str.push(item.name);
+                        }
+                    });
                 }
-            });
+            }
+        });
 
+        if (formsValid) {
+            me.saveFormConfig(items);
+        } else {
             message = Ext.String.format('Not valid!', 'Erorr');
             Shopware.Notification.createGrowlMessage(str.join(', '), message, 'new message');
         }
     },
-    saveFormConfig: function (fields) {
-        var elements = fields.items,
-            message,
+    saveFormConfig: function (elements) {
+        var message,
             myMask = new Ext.LoadMask(this.mainWindow, { msg:"Please wait..." }),
-            form = [];
+            shops = [];
 
         myMask.show();
-        Ext.each(elements, function(item){
-            var value = item.value, trimmed;
+        Ext.each(elements, function(element){
+            var fields = [], shopId;
 
-            trimmed = typeof value === 'string' ? value.trim() : value;
-            form.push({
-                'name': item.name,
-                'value': trimmed
+            Ext.each(element, function(item){
+                var value = item.value,
+                    trimmed = typeof value === 'string' ? value.trim() : value;
+
+                if (item.name === 'shopId') {
+                    shopId = trimmed;
+                } else {
+                    fields.push({
+                        'name': item.name,
+                        'value': trimmed
+                    });
+                }
             });
+            if (shopId) {
+                shops.push({
+                    'shopId': shopId,
+                    'fields': fields
+                });
+            }
+
         });
 
         Ext.Ajax.request({
             url: '{url controller="Yoochoose" action="saveForm"}',
             method: 'POST',
             params : { 
-                form : JSON.stringify(form), 
+                shops : JSON.stringify(shops)
             },
             success: function(response) {
                 var result = Ext.decode(response.responseText);

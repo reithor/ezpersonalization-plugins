@@ -2,6 +2,8 @@
 
 namespace Shopware\Components\Api\Resource;
 
+use Shopware\Bundle\MediaBundle\MediaService;
+use Shopware\Components\YoochooseHelper;
 /**
  * Class YoochooseArticles
  * @package Shopware\Components\Api\Resource
@@ -37,18 +39,21 @@ class YoochooseArticles extends Resource
     /**
      * Retrieves the list of articles
      *
-     * @param $offset
-     * @param $limit
-     * @param $language
+     * @param integer $offset
+     * @param integer $limit
+     * @param integer $category
+     * @param integer $storeId
+     * @param string $language
      * @return array
      * @throws \Exception
      * @throws \Shopware\Components\Api\Exception\PrivilegeException
      */
-    public function getList($offset, $limit, $language)
+    public function getList($offset, $limit, $category, $storeId, $language)
     {
+        $helper = new YoochooseHelper();
         $this->checkPrivilege('read');
         $this->version = (int)Shopware()->Config()->version;
-        $base = Shopware()->Modules()->Core()->sRewriteLink();
+        $base = $helper->getShopUrl($storeId) . '/';
         $mediaPath = Shopware()->Modules()->System()->sPathArticleImg;
         $thumbnailSizes = $this->getArticleThumbnailSizes();
 
@@ -57,10 +62,17 @@ class YoochooseArticles extends Resource
             'article',
             'mainDetail',
             'mainDetailPrices',
+            'PARTIAL supplier.{id, name}',
+            'PARTIAL categories.{id, path}',
         ))
+            ->leftJoin('article.supplier', 'supplier')
             ->leftJoin('article.mainDetail', 'mainDetail')
+            ->leftJoin('article.categories', 'categories')
             ->leftJoin('mainDetail.prices', 'mainDetailPrices')
-            ->where('article.active = 1');
+            ->where('article.active = 1')
+            ->setParameter(':path', '%|' . $category . '|%')
+            ->andWhere('categories.path LIKE :path')
+            ->orWhere('categories.id = ' . $category);
 
         $builder->setFirstResult($offset)
             ->setMaxResults($limit);
@@ -88,23 +100,28 @@ class YoochooseArticles extends Resource
         }
 
         $db = Shopware()->Db();
-        $sql = 'SELECT path FROM s_core_rewrite_urls where org_path =?';
+        $sql = 'SELECT path FROM s_core_rewrite_urls WHERE org_path =? AND main=? AND subshopID=?';
         $result = array();
-        foreach ($articles as $article) {
-            $articleId = $article['id'];
+        foreach ($articles as $art) {
+            $articleId = $art['id'];
+            $path = $db->fetchOne($sql, array('sViewport=detail&sArticle=' . $articleId, 1,  $storeId));
+            $path = strtolower($path);
             $item = array(
                 'id' => $articleId,
-                'name' => $article['name'],
-                'description' => $article['description'],
-                'active' => $article['active'],
+                'supplierId' => $art['supplierId'],
+                'name' => $art['name'],
+                'description' => $art['description'],
+                'active' => $art['active'],
                 'categories' => array(),
-                'tags' => !empty($article['keywords']) ? explode(',', $article['keywords']) : array(),
+                'tags' => !empty($art['keywords']) ? explode(',', $art['keywords']) : array(),
                 'price' => null,
-                'url' => $base . $db->fetchOne($sql, array('sViewport=detail&sArticle=' . $articleId)),
+                'url' => $base . $path,
+                'manufacturer' => $art['supplier']['name'] ? $art['supplier']['name'] : null,
+                'storeViewId' => $storeId,
             );
 
             //Search for minimum price
-            foreach ($article['mainDetail']['prices'] as $artPrice) {
+            foreach ($art['mainDetail']['prices'] as $artPrice) {
                 if ($item['price'] === null || $item['price'] > $artPrice['price']) {
                     $item['price'] = $artPrice['price'];
                 }
@@ -112,7 +129,7 @@ class YoochooseArticles extends Resource
 
             $categories = $this->getArticleCategories($articleId);
             foreach ($categories as $category) {
-                $item['categories'][] = $db->fetchOne($sql, array('sViewport=cat&sCategory=' . $category['id']));
+                $item['categories'][] = $db->fetchOne($sql, array('sViewport=cat&sCategory=' . $category['id'], 1, $storeId));
             }
 
             $images = $this->getArticleImages($articleId);
@@ -144,7 +161,7 @@ class YoochooseArticles extends Resource
      * Selects all images of the main variant of the passed article id.
      * The images are sorted by their position value.
      *
-     * @param $articleId
+     * @param integer $articleId
      * @return array
      */
     protected function getArticleImages($articleId)
@@ -168,7 +185,7 @@ class YoochooseArticles extends Resource
      * This function returns only the directly assigned categories.
      * To prevent a big data, this function selects only the category name and id.
      *
-     * @param $articleId
+     * @param integer $articleId
      * @return array
      */
     protected function getArticleCategories($articleId)
@@ -203,7 +220,7 @@ class YoochooseArticles extends Resource
      * Translate the whole article array.
      *
      * @param array $data
-     * @param int $localeId
+     * @param integer $localeId
      * @return array
      */
     protected function translateArticle(array $data, $localeId)
@@ -251,9 +268,9 @@ class YoochooseArticles extends Resource
 
     /**
      * Helper function to get a single translation.
-     * @param $type
-     * @param $localeId
-     * @param $key
+     * @param string $type
+     * @param integer $localeId
+     * @param string $key
      * @return array
      */
     protected function getSingleTranslation($type, $localeId, $key)
@@ -267,5 +284,4 @@ class YoochooseArticles extends Resource
 
         return $translation['data'][0];
     }
-
 }

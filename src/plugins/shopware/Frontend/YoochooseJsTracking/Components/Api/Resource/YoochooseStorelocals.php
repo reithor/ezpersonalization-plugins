@@ -52,5 +52,4 @@ class YoochooseStorelocals extends Resource
     {
         return $this->getManager()->getRepository('Shopware\Models\Shop\Shop');
     }
-
 }

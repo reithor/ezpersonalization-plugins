@@ -27,7 +27,7 @@ Ext.define('Shopware.apps.Yoochoose.view.ScriptSettings', {
     },
     createForm: function () {
         var me = this,
-                data = me.record[0].data;
+                data = me.record;
 
         return [
             Ext.create('Ext.form.field.ComboBox', {

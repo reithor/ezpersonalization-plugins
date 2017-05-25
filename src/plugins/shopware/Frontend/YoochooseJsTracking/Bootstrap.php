@@ -1,5 +1,7 @@
 <?php
 
+use Doctrine\DBAL\Schema\Comparator;
+use Doctrine\DBAL\Schema\Schema;
 use Shopware\Components\YoochooseHelper;
 
 /**
@@ -24,7 +26,8 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
         'yoochoosecategories' => array('read'),
         'yoochoosestorelocals' => array('read'),
         'yoochoosesubscribers' => array('read'),
-        'supplier' => array('read')
+        'supplier' => array('read'),
+        'yoochoosevendors' => array('read'),
     );
 
     /**
@@ -44,6 +47,42 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
             'success' => true,
             'invalidateCache' => array('frontend', 'backend', 'config'),
         );
+    }
+
+    public function update($version)
+    {
+        // Register namespace and annotations for custom model
+        $this->registerCustomModels();
+
+        $em = $this->Application()->Models();
+        $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
+
+        $classes = array(
+            $em->getClassMetadata('Shopware\Models\Yoochoose\Yoochoose'),
+        );
+
+        try {
+            $sm = $em->getConnection()->getSchemaManager();
+
+            $tables = array($sm->listTableDetails('s_yoochoose_config'));
+            $fromSchema = new Schema($tables, array(), $sm->createSchemaConfig(), array());
+            $toSchema = $tool->getSchemaFromMetadata($classes);
+
+            $comparator = new Comparator();
+            $schemaDiff = $comparator->compare($fromSchema, $toSchema);
+
+            $changes = $schemaDiff->toSaveSql($em->getConnection()->getDatabasePlatform());
+            $changes[] = 'UPDATE s_yoochoose_config SET shop_id = 1 WHERE shop_id IS NULL';
+            foreach ($changes as $sql) {
+                $em->getConnection()->executeQuery($sql);
+            }
+        } catch (\Doctrine\ORM\Tools\ToolsException $e) {
+            //ignore
+        }
+
+        $this->registerControllers();
+
+        return true;
     }
 
     /**
@@ -71,7 +110,7 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
      */
     public function getVersion()
     {
-        return '2.1.0';
+        return '2.2.0';
     }
 
     /**
@@ -111,14 +150,14 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
             'support' => 'support@yoochoose.com',
             'link' => 'http://www.yoochoose.com/',
             'description' =>
-'<p><img style="float: right" src="data:image/png;base64,' . $img . '" />With our integrated personalization solution consisting of product recommendations,'.
-' an intelligent store search, and personalized communication marketing, we help you to understand your customers and to respond to preferences, interests, '.
-'and needs in real time.<br>'.
-'-	Create a personalized shopping experience for your customers across all channels<br>'.
-'-	Optimize conversion rates<br>'.
-'-	Improve customer retention<br>'.
-'-	Increase your sales<br>'.
-'-	Make visitors into buyers and buyers into regular customers</p>'
+                '<p><img style="float: right" src="data:image/png;base64,' . $img . '" />With our integrated personalization solution consisting of product recommendations,' .
+                ' an intelligent store search, and personalized communication marketing, we help you to understand your customers and to respond to preferences, interests, ' .
+                'and needs in real time.<br>' .
+                '-	Create a personalized shopping experience for your customers across all channels<br>' .
+                '-	Optimize conversion rates<br>' .
+                '-	Improve customer retention<br>' .
+                '-	Increase your sales<br>' .
+                '-	Make visitors into buyers and buyers into regular customers</p>',
         );
     }
 
@@ -156,13 +195,14 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
         }
 
         $userData = Shopware()->Modules()->Admin()->sGetUserData();
-        $json['lang'] = $this->getShopLanguage();
+        $shop = $this->getCurrentShop();
+        $json['lang'] = $this->getShopLanguage($shop);
         $json['trackid'] = isset($userData['additional']['user']) ? $userData['additional']['user']['id'] : 0;
         $json['currentPage'] = $this->getCurrentPage($controllerName, $actionName);
         $json['boxes'] = $this->getRecommendationBoxes($json['currentPage']);
 
-        $view->assign('ycTrackingScriptUrl', preg_replace('(^https?:)', '', YoochooseHelper::getTrackingScript('.js')));
-        $view->assign('ycTrackingCssUrl', preg_replace('(^https?:)', '', YoochooseHelper::getTrackingScript('.css')));
+        $view->assign('ycTrackingScriptUrl', preg_replace('(^https?:)', '', YoochooseHelper::getTrackingScript('.js', $shop)));
+        $view->assign('ycTrackingCssUrl', preg_replace('(^https?:)', '', YoochooseHelper::getTrackingScript('.css', $shop)));
         $view->assign('ycConfigObject', json_encode($json));
     }
 
@@ -215,6 +255,10 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
 
         foreach ($this->resources as $resource => $privileges) {
             $resourceModel = $em->getRepository('Shopware\Models\User\Resource')->findOneBy(array('name' => $resource));
+            if (!$resourceModel) {
+                continue;
+            }
+
             $em->remove($resourceModel->getPrivileges()->first());
             $em->remove($resourceModel);
         }
@@ -242,12 +286,12 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
     public function onBackendPostDispatch(Enlight_Event_EventArgs $args)
     {
         $this->registerCustomModels();
-         /**@var $view Enlight_View_Default*/
+        /**@var $view Enlight_View_Default */
         $view = $args->getSubject()->View();
-         // Add template directory
+        // Add template directory
         $view->addTemplateDir($this->Path() . 'Views/');
         if ($args->getRequest()->getActionName() === 'index') {
-           $view->extendsTemplate('backend/plugin/base/header.tpl');
+            $view->extendsTemplate('backend/plugin/base/header.tpl');
             $view->assign('ycAdminUrl', YoochooseHelper::YOOCHOOSE_ADMIN_URL);
         }
     }
@@ -263,11 +307,14 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
     private function registerControllers()
     {
         $this->registerController('Frontend', 'Yoochoose');
+        $this->registerController('Frontend', 'Yctrigger');
         $this->registerController('Backend', 'Yoochoose');
         $this->registerController('Api', 'Ycsubscribers');
         $this->registerController('Api', 'Ycarticles');
         $this->registerController('Api', 'Yccategories');
         $this->registerController('Api', 'Ycstorelocals');
+        $this->registerController('Api', 'Ycvendors');
+        $this->registerController('Api', 'Ycexport');
     }
 
     private function createDatabase()
@@ -405,17 +452,28 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
     }
 
     /**
-     * Returns current shop's language in a format specified in plugin configuration
+     * Returns current shop
      *
-     * @return string - language
+     * @return null|object|\Shopware\Models\Shop\Shop
      */
-    private function getShopLanguage()
+    private function getCurrentShop()
     {
         $currentShopId = Shopware()->Front()->Request()->getCookie('shop');
+        /** @var \Shopware\Models\Shop\Repository $shopRepository */
         $shopRepository = Shopware()->Models()->getRepository('Shopware\Models\Shop\Shop');
-        $currentShop = $currentShopId ? $shopRepository->find($currentShopId) : $shopRepository->getDefault();
-        $language = $currentShop->getLocale()->getLocale();
 
+        return $currentShopId ? $shopRepository->find($currentShopId) : $shopRepository->getDefault();
+    }
+
+    /**
+     * Returns current shop's language in a format specified in plugin configuration
+     *
+     * @param \Shopware\Models\Shop\Shop $shop
+     * @return string - language
+     */
+    private function getShopLanguage($shop)
+    {
+        $language = $shop->getLocale()->getLocale();
 
         return str_replace('_', '-', $language);
     }

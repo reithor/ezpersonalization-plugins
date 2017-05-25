@@ -3,6 +3,7 @@
 namespace Shopware\Models\Yoochoose;
 
 use Shopware\Components\Model\ModelEntity,
+    Shopware\Models\Shop\Shop as Shop,
     Doctrine\ORM\Mapping as ORM,
     Symfony\Component\Validator\Constraints as Assert;
 
@@ -38,6 +39,14 @@ class Yoochoose extends ModelEntity
      * @ORM\Column(name="value", type="string", nullable=true)
      */
     private $value;
+
+    /**
+     *
+     * @ORM\ManyToOne(targetEntity="\Shopware\Models\Shop\Shop")
+     * @ORM\JoinColumn(name="shop_id", referencedColumnName="id", onDelete="CASCADE")
+     * @var Shop
+     */
+    private $shop;
 
     /**
      * Get id
@@ -83,12 +92,10 @@ class Yoochoose extends ModelEntity
      * Set value
      *
      * @param mixed $value
-     * @return Value
      */
     public function setValue($value)
     {
         $this->value = $value;
-        return $this;
     }
 
     /**
@@ -99,5 +106,25 @@ class Yoochoose extends ModelEntity
     public function getValue()
     {
         return $this->value;
+    }
+
+    /**
+     * Set shop id
+     *
+     * @param Shop $shop
+     */
+    public function setShop(Shop $shop)
+    {
+        $this->shop = $shop;
+    }
+
+    /**
+     * Get shop id
+     *
+     * @return Shop
+     */
+    public function getShop()
+    {
+        return $this->shop;
     }
 }

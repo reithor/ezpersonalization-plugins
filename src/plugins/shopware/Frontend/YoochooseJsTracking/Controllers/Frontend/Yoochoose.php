@@ -38,5 +38,4 @@ class Shopware_Controllers_Frontend_Yoochoose extends Enlight_Controller_Action
         header('Content-Type: application/json');
         exit(json_encode($result));
     }
-
 }

@@ -24,7 +24,7 @@ class Shopware_Controllers_Api_Ycarticles extends Shopware_Controllers_Api_Rest
             $language = $this->Request()->getParam('language');
 
             $result = $this->resource->getList($offset, $limit, $language);
-            
+
             if (empty($result['data'])) {
                 $this->Response()->setHttpResponseCode(204);
             } else {
@@ -37,5 +37,4 @@ class Shopware_Controllers_Api_Ycarticles extends Shopware_Controllers_Api_Rest
             $this->View()->assign('success', false);
         }
     }
-
 }

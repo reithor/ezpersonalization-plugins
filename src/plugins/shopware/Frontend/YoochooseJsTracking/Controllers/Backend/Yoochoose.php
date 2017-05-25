@@ -26,7 +26,8 @@ class Shopware_Controllers_Backend_Yoochoose extends Shopware_Controllers_Backen
      * @param Enlight_Controller_Request_Request $request
      * @param Enlight_Controller_Response_Response $response
      */
-    public function __construct(Enlight_Controller_Request_Request $request, Enlight_Controller_Response_Response $response)
+    public function __construct(Enlight_Controller_Request_Request $request,
+                                Enlight_Controller_Response_Response $response)
     {
         parent::__construct($request, $response);
         $this->em = Shopware()->Models();
@@ -46,72 +47,109 @@ class Shopware_Controllers_Backend_Yoochoose extends Shopware_Controllers_Backen
     public function getDataAction()
     {
         $data = array();
+
         /* @var $element \Shopware\Models\Yoochoose\Yoochoose */
         $elements = $this->em->getRepository('Shopware\Models\Yoochoose\Yoochoose')->findAll();
         foreach ($elements as $element) {
-            $data[$element->getName()] = $element->getValue();
+            if ($element->getShop()) {
+                $data[$element->getShop()->getid()][$element->getName()] = $element->getValue();
+            }
         }
 
         /* @var $shop \Shopware\Models\Shop\Shop */
-        $shop = $this->em->getRepository('Shopware\Models\Shop\Shop');
-        if (!$data['design']) {
-            /* @var $template \Shopware\Models\Shop\Template */
-            $template = $shop->getDefault()->getTemplate();
-            $templateName = $template->getName();
-            // if human readable template name is set and not generic then show system template name
-            $data['design'] = $templateName && $templateName !== '__theme_name__' ? $templateName : $template->getTemplate();
+        $shops = $this->em->getRepository('Shopware\Models\Shop\Shop')->findAll();
+
+        foreach ($shops as $shop) {
+            $shopId = $shop->getId();
+            if (!$data[$shopId]['design']) {
+
+                $data[$shopId]['customerId'] = '';
+                $data[$shopId]['licenseKey'] = '';
+                $data[$shopId]['pluginId'] = '';
+                $data[$shopId]['endpoint'] = '';
+                $data[$shopId]['scriptUrl'] = '';
+                if ($shop->getMain()) {
+                    $main = $shop->getMain();
+                    /* @var $template \Shopware\Models\Shop\Template */
+                    $template = $main->getTemplate();
+                } else {
+                    /* @var $template \Shopware\Models\Shop\Template */
+                    $template = $shop->getTemplate();
+                }
+                $templateName = $template->getName();
+                // if human readable template name is set and not generic then show system template name
+                $data[$shopId]['design'] = $templateName && $templateName !== '__theme_name__' ?
+                    $templateName : $template->getTemplate();
+            }
+
+            if (!$data[$shopId]['locale']) {
+                $data[$shopId]['locale'] = $shop->getLocale()->getLocale();
+            }
+
+            if (!$data[$shopId]['endpoint']) {
+                $data[$shopId]['endpoint'] = Shopware()->Modules()->Core()->sRewriteLink();
+                // $data['endpoint'] = Shopware()->Front()->Router()->assemble();
+            }
+
+            /* @var $user Shopware\Models\User\User */
+            $user = $this->em->getRepository('Shopware\Models\User\User')->findOneBy(
+                array('username' => 'YoochooseApiUser')
+            );
+
+            $data[$shopId]['apiKey'] = $user->getApiKey();
+            $data[$shopId]['username'] = $user->getUsername();
+            $data[$shopId]['shop'] = $shop->getName();
+            $data[$shopId]['shopId'] = $shopId;
+
+            $this->View()->assign(array(
+                'success' => true,
+                'data' => array($data),
+            ));
         }
-
-        if (!$data['locale']) {
-            $data['locale'] = $shop->getDefault()->getLocale()->getLocale();
-        }
-
-        if (!$data['endpoint']) {
-            $data['endpoint'] = Shopware()->Modules()->Core()->sRewriteLink();
-            // $data['endpoint'] = Shopware()->Front()->Router()->assemble();
-        }
-
-        /* @var $user Shopware\Models\User\User */
-        $user = $this->em->getRepository('Shopware\Models\User\User')->findOneBy(array('username' => 'YoochooseApiUser'));
-        $data['apiKey'] = $user->getApiKey();
-        $data['username'] = $user->getUsername();
-
-        $this->View()->assign(array(
-            'success' => true,
-            'data'    => array($data),
-        ));
     }
 
     public function saveFormAction()
     {
         try {
-            $form = $this->Request()->getParam('form');
+            $form = $this->Request()->getParam('shops');
             $data = array();
             /* @var $element \Shopware\Models\Yoochoose\Yoochoose */
             $repository = $this->em->getRepository('Shopware\Models\Yoochoose\Yoochoose');
 
-            $parameters = json_decode($form, true);
-            foreach ($parameters as $f) {
-                $data[$f['name']] = trim($f['value']);
+            $shops = json_decode($form, true);
+
+            foreach ($shops as $shop) {
+                foreach ($shop['fields'] as $field) {
+                    $data[$shop['shopId']][$field['name']] = trim($field['value']);
+                }
             }
 
             /* @var $user Shopware\Models\User\User */
-            $user = $this->em->getRepository('Shopware\Models\User\User')->findOneBy(array('username' => 'YoochooseApiUser'));
-            $data['apiKey'] = $user->getApiKey();
-            $data['username'] = $user->getUsername();
+            $user = $this->em->getRepository('Shopware\Models\User\User')->findOneBy(
+                array('username' => 'YoochooseApiUser')
+            );
 
-            $this->validateLicence($data);
+            foreach ($data as $key => $d) {
+                $d['apiKey'] = $user->getApiKey();
+                $d['username'] = $user->getUsername();
 
-            foreach ($data as $name => $value) {
-                $element = $repository->findOneBy(array('name' => $name));
-                // if not exist in config
-                if (!$element) {
-                    $element = new \Shopware\Models\Yoochoose\Yoochoose();
-                    $element->setName($name);
+                $this->validateLicence($d);
+
+                /** @var Shopware\Models\Shop\Shop $shop */
+                $shop = Shopware()->Models()->find('\Shopware\Models\Shop\Shop', $key);
+
+                foreach ($d as $name => $value) {
+                    $element = $repository->findOneBy(array('name' => $name, 'shop' => $key));
+                    // if not exist in config
+                    if (!$element) {
+                        $element = new \Shopware\Models\Yoochoose\Yoochoose();
+                        $element->setName($name);
+                        $element->setShop($shop);
+                    }
+
+                    $element->setValue($value);
+                    $this->em->persist($element);
                 }
-
-                $element->setValue($value);
-                $this->em->persist($element);
             }
 
             $this->em->flush();
@@ -140,17 +178,17 @@ class Shopware_Controllers_Backend_Yoochoose extends Shopware_Controllers_Backen
         }
 
         $body = array(
-            'base'     => array(
-                'type'      => 'SHOPWARE',
-                'pluginId'  => $data['pluginId'],
-                'endpoint'  => $data['endpoint'],
-                'appKey'    => $data['username'],
+            'base' => array(
+                'type' => 'SHOPWARE',
+                'pluginId' => $data['pluginId'],
+                'endpoint' => $data['endpoint'],
+                'appKey' => $data['username'],
                 'appSecret' => $data['apiKey'],
             ),
             'frontend' => array(
                 'design' => $data['design'],
             ),
-            'search'   => array(
+            'search' => array(
                 'design' => $data['design'],
             ),
         );
@@ -176,21 +214,21 @@ class Shopware_Controllers_Backend_Yoochoose extends Shopware_Controllers_Backen
     {
         $bodyString = json_encode($body);
         $options = array(
-            CURLOPT_URL            => $url,
-            CURLOPT_HEADER         => 0,
-            CURLOPT_CUSTOMREQUEST  => "POST",
+            CURLOPT_URL => $url,
+            CURLOPT_HEADER => 0,
+            CURLOPT_CUSTOMREQUEST => "POST",
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => true,
-            CURLINFO_HEADER_OUT    => true,
-            CURLOPT_TIMEOUT        => 10,
-            CURLOPT_HTTPAUTH       => CURLAUTH_BASIC,
-            CURLOPT_USERPWD        => "$customerId:$licenceKey",
+            CURLINFO_HEADER_OUT => true,
+            CURLOPT_TIMEOUT => 10,
+            CURLOPT_HTTPAUTH => CURLAUTH_BASIC,
+            CURLOPT_USERPWD => "$customerId:$licenceKey",
             CURLOPT_SSL_VERIFYPEER => false,
-            CURLOPT_HTTPHEADER     => array(
+            CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json',
                 'Content-Length: ' . strlen($bodyString),
             ),
-            CURLOPT_POSTFIELDS     => $bodyString,
+            CURLOPT_POSTFIELDS => $bodyString,
         );
 
         $cURL = curl_init();
@@ -224,5 +262,4 @@ class Shopware_Controllers_Backend_Yoochoose extends Shopware_Controllers_Backen
 
         return $result;
     }
-
 }

@@ -27,7 +27,7 @@ Ext.define('Shopware.apps.Yoochoose.view.GeneralSettings', {
     },
     createForm: function () {
         var me = this,
-            data = me.record[0].data, 
+            data = me.record,
             customerLink = data.customerId ? '/?customer_id=' + data.customerId : '';
 
         return [
@@ -126,7 +126,15 @@ Ext.define('Shopware.apps.Yoochoose.view.GeneralSettings', {
                         { id: 2, name: 'Debug' }
                     ]
                 })
-            })
+            }),
+            Ext.create('Ext.form.field.Text', {
+                name: 'shopId',
+                minWidth: 250,
+                hidden: true,
+                required: true,
+                readOnly: true,
+                value: data.shopId
+            }),
         ];
     }
 });

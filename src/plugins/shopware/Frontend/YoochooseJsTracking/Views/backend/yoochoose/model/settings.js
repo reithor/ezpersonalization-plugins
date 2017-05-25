@@ -12,7 +12,8 @@ Ext.define('Shopware.apps.Yoochoose.model.Settings', {
         { name: 'scriptUrl', type: 'string' },
         { name: 'username', type: 'string' },
         { name: 'apiKey', type: 'string' },
-        { name: 'logSeverity', type: 'string' }
+        { name: 'logSeverity', type: 'string' },
+        { name: 'shopId', type: 'string' }
     ],
     proxy:{
         type:'ajax',

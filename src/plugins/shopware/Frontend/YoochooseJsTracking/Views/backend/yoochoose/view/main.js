@@ -22,12 +22,24 @@ Ext.define('Shopware.apps.Yoochoose.view.Main', {
     initComponent: function () {
         var me = this;
         Ext.applyIf(me, {
-            title: me.snippets.title,
+            title: me.snippets.title
+        });
+        me.items = [
+            me.createTabPanel()
+        ];
+        me.registerEvents();
+        me.callParent(arguments);
+    },
+    createTabPanel: function() {
+        var me = this;
+
+        me.tabPanel = Ext.create('Ext.tab.Panel', {
+            flex: 1,
             items: me.getItems(),
             bbar: me.getToolbar()
         });
-        me.registerEvents();
-        me.callParent(arguments);
+
+        return me.tabPanel;
     },
     registerEvents: function () {
         this.addEvents(
@@ -35,19 +47,32 @@ Ext.define('Shopware.apps.Yoochoose.view.Main', {
                 );
     },
     getItems: function () {
-        var me = this;
+        var me = this,
+            results = [],
+            settings = me.record[0].raw;
 
-        return Ext.create('Ext.form.Panel', {
-            collapsible: false,
-            region: 'center',
-            autoScroll: true,
-            items: [
-                {
-                    xtype: 'yoochoose-config',
-                    record: me.record
+        Object.keys(settings).forEach(function(key){
+            Object.keys(settings[key]).forEach(function(k){
+                if (settings[key][k] && (k === 'performance' || k === 'logSeverity')) {
+                    settings[key][k] = parseInt(settings[key][k]);
                 }
-            ]
+            });
+            results.push(Ext.create('Ext.form.Panel', {
+                collapsible: false,
+                region: 'center',
+                autoScroll: true,
+                title: settings[key].shop,
+                cls: 'swag-update-yoochoose-panel',
+                items: [
+                    {
+                        xtype: 'yoochoose-config',
+                        record: settings[key]
+                    }
+                ]
+            }));
         });
+
+        return results;
     },
     getToolbar: function () {
         var me = this;

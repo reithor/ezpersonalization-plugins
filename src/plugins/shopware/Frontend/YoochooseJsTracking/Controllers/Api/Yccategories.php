@@ -36,5 +36,4 @@ class Shopware_Controllers_Api_Yccategories extends Shopware_Controllers_Api_Res
             $this->View()->assign('success', false);
         }
     }
-
 }
