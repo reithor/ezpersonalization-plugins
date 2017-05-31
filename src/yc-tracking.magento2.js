@@ -515,7 +515,7 @@ function initYcTrackingModule(context) {
     if (typeof require === 'function') {
         require.config({
             paths: {
-                "Handlebars": YC_HANDLEBARS_CDN
+                "Handlebars": YC_HANDLEBARS_CDN.endsWith('.js') ? YC_HANDLEBARS_CDN.substring(0, YC_HANDLEBARS_CDN.length - 3) : YC_HANDLEBARS_CDN
             },
             waitSeconds: 2
         });
@@ -527,7 +527,7 @@ function initYcTrackingModule(context) {
     } else {
         if (!context['Handlebars']) {
             script = document.createElement('script');
-            script.src = YC_HANDLEBARS_CDN;
+            script.src = YC_HANDLEBARS_CDN.endsWith('.js') ? YC_HANDLEBARS_CDN : YC_HANDLEBARS_CDN + '.js';
             document.head.appendChild(script);
         }
 
