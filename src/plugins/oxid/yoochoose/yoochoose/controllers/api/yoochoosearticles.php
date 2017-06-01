@@ -74,15 +74,7 @@ class Yoochoosearticles extends Yoochooseapi
         $categories = array();
         foreach ($catIds as $catId) {
             if (!array_key_exists($catId, $this->loadedCategories)) {
-                /* @var $category oxCategory */
-                $category = oxNew('oxcategory');
-                $category->load($catId);
-                $temp = str_replace($this->shopUrl, "", $category->getLink());
-                foreach ($this->languageArray as $val) {
-                    $temp = str_replace($val->abbr . '/', '', $temp);
-                }
-
-                $this->loadedCategories[$catId] = $temp;
+                $this->buildCategoryPath($catId);
             }
 
             $categories[] = $this->loadedCategories[$catId];
@@ -91,11 +83,43 @@ class Yoochoosearticles extends Yoochooseapi
         return $categories;
     }
 
+    /**
+     * @param $categoryId
+     * @return string
+     */
+    private function buildCategoryPath($categoryId)
+    {
+        if (array_key_exists($categoryId, $this->loadedCategories)) {
+            return $this->loadedCategories[$categoryId];
+        }
+
+        /* @var $category oxCategory */
+        $category = oxNew('oxcategory');
+        $category->load($categoryId);
+        $categoryPath = $category->getTitle();
+        $parentId = $category->oxcategories__oxparentid->value;
+        if ($parentId !== 'oxrootid') {
+            $categoryPath = $this->buildCategoryPath($parentId) . '/' . $categoryPath;
+        }
+
+        $this->loadedCategories[$categoryId] = $categoryPath;
+
+        return $categoryPath;
+    }
+
+    /**
+     * Returns tags
+     *
+     * @param integer $id
+     * @return mixed
+     */
     protected function getTags($id)
     {
         $oArticleTagList = oxNew('oxarticletaglist');
         $oArticleTagList->load($id);
-        return $oArticleTagList->get()->formString();
+        $tagsString = $oArticleTagList->get()->formString();
+
+        return $tagsString ? explode(',', $tagsString) : array();
     }
 
 }

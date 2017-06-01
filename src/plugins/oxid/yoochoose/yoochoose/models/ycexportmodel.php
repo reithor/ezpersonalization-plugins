@@ -103,7 +103,7 @@ class Ycexportmodel extends oxUBase
                     'icon_image' => !empty($gallery['Icons']) ? $gallery['Icons'][1] : $coverPicture,
                     'manufacturer' => $manufacturerLoaded ? $this->getManufacturer($val['OXMANUFACTURERID'],
                         $language) : null,
-                    'categories' => $this->getCategoryList($categoryIds, $langId, $language),
+                    'categories' => $this->getCategoryList($categoryIds, $langId),
                     'tags' => $this->getTags($id),
                     'shopId' => $this->getConfig()->getShopId(),
                 );
@@ -153,27 +153,45 @@ class Ycexportmodel extends oxUBase
      *
      * @param array $catIds
      * @param integer $langId
-     * @param string $abbr
      * @return array
      */
-    protected function getCategoryList($catIds, $langId, $abbr)
+    protected function getCategoryList($catIds, $langId)
     {
         $categories = array();
         foreach ($catIds as $catId) {
             if (!array_key_exists($catId, $this->loadedCategories)) {
-                /* @var $category oxCategory */
-                $category = oxNew('oxcategory');
-                $category->load($catId);
-                $temp = str_replace($this->shopUrl, "", $category->getLink($langId));
-                $temp = str_replace($abbr . '/', '', $temp);
-
-                $this->loadedCategories[$catId] = $temp;
+                $this->buildCategoryPath($catId, $langId);
             }
 
             $categories[] = $this->loadedCategories[$catId];
         }
 
         return $categories;
+    }
+
+    /**
+     * @param $categoryId
+     * @param $langId
+     * @return string
+     */
+    private function buildCategoryPath($categoryId, $langId)
+    {
+        if (array_key_exists($categoryId, $this->loadedCategories)) {
+            return $this->loadedCategories[$categoryId];
+        }
+
+        /* @var $category oxCategory */
+        $category = oxNew('oxcategory');
+        $category->loadInLang($langId, $categoryId);
+        $categoryPath = $category->getTitle();
+        $parentId = $category->oxcategories__oxparentid->value;
+        if ($parentId !== 'oxrootid') {
+            $categoryPath = $this->buildCategoryPath($parentId, $langId) . '/' . $categoryPath;
+        }
+
+        $this->loadedCategories[$categoryId] = $categoryPath;
+
+        return $categoryPath;
     }
 
     /**
