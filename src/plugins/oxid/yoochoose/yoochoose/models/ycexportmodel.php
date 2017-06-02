@@ -37,7 +37,7 @@ class Ycexportmodel extends oxUBase
             $parent = $oCategory->getParentCategory();
             $categories[] = array(
                 'id' => $id,
-                'url' => $oCategory->getLink($langId),
+                'url' => strtok($oCategory->getLink($langId), '?'),
                 'name' => $val['OXTITLE'],
                 'level' => $this->getCategoryLevel($oCategory),
                 'parentId' => $parent ? $parent->getId() : null,
@@ -97,7 +97,7 @@ class Ycexportmodel extends oxUBase
                     'name' => $val['OXTITLE'],
                     'description' => $val['OXLONGDESC'],
                     'price' => $oArticle->getBasePrice(),
-                    'url' => $oArticle->getLink($langId),
+                    'url' => strtok($oArticle->getLink($langId), '?'),
                     'image' => $coverPicture,
                     'image_size' => $imageSize,
                     'icon_image' => !empty($gallery['Icons']) ? $gallery['Icons'][1] : $coverPicture,
@@ -224,7 +224,7 @@ class Ycexportmodel extends oxUBase
             $temp = str_replace($val->abbr . '/', '', $temp);
         }
 
-        return $temp;
+        return strtok($temp, '?');
     }
 
     /**
