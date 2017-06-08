@@ -74,6 +74,7 @@ class Index extends Action
      */
     public function execute()
     {
+        $this->logger->info('Trigger export action started.');
         $response = ['success' => false];
 
         $this->_objectManager->get('Magento\Framework\App\Config\ReinitableConfigInterface')->reinit();
@@ -93,9 +94,7 @@ class Index extends Action
             //lock
             $this->config->saveConfig('yoochoose/export/enable_flag', 1, 'default', 0);
             try {
-                $this->logger->info('Export has started for all resources.');
                 $postData = $this->helper->export($storeData, $transaction, $limit, $customerId);
-                $this->logger->info('Export has finished for all resources.');
                 $this->setCallback($callbackUrl, $postData, $customerId, $licenceKey);
                 $response['success'] = true;
             } catch (\Exception $e) {
@@ -106,6 +105,7 @@ class Index extends Action
             }
         } else {
             $response['message'] = 'Passwords do not match!';
+            $this->logger->info('Trigger export action failed with message: ' . $response['message']);
         }
 
         $result = $this->resultJsonFactory->create();
@@ -117,6 +117,8 @@ class Index extends Action
     /**
      * Creates request and returns response
      *
+     * @param string $url
+     * @param string $post
      * @param string $customerId
      * @param string $licenceKey
      * @return array
@@ -125,6 +127,7 @@ class Index extends Action
     private function setCallback($url, $post, $customerId, $licenceKey)
     {
         $postString = json_encode($post);
+        $this->logger->info('Callback sent to URL ' . $url . ' with post ' . $postString);
 
         $cURL = curl_init();
         curl_setopt($cURL, CURLOPT_URL, $url);

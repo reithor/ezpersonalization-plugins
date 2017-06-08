@@ -166,6 +166,7 @@ class YoochooseExport implements YoochooseExportInterface
     private function triggerExport($url, $post = array())
     {
 
+        $this->logger->info('Trigger action called with URL: ' . $url . ' and parameters: ' . json_encode($post));
         $cURL = curl_init();
         curl_setopt($cURL, CURLOPT_URL, $url);
         curl_setopt($cURL, CURLOPT_FOLLOWLOCATION, true);

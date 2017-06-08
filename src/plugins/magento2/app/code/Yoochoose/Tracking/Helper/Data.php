@@ -149,6 +149,7 @@ class Data extends AbstractHelper
      */
     public function export($storeData, $transaction, $limit, $mandatorId)
     {
+        $this->logger->info('Export has started for all resources.');
         $storeIds = array();
         $formatsMap = [
             'MAGENTO2' => 'Products',
@@ -194,6 +195,7 @@ class Data extends AbstractHelper
             }
         }
 
+        $this->logger->info('Export has finished for all resources.');
         return $postData;
     }
 
@@ -230,6 +232,7 @@ class Data extends AbstractHelper
      */
     private function exportData($method, $postData, $directory, $limit = 0, $exportIndex = 0, $storeId, $mandatorId)
     {
+        $this->logger->info('Export has started for resource ' . $method . ' and store view ' . $storeId);
         $this->emulation->startEnvironmentEmulation($storeId, \Magento\Framework\App\Area::AREA_FRONTEND, true);
         $model = $this->om->get('\Yoochoose\Tracking\Model\Api\Yoochoose');
 
@@ -240,10 +243,11 @@ class Data extends AbstractHelper
         $this->request->setParam('limit', $limit);
         $this->request->setParam('storeViewId', $storeId);
         $offset = 0;
-        $logNames = '';
 
         do {
             $this->request->setParam('offset', $offset);
+            $this->logger->info('Bulk has started for ' . $method . ' and store view ' . $storeId .
+                ' with limit ' . $limit . ' and offset ' . $offset);
             $results = $model->$method();
             if (!empty($results)) {
                 $filename = $this->generateRandomString() . '.json';
@@ -251,19 +255,21 @@ class Data extends AbstractHelper
                 $this->io->write($file, json_encode(array_values($results)));
                 $fileSize = filesize($file);
                 if ($fileSize >= self::YC_MAX_FILE_SIZE) {
+                    $this->logger->info('Bulk has failed for ' . $method . ' and store view ' . $storeId .
+                        'due to file size limit. Limit for export will be reduced.');
                     $this->io->rm($file);
                     $this->request->setParam('limit', --$limit);
                 } else {
                     $postData['events'][$exportIndex]['uri'][] = $fileUrl . $filename;
+                    $this->logger->info('Bulk has finished for ' . $method . ' and store view ' . $storeId .
+                        ' with limit ' . $limit . ' and offset ' . $offset . 'and saved into file ' . $filename);
                     $offset = $offset + $limit;
-                    $logNames .= $filename . ', ';
                 }
             }
         } while (!empty($results));
 
         $this->emulation->stopEnvironmentEmulation();
-        $logNames = $logNames ?: 'there are no files';
-        $this->logger->info('Export has finished for ' . $method . ' with file names : ' . $logNames);
+        $this->logger->info('Export has finished for resource ' . $method . ' and store view ' . $storeId);
 
         return $postData;
     }
