@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="../qunit/qunit.css" rel="stylesheet" type="text/css"/>
+    <script src="../qunit/qunit.js"></script>
+
+    <script src="../../dist/yc-tracking.js"></script>
+
+    <script type="text/javascript">
+        var Mage = {
+            Cookies: {
+                path: '/'
+            }
+        };
+        var yc_config_object = {
+            "trackid": "147",
+            "orderData": null,
+            "itemType": "1",
+            "language": "en-US",
+            "currentPage": "cart",
+            "products": "380,549",
+            "boxes": [{
+                "id": "crossselling",
+                "title": "You may also be interested in the following products",
+                "display": true
+            }]
+        };
+    </script>
+</head>
+<body>
+
+<div class="magento-test-structure" style="display: none;">
+    <div class="main"></div>
+</div>
+
+<h1 id="qunit-header">Cart</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture"></div>
+<script>
+    (function (open) {
+        XMLHttpRequest.prototype.open = function (method, url, async, user, pass) {
+            var parts = location.href.split('/');
+
+            if (url.indexOf(location.origin + '/yoochoose/') === 0) {
+                url = parts.slice(0, parts.length -1).join('/') + '/plugin.response.mock.json';
+            }
+            open.call(this, method, url, async, user, pass);
+        };
+    })(XMLHttpRequest.prototype.open);
+    (function () {
+        module('Shop Cart Page');
+    }());
+</script>
+</body>
+</html>
