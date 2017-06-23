@@ -193,7 +193,7 @@
                             <input class="readonly editinput" id="ycDesign" type="text" size="39" maxlength="128"
                                    name="confstrs[ycDesign]" value="[{$design}]" readonly required><br />
                             <span class="extra-info">[{oxmultilang ident="YOOCHOOSE_DESIGN_TIP1"}]
-                                <a style="color: blue;" href="https://doc.yoochoose.net/display/PUBDOC/OXID+Plugin+2.0+Tutorial" target="_blank">
+                                <a style="color: blue;" href="https://doc.yoochoose.net/" target="_blank">
                                     [{oxmultilang ident="YOOCHOOSE_DESIGN_TIP2"}]</a>[{oxmultilang
                                 ident="YOOCHOOSE_DESIGN_TIP3"}]</span>
 
@@ -213,7 +213,7 @@
                             [{/foreach}]
                             <br />
                             <span class="extra-info">[{ oxmultilang ident="YOOCHOOSE_TYPEID_TIP1" }]
-                                <a style="color: blue;" href="http://doc.yoochoose.net/" target="_blank">[{
+                                <a style="color: blue;" href="https://doc.yoochoose.net/" target="_blank">[{
                                     oxmultilang ident="YOOCHOOSE_TYPEID_TIP2" }]</a>.</span>
                         </td>
                     </tr>
@@ -275,7 +275,7 @@
                             [{/foreach}]
                             <br />
                             <span class="extra-info"><span style="color: firebrick;">[{oxmultilang ident="YOOCHOOSE_ATTENTION"}]</span>[{oxmultilang ident="YOOCHOOSE_OVERWRITE_TIP1"}]
-                                <a style="color: blue;" href="https://doc.yoochoose.net/display/PUBDOC/OXID+Plugin+2.0+Tutorial" target="_blank">
+                                <a style="color: blue;" href="https://doc.yoochoose.net/" target="_blank">
                                     [{oxmultilang ident="YOOCHOOSE_OVERWRITE_TIP2"}]</a>[{oxmultilang
                                     ident="YOOCHOOSE_OVERWRITE_TIP3"}]</span>
                         </td>

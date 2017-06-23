@@ -29,8 +29,8 @@ class Yoochoose extends Module_Config
         $this->_aViewData["obj"] = $this->getYoochooseRegistration();
 
         $performanceOptions = array(
-            'YOOCHOOSE_SCRIPT_CDN'    => 1,
-            'YOOCHOOSE_SCRIPT_SERVER' => 0,
+            'YOOCHOOSE_SCRIPT_CDN'    => 0,
+            'YOOCHOOSE_SCRIPT_SERVER' => 1,
         );
 
         $this->_aViewData['performanceOptions'] = $performanceOptions;
