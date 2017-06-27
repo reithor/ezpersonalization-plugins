@@ -98,6 +98,7 @@ class Index extends Action
                 $this->setCallback($callbackUrl, $postData, $customerId, $licenceKey);
                 $response['success'] = true;
             } catch (\Exception $e) {
+                $this->logger->info('Export failed. ' . $e->getMessage());
                 $response['success'] = false;
                 $response['message'] = $e->getMessage();
             } finally {

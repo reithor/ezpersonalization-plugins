@@ -49,8 +49,8 @@ Ext.define('Shopware.apps.Yoochoose.view.ScriptSettings', {
                 store: Ext.create('Ext.data.Store', {
                     fields: ['id', 'name'],
                     data: [
-                        { id: 1, name: 'Load scripts directly from Yoochoose server' },
-                        { id: 2, name: 'Load scripts from the Amazon content delivery network (CDN)' }
+                        { id: 2, name: 'Load scripts directly from Yoochoose server' },
+                        { id: 1, name: 'Load scripts from the Amazon content delivery network (CDN)' }
                     ]
                 })
             }),
@@ -61,7 +61,7 @@ Ext.define('Shopware.apps.Yoochoose.view.ScriptSettings', {
                 allowBlank: true,
                 blankText: 'This field is required',
                 required: false,
-                supportText: 'Attention! See the <a href="https://doc.yoochoose.net/display/PUBDOC/Shopware+Plugin+Tutorial" target="_blank">extension manual</a>,\n\
+                supportText: 'Attention! See the <a href="https://doc.yoochoose.net/" target="_blank">extension manual</a>,\n\
                               if you about to use this property',
                 value: data.scriptUrl,
                 //{literal}

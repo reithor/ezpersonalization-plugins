@@ -12,8 +12,8 @@ class ScriptSource
     public function toOptionArray()
     {
         return [
-            ['value' => 1, 'label' => __('Load scripts from the Amazon content delivery network (CDN)')],
-            ['value' => 0, 'label' => __('Load scripts directly from Yoochoose server')],
+            ['value' => 0, 'label' => __('Load scripts from the Amazon content delivery network (CDN)')],
+            ['value' => 1, 'label' => __('Load scripts directly from Yoochoose server')],
         ];
     }
 
@@ -25,8 +25,8 @@ class ScriptSource
     public function toArray()
     {
         return [
-            0 => __('Load scripts directly from Yoochoose server'),
-            1 => __('Load scripts from the Amazon content delivery network (CDN)'),
+            1 => __('Load scripts directly from Yoochoose server'),
+            0 => __('Load scripts from the Amazon content delivery network (CDN)'),
         ];
     }
 }

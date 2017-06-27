@@ -145,7 +145,7 @@ class Data extends AbstractHelper
      * @param array $storeData
      * @param int $transaction
      * @param int $mandatorId
-     * @return string postData
+     * @return array postData
      */
     public function export($storeData, $transaction, $limit, $mandatorId)
     {
@@ -191,7 +191,7 @@ class Data extends AbstractHelper
         foreach ($postData['events'] as $event) {
             $method = $formatsMap[$event['format']] ?: null;
             if ($method) {
-                $postData = $this->exportData($method, $postData, $directory, $limit, $i, $event['storeViewId'], $mandatorId);
+                $postData = $this->exportData($method, $postData, $directory, $limit, $i++, $event['storeViewId'], $mandatorId);
             }
         }
 
