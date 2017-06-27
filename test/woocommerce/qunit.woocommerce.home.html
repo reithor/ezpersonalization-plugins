@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="../qunit/qunit.css" rel="stylesheet" type="text/css"/>
+    <script src="../qunit/qunit.js"></script>
+
+    <script src="../../dist/yc-tracking.js"></script>
+
+    <script type="text/javascript">
+        var yc_config_object = {
+            "lang": "en",
+            "trackid": 0,
+            "currentPage": "home",
+            "boxes": [{"id": "bestseller", "title": "Bestsellers", "display": "on"}, {
+                "id": "personal",
+                "title": "Recommendations for You",
+                "display": "on"
+            }],
+            "productIds": ""
+        };
+
+        var yoochoose_ajax_script = {"ajaxurl":"http:\/\/localhost\/woocommerce\/wp-admin\/admin-ajax.php"};
+    </script>
+</head>
+<body>
+
+<div class="woocommerce-test-structure" style="display: none;">
+    <div id="main"></div>
+</div>
+
+<h1 id="qunit-header">Home</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture"></div>
+<script>
+
+    (function (open) {
+        XMLHttpRequest.prototype.open = function (method, url, async, user, pass) {
+            var parts = location.href.split('/');
+
+            if (url.indexOf(yoochoose_ajax_script.ajaxurl) === 0) {
+                url = parts.slice(0, parts.length -1).join('/') + '/plugin.response.mock.json';
+            }
+
+            open.call(this, method, url, async, user, pass);
+        };
+    })(XMLHttpRequest.prototype.open);
+
+    (function () {
+        function randomInt(max) {
+            max = max || 1000;
+            return parseInt(Math.random() * max);
+        }
+
+        yc_config_object.trackid = randomInt(50) + 100;
+        module('Shop Home Page');
+
+        window.addEventListener('load', function () {
+
+        });
+
+    }());
+</script>
+</body>
+</html>
