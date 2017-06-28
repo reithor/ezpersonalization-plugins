@@ -21,7 +21,7 @@ function initYcTrackingModule(context) {
             category = '',
             list, i;
 
-        if (breadcrumbs) {
+        if (breadcrumbs && breadcrumbs.length > 0) {
             list = breadcrumbs[0].children[0].children;
             for (i = 0; i < list.length; i++) {
                 if (list[i].className.indexOf('category') !== -1) {
