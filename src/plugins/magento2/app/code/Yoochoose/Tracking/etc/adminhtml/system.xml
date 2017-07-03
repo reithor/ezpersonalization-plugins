@@ -35,8 +35,9 @@
                                                     form.appendChild(input.cloneNode(true));
                                                 }
                                             }
-
-                                            form.submit();
+                                            
+                                           document.body.appendChild(form);
+                                           form.submit();
                                         }
                                     </script>
                                 ]]></comment>
@@ -82,7 +83,7 @@
                     <frontend_model>Yoochoose\Tracking\Model\Config\Source\ReadOnly</frontend_model>
                     <comment>
                         <![CDATA[We will try to find a design template for your shop. If you need to customize the Recommendations design, please read the
-                                        <a href="https://www.yoochoose.com/magento-connect-2-tutorial" target="_blank">Magento Connect Extention Tutorial</a>.]]>
+                                        <a href="https://doc.yoochoose.net/display/PUBDOC/Magento2+Connect+Extension+Tutorial" target="_blank">Magento Connect Extention Tutorial</a>.]]>
                     </comment>
                 </field>
                 <field id="item_type" translate="label" type="text" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
