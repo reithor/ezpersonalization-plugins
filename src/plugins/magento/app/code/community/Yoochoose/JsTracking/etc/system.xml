@@ -29,7 +29,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
-                            <comment><![CDATA[For more information about pricing, data privacy and terms of service please visit the <a href='https://www.yoochoose.com' target='_blank'>
+                            <comment><![CDATA[For more information about pricing, data privacy and terms of service please visit the <a href='https://www.yoochoose.com/Pricing/' target='_blank'>
                                      Yoochoose website</a>.]]></comment>
                         </click_here>
                         <customer_id translate="label">
@@ -89,7 +89,7 @@
                         <design>
                             <label>Design</label>
                             <comment><![CDATA[We will try to find a design template for your shop. If you need to customize the Recommendations design, please read the
-                                        <a href="https://www.yoochoose.com/magento-connect-2-tutorial" target="_blank">Magento Connect Extention Tutorial</a>.]]></comment>
+                                        <a href="https://doc.yoochoose.net/" target="_blank">Magento Connect Extension Tutorial</a>.]]></comment>
                             <sort_order>26</sort_order>
                             <frontend_type>text</frontend_type>
                             <frontend_model>yoochoose_jstracking/field_readonly</frontend_model>

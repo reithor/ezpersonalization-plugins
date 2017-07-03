@@ -102,7 +102,7 @@ Ext.define('Shopware.apps.Yoochoose.view.GeneralSettings', {
                 readOnly: true,
                 helpText: 'Read-only field.',
                 supportText: 'We will try a design template for your shop.\n\
-                              Please read <a href="https://doc.yoochoose.net/display/PUBDOC/Shopware+Plugin+2.0+Tutorial" target="_blank">Shopware Connect Extension Tutorial</a>,\n\
+                              Please read <a href="https://doc.yoochoose.net/" target="_blank">Shopware Connect Extension Tutorial</a>,\n\
                               if you need to customize the design of the recommendations.',
                 value: data.design
             }),

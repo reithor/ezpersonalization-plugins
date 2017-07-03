@@ -12,8 +12,8 @@ class SearchOption
     public function toOptionArray()
     {
         return [
-            ['value' => 0, 'label' => __('No')],
-            ['value' => 1, 'label' => __('Yes')],
+            ['value' => 1, 'label' => __('No')],
+            ['value' => 0, 'label' => __('Yes')],
         ];
     }
 
@@ -25,8 +25,8 @@ class SearchOption
     public function toArray()
     {
         return [
-            0 => __('No'),
-            1 => __('Yes'),
+            1 => __('No'),
+            0 => __('Yes'),
         ];
     }
 }
