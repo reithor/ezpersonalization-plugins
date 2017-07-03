@@ -18,6 +18,7 @@ use Magento\UrlRewrite\Service\V1\Data\UrlRewrite;
 use Yoochoose\Tracking\Api\YoochooseInterface;
 use Zend_Db_Select;
 use Magento\Catalog\Helper\ImageFactory;
+use Magento\Catalog\Model\Product\Attribute\Source\Status;
 
 class Yoochoose implements YoochooseInterface
 {
@@ -419,6 +420,7 @@ class Yoochoose implements YoochooseInterface
         $collection->setStoreId($storeId);
         $collection->addStoreFilter($storeId);
         $collection->addFieldToFilter('visibility', ['neq' => Visibility::VISIBILITY_NOT_VISIBLE]);
+        $collection->addFieldToFilter('status', ['eq' => Status::STATUS_ENABLED]);
         $collection->getSelect()->reset(Zend_Db_Select::COLUMNS);
         $collection->getSelect()->columns(['e.entity_id']);
         $collection->addAttributeToSelect(['*']);
@@ -459,12 +461,12 @@ class Yoochoose implements YoochooseInterface
                 }
             }
 
-//            if ($temp['image']) {
-//                $imageInfo = getimagesize($temp['image']);
-//                if (is_array($imageInfo)) {
-//                    $temp['image_size'] = $imageInfo[0] . 'x' . $imageInfo[1];
-//                }
-//            }
+            if ($temp['image']) {
+                $imageInfo = getimagesize($temp['image']);
+                if (is_array($imageInfo)) {
+                    $temp['image_size'] = $imageInfo[0] . 'x' . $imageInfo[1];
+                }
+            }
 
             // Categories
             /** @var \Magento\Catalog\Model\Category $category */
