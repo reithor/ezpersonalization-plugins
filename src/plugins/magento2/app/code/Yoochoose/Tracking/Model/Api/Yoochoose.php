@@ -461,12 +461,12 @@ class Yoochoose implements YoochooseInterface
                 }
             }
 
-            if ($temp['image']) {
-                $imageInfo = getimagesize($temp['image']);
-                if (is_array($imageInfo)) {
-                    $temp['image_size'] = $imageInfo[0] . 'x' . $imageInfo[1];
-                }
-            }
+//            if ($temp['image']) {
+//                $imageInfo = getimagesize($temp['image']);
+//                if (is_array($imageInfo)) {
+//                    $temp['image_size'] = $imageInfo[0] . 'x' . $imageInfo[1];
+//                }
+//            }
 
             // Categories
             /** @var \Magento\Catalog\Model\Category $category */
