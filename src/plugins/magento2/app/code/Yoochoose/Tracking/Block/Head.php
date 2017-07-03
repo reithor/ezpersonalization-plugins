@@ -55,6 +55,10 @@ class Head extends Template
         $language = $this->_scopeConfig->getValue('general/locale/code', 'stores');
         $customerId = 0;
 
+        /** @var \Magento\Framework\App\Http\Context $context */
+        $context = $this->objectManager->get('Magento\Framework\App\Http\Context');
+        $customerLogged = $context->getValue(\Magento\Customer\Model\Context::CONTEXT_AUTH);
+
         /** @var \Magento\Customer\Model\Session $customerSession */
         $customerSession = $this->objectManager->get('Magento\Customer\Model\Session');
         if ($customerSession->isLoggedIn()) {
@@ -75,14 +79,15 @@ class Head extends Template
 
         $json = [
             'url' => $this->_storeManager->getStore()->getBaseUrl(),
-            'trackid' => $customerId,
+            'trackid' => (int)$customerId,
             'orderData' => $order,
             'itemType' => $itemTypeId,
             'language' => str_replace('_', '-', $language),
             'currentPage' => $currentPage,
             'productIds' => $this->getContextProductIds($currentPage),
             'enableSearch' => $enableSearch,
-            'storeViewId' => $storeViewId
+            'storeViewId' => $storeViewId,
+            'customerLogged' => $customerLogged
         ];
 
         return sprintf('<script type="text/javascript">var yc_config_object = %s;</script>', json_encode($json));

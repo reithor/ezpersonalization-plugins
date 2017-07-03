@@ -13,6 +13,7 @@ function initYcTrackingModule(context) {
         itemType,
         storeViewId,
         script,
+        customerLogged,
         templates = YC_RECO_TEMPLATES,
         possibleRecoTemplatesPositions = ['APPEND', 'PREPEND', 'ABOVE', 'BELOW'];
 
@@ -478,6 +479,12 @@ function initYcTrackingModule(context) {
         };
     }
 
+    function hookLogoutHandler(trackid ,customerLogged) {
+        if (!trackid && (typeof YcTracking.getUserId() === 'number') && !customerLogged) {
+            YcTracking.resetUser();
+        }
+    }
+
     function setupTracking() {
         context.addEventListener('load', function () {
             var trackId,
@@ -490,11 +497,13 @@ function initYcTrackingModule(context) {
             itemType = ycObject ? ycObject.itemType : null;
             enableSearch = ycObject ? ycObject.enableSearch : null;
             storeViewId = ycObject ? ycObject.storeViewId : null;
+            customerLogged = ycObject && ycObject.customerLogged ? ycObject.customerLogged : null;
 
             YcTracking.setStoreViewId(storeViewId);
             YcTracking.trackLogin(trackId);
             trackClickAndRate();
             hookBasketHandlers();
+            hookLogoutHandler(trackId, customerLogged);
             trackBuy();
             if (enableSearch == 1) {
                 YcTracking.hookSearchingHandler(language);
