@@ -282,10 +282,10 @@ function initYcTrackingModule(context) {
                 if (response.contextItems.length > 0) {
                     viewersNumber = response.contextItems[0].viewers;
 
-                    if (viewersNumber > 0 && viewerElement.length === 0) {
+                    if (translate && viewersNumber > 0 && viewerElement.length === 0) {
                         div.innerHTML = viewersNumber;
                         div.id = 'yc-viewers-number';
-                        div.innerHTML = div.innerHTML + ' ' + translate[language_code];
+                        div.innerHTML = div.innerHTML + ' ' + (translate[language_code] ? translate[language_code] : translate['']);
                         element[0].firstElementChild.appendChild(div);
                     }
                 }
