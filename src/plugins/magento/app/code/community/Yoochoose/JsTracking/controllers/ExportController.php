@@ -45,6 +45,8 @@ class Yoochoose_JsTracking_ExportController extends Mage_Core_Controller_Front_A
             $post['limit'] = $this->getRequest()->getParam('size');
             $post['webHookUrl'] = $this->getRequest()->getParam('webHook');
             $post['mandator'] = $this->getRequest()->getParam('mandator');
+            $post['transaction'] = $this->getRequest()->getParam('transaction');
+            $forceStart = $this->getRequest()->getParam('forceStart');
 
             /** Checks if size, mandator, web hook is set */
             if (!isset($post['limit']) || empty($post['limit']) || !isset($post['webHookUrl'])
@@ -53,6 +55,10 @@ class Yoochoose_JsTracking_ExportController extends Mage_Core_Controller_Front_A
                 $this->sendResponse(false, 'Size, mandator and webHook parameters must be set!');
             } else {
                 $configModel = Mage::getModel('core/config');
+                if ($forceStart) {
+                    $configModel->saveConfig('yoochoose/export/enable_flag', 0, 'default', 0);
+                }
+
                 $enable = Mage::getStoreConfig('yoochoose/export/enable_flag');
 
                 if ($enable != 1) {
