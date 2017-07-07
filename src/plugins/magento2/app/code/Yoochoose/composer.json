@@ -1,0 +1,21 @@
+{
+  "name": "yoochoose/magento2-tracking",
+  "description": "",
+  "type": "magento2-module",
+  "version": "2.0.1",
+  "license": [
+    "OSL-3.0",
+    "AFL-3.0"
+  ],
+  "require": {
+    "php": "~5.5.0|~5.6.0|~7.0.2"
+  },
+  "autoload": {
+    "files": [
+      "Tracking/registration.php"
+    ],
+    "psr-4": {
+      "Yoochoose\\Tracking\\": "Tracking"
+    }
+  }
+}
