@@ -441,7 +441,7 @@ class Yoochoose implements YoochooseInterface
                 'id' => $id,
                 'name' => $product->getName(),
                 'description' => $product->getData('description'),
-                'price' => $product->getPrice(),
+                'price' => number_format((float)$product->getPrice(), 2),
                 'url' => $product->getUrlInStore(),
                 'image' => ($product->getImage() ? $helper->getMediaUrl($product->getImage()) :
                     ($imagePh ? $placeHolderPath . $imagePh : null)),
