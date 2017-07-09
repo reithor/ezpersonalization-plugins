@@ -269,9 +269,11 @@ class Yoochoose implements YoochooseInterface
             $storeId = $this->request->getParam('storeId');
         }
 
+        $baseUrl = $this->storeManager->getStore($storeId)->getBaseUrl();
         $eavConfig = $this->om->create('\Magento\Eav\Model\Config');
         $attribute = $eavConfig->getAttribute('catalog_product', 'manufacturer')->setStoreId($storeId);
         $vendors = $attribute->getSource()->getAllOptions();
+        $searchUrl = rtrim($baseUrl, '/') . '/catalogsearch/result/?';
 
         if ($limit && is_numeric($limit)) {
             $limit = (int)$limit;
@@ -288,9 +290,12 @@ class Yoochoose implements YoochooseInterface
 
             //if value is in our offset add it to results
             if ($i >= $offset) {
-                $result[$option['value']] = [
-                    'id' => $option['value'],
-                    'name' => $option['label'],
+                $name = $option['label'];
+                $id = $option['value'];
+                $result[$id] = [
+                    'id' => $id,
+                    'name' => $name,
+                    'link' => $searchUrl . http_build_query(['q' => $name, 'manufacturer' => $id]),
                 ];
             }
 
