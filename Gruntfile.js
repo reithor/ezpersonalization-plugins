@@ -85,6 +85,13 @@ module.exports = function (grunt) {
                 src: wrapModule('plentymarkets'),
                 dest: sub('dist/%s.js')
             },
+            dev_pm7: {
+                options: {
+                    banner: BANNER
+                },
+                src: wrapModule('plentymarkets7'),
+                dest: sub('dist/%s.js')
+            },
             dev_mg2: {
                 options: {
                     banner: BANNER
@@ -118,6 +125,10 @@ module.exports = function (grunt) {
             dev_pm_vojin: {
                 src: wrapModule('plentymarkets'),
                 dest: 'c:/xampp/htdocs/yc-tracking-pm.js'
+            },
+            dev_pm7_vojin: {
+                src: wrapModule('plentymarkets7'),
+                dest: 'c:/xampp/htdocs/v1/906/tracking.js'
             },
             dev_sw_vojin: {
                 src: wrapModule('shopware'),
@@ -193,6 +204,10 @@ module.exports = function (grunt) {
         'concat:dev_pm',
         'uglify:dist'
     ]);
+    grunt.registerTask('build-plenty', [
+        'concat:dev_pm7',
+        'uglify:dist'
+    ]);
     grunt.registerTask('build-shopware5', [
         'concat:dev_sw5',
         'uglify:dist'
@@ -211,6 +226,9 @@ module.exports = function (grunt) {
     ]);
     grunt.registerTask('build-plenty-vojin', [
         'concat:dev_pm_vojin'
+    ]);
+    grunt.registerTask('build-plenty7-vojin', [
+        'concat:dev_pm7_vojin'
     ]);
     grunt.registerTask('build-shopware-vojin', [
         'concat:dev_sw_vojin'
