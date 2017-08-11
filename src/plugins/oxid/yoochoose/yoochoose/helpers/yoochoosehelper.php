@@ -12,9 +12,9 @@ class Yoochoosehelper extends oxUBase
      * @param array $shopData
      * @param int $transaction
      * @param int $mandatorId
-     * @return string postData
+     * @return array postData
      */
-    static function export($shopData, $transaction, $limit, $mandatorId)
+    public function export($shopData, $transaction, $limit, $mandatorId)
     {
         $conf = oxNew('oxConfig');
         $shopIds = array();
@@ -60,11 +60,12 @@ class Yoochoosehelper extends oxUBase
         foreach ($postData['events'] as $event) {
             $method = $formatsMap[$event['format']] ? $formatsMap[$event['format']] : null;
             if ($method) {
-                $postData = self::exportData($method, $postData, $directory, $limit, $i, $event['shopViewId'], $mandatorId, $event['lang']);
+                $postData = $this->exportData($method, $postData, $directory, $limit, $i, $event['shopViewId'], $mandatorId, $event['lang']);
             }
 
             $i++;
         }
+
         return $postData;
     }
 
@@ -116,7 +117,7 @@ class Yoochoosehelper extends oxUBase
         do {
             $results = $model->$method($shopId, $offset, $limit, $lang);
             if (!empty($results)) {
-                $filename = self::generateRandomString() . '.json';
+                $filename = $this->generateRandomString() . '.json';
                 $file = $directory . $filename;
                 file_put_contents($file, json_encode(array_values($results)));
                 $fileSize = filesize($file);
