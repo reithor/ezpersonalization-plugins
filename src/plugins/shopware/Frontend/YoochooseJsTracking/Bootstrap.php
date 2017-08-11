@@ -28,6 +28,7 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
         'yoochoosesubscribers' => array('read'),
         'supplier' => array('read'),
         'yoochoosevendors' => array('read'),
+        'yoochooseinfo' => array('read'),
     );
 
     /**
@@ -110,7 +111,7 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
      */
     public function getVersion()
     {
-        return '2.2.0';
+        return '2.3.0';
     }
 
     /**
@@ -315,6 +316,7 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
         $this->registerController('Api', 'Ycstorelocals');
         $this->registerController('Api', 'Ycvendors');
         $this->registerController('Api', 'Ycexport');
+        $this->registerController('Api', 'Ycinfo');
     }
 
     private function createDatabase()
