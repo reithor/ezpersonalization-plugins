@@ -12,7 +12,7 @@ class Yoochoosemodel extends oxUBase
 
     const YOOCHOOSE_INFO_FORMAT = "%s [%s]:\nURL: %s\nCODE: %s\n\n";
 
-    const YOOCHOOSE_DEBUG_FORMAT = "%s [%s]:\nURL: %s\nCODE: %s\nRESPONSE BODY: %s\nREQUEST HEADERS: %s\n";
+    const YOOCHOOSE_DEBUG_FORMAT = "%s [%s]:\nURL: %s\nCODE: %s\nRESPONSE BODY: %s\nREQUEST HEADERS: %s\n\n";
 
     /**
      * @param string $url

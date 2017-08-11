@@ -207,6 +207,7 @@ Arial, sans-serif;">&nbsp;&nbsp;</span><span style="line-height: 31px;">Personal
     'files' => array(
         'yoochoose' => 'yoochoose/yoochoose/controllers/admin/yoochoose.php',
         'yoochoosemodel' => 'yoochoose/yoochoose/models/yoochoosemodel.php',
+        'ycarticle' => 'yoochoose/yoochoose/models/ycarticle.php',
         'ycproductexport' => 'yoochoose/yoochoose/controllers/ycproductexport.php',
         'yoochoosetrigger' => 'yoochoose/yoochoose/controllers/yoochoosetrigger.php',
         'yoochoosearticles' => 'yoochoose/yoochoose/controllers/api/yoochoosearticles.php',

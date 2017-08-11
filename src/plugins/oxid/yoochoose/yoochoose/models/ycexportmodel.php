@@ -75,8 +75,8 @@ class Ycexportmodel extends oxUBase
 
         foreach ($result as $val) {
             $id = $val['OXID'];
-            /** @var oxArticle $oArticle */
-            $oArticle = oxNew('oxarticle');
+            /** @var Ycarticle $oArticle */
+            $oArticle = oxNew('ycarticle');
             $oArticle->load($id);
 
             /* @var oxManufacturer $oxManufacturer */
@@ -86,10 +86,6 @@ class Ycexportmodel extends oxUBase
             $gallery = $oArticle->getPictureGallery();
             $coverPicture = $gallery['ActPic'];
             $imageSize = '';
-//            $imageInfo = getimagesize($coverPicture);
-//            if (is_array($imageInfo)) {
-//                $imageSize = $imageInfo[0] . 'x' . $imageInfo[1];
-//            }
 
             if ($oArticle->isVisible()) {
                 $articles[] = array(
@@ -108,6 +104,8 @@ class Ycexportmodel extends oxUBase
                     'shopId' => $this->getConfig()->getShopId(),
                 );
             }
+
+            $oArticle->resetLoadedParents();
         }
 
         return $articles;

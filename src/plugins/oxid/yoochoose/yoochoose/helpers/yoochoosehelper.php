@@ -91,16 +91,17 @@ class Yoochoosehelper extends oxUBase
      * Exports data to file and returns $postData parameter
      *   with URLs to files
      *
-     * @param string $method
+     * @param string $entity
      * @param array $postData
      * @param string $directory
      * @param integer $limit
      * @param integer $exportIndex
      * @param integer $shopId
      * @param string $mandatorId
+     * @param $lang
      * @return array $postData
      */
-    private function exportData($method, $postData, $directory, $limit = 0, $exportIndex = 0, $shopId, $mandatorId, $lang)
+    private function exportData($entity, $postData, $directory, $limit = 0, $exportIndex = 0, $shopId, $mandatorId, $lang)
     {
 
         /* @var Ycexportmodel $model */
@@ -110,11 +111,14 @@ class Yoochoosehelper extends oxUBase
         $baseUrl = $oxViewConfig->getBaseDir();
         $fileUrl = $baseUrl . 'out/' . self::YC_DIRECTORY_NAME . '/' . $mandatorId . '/';
 
-        $method = 'get' . $method;
+        $method = 'get' . $entity;
         $offset = 0;
         $logNames = '';
 
+        $logger = oxNew('yoochoosemodel');
         do {
+            $logger->log('Exporting ' . $entity, $shopId, "offset: $offset, limit: $limit", $lang);
+
             $results = $model->$method($shopId, $offset, $limit, $lang);
             if (!empty($results)) {
                 $filename = $this->generateRandomString() . '.json';
@@ -123,7 +127,10 @@ class Yoochoosehelper extends oxUBase
                 $fileSize = filesize($file);
                 if ($fileSize >= self::YC_MAX_FILE_SIZE) {
                     unlink($file);
-                    $limit--;
+                    $limit = (int)($limit / 2);
+
+                    $logger->log('Reducing limit size because of max file size.', $fileSize,
+                        "offset: $offset, limit: $limit", self::YC_MAX_FILE_SIZE);
                 } else {
                     $postData['events'][$exportIndex]['uri'][] = $fileUrl . $filename;
                     $offset = $offset + $limit;
@@ -133,7 +140,7 @@ class Yoochoosehelper extends oxUBase
         } while(!empty($results));
 
         $logNames = $logNames ?: 'there are no files';
-        oxNew('yoochoosemodel')->log('Export has finished for ' . $method . ' with file names : ' . $logNames);
+        $logger->log('Export has finished for ' . $entity . ' with file names : ' . $logNames);
 
         return $postData;
     }
