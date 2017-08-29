@@ -13,11 +13,11 @@ class Yoochoose_JsTracking_Model_System_Config_Source_RenderSource
         return array(
             array(
                 'label' => 'Load scripts from the Amazon content delivery network (CDN)',
-                'value' => 0,
+                'value' => 1,
             ),
             array(
                 'label' => 'Load scripts directly from Yoochoose server',
-                'value' => 1,
+                'value' => 0,
             ),
         );
     }
