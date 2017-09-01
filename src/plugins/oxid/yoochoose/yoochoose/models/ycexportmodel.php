@@ -86,13 +86,14 @@ class Ycexportmodel extends oxUBase
             $gallery = $oArticle->getPictureGallery();
             $coverPicture = $gallery['ActPic'];
             $imageSize = '';
+            $oArticle->enablePriceLoad();
 
             if ($oArticle->isVisible()) {
                 $articles[] = array(
                     'id' => $val['OXID'],
                     'name' => $val['OXTITLE'],
                     'description' => $val['OXLONGDESC'],
-                    'price' => $oArticle->getBasePrice(),
+                    'price' => $oArticle->getVarMinPrice()->getBruttoPrice(),
                     'url' => strtok($oArticle->getLink($langId), '?'),
                     'image' => $coverPicture,
                     'image_size' => $imageSize,
