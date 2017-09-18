@@ -67,6 +67,7 @@ class Yoochoose_JsTracking_ExportController extends Mage_Core_Controller_Front_A
                     Mage::log('Export has started, with this query string : ' . $queryString, Zend_Log::INFO,
                         'yoochoose.log');
 
+                    $post['transaction'] = $this->getRequest()->getParam('transaction');
                     $post['password'] = Mage::helper('yoochoose_jstracking')->generateRandomString();
                     $post['storeData'] = $this->getStoreData($post['mandator']);
 

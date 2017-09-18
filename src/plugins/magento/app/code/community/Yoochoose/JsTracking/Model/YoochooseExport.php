@@ -104,7 +104,7 @@ class  Yoochoose_JsTracking_Model_YoochooseExport extends Mage_Core_Model_Config
                 'entity_id' => $id,
                 'name' => $product->getName(),
                 'description' => $product->getDescription(),
-                'price' => $product->getPrice(),
+                'price' => number_format($product->getPrice(), 2),
                 'url' => $storeUrl . $product->getUrlPath(),
                 'image' => ($product->getImage() ? $helper->getMediaUrl($product->getImage()) :
                     ($imagePlaceholder ? $placeholderFullPath : null)),

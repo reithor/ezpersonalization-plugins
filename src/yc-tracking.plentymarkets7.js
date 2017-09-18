@@ -231,7 +231,7 @@ function initYcTrackingModule(context) {
                                     }
                                     
                                     box.response.recommendationItems.forEach(function (product) {
-                                        if (item.id === product.itemId) {
+                                        if (item.id == product.itemId) {
                                             item.links = product.links;
                                             YcTracking.trackRenderedV2(product.links.rendered, language);
                                         }
@@ -257,6 +257,12 @@ function initYcTrackingModule(context) {
         };
     }
 
+    function logoutHandler(trackId) {
+        if (!trackId && (typeof YcTracking.getUserId() === 'number')) {
+            YcTracking.resetUser();
+        }
+    }
+
     function setupTracking() {
         context.addEventListener('load', function () {
             var trackId,
@@ -266,7 +272,9 @@ function initYcTrackingModule(context) {
 
             vueElements.forEach(function (element) {
                 if (element.item) {
-                    productIds.push(element.item.item.id);
+                    if (productIds.indexOf(element.item.item.id) === -1) {
+                        productIds.push(element.item.item.id);
+                    }
                 }
             });
             
@@ -284,6 +292,7 @@ function initYcTrackingModule(context) {
             trackClickAndRate();
             hookBasketHandlers();
             trackBuy();
+            logoutHandler(trackId);
             if (enableSearch === '1') {
                 YcTracking.hookSearchingHandler(language);
             }

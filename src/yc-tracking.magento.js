@@ -342,7 +342,7 @@ function initYcTrackingModule(context) {
         var trackid;
 
         ycObject = context['yc_config_object'] ? context['yc_config_object'] : null;
-        trackid = ycObject ? ycObject.trackid : null;
+        trackid = ycObject ? parseInt(ycObject.trackid) : null;
         language = ycObject ? ycObject.language : null;
         itemType = ycObject ? ycObject.itemType : null;
         currentPage = ycObject ? ycObject.currentPage : null;
