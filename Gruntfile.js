@@ -128,7 +128,7 @@ module.exports = function (grunt) {
             },
             dev_pm7_vojin: {
                 src: wrapModule('plentymarkets7'),
-                dest: 'c:/xampp/htdocs/v1/906/tracking.js'
+                dest: '/var/www/html/v1/906/tracking.js'
             },
             dev_sw_vojin: {
                 src: wrapModule('shopware'),

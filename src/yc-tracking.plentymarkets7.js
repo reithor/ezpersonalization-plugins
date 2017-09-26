@@ -128,7 +128,7 @@ function initYcTrackingModule(context) {
                 break;
         }
 
-        url = url.replace('http:', context.location.protocol) + 'yc/products/';
+        url = url.replace('http:', context.location.protocol) + 'yoochoose/products/';
         for (i = 0; i < allBoxes.length; i++) {
             tpl = templates[allBoxes[i].id];
 

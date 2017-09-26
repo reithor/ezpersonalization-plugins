@@ -56,7 +56,7 @@ class Yoochoosemodel extends oxUBase
 
         $body = array(
             'base'     => array(
-                    'type'      => 'OXID2',
+                'type'      => 'OXID2',
                 'pluginId'  => $param['ycPluginId'],
                 'endpoint'  => $param['ycEndpoint'],
                 'appKey'    => $customerId,
