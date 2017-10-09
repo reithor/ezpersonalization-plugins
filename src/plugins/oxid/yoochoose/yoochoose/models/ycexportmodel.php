@@ -188,6 +188,7 @@ class Ycexportmodel extends oxUBase
             $categoryPath = $this->buildCategoryPath($parentId, $langId) . '/' . $categoryPath;
         }
 
+        $categoryPath = htmlspecialchars_decode($categoryPath);
         $this->loadedCategories[$categoryId] = $categoryPath;
 
         return $categoryPath;
