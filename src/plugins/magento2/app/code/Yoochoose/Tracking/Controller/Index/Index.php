@@ -38,7 +38,8 @@ class Index extends Action
         JsonFactory $resultJsonFactory,
         ScopeConfigInterface $scope,
         StoreManagerInterface $store
-    ) {
+    )
+    {
 
         $this->resultJsonFactory = $resultJsonFactory;
         parent::__construct($context);
@@ -76,7 +77,7 @@ class Index extends Action
             $sentIds[$id] = $tempId;
         }
         $productIds = implode(',', $ids);
-        
+
         /** @var \Magento\Catalog\Model\ResourceModel\Product\Collection $collection */
         $collection = $this->_objectManager->get('\Magento\Catalog\Model\ResourceModel\Product\Collection');
         $collection->setStoreId($this->store->getStore()->getId())
@@ -152,7 +153,7 @@ class Index extends Action
                 $postParams = $listProduct->getAddToCartPostParams($product);
                 $formAction = $postParams['action'];
                 $formUenc = $urlEncoder->encode($formAction);
-                if ($productType != 'simple') {
+                if ($productType === 'configurable') {
                     $swatch = $this->_objectManager->create('Magento\Swatches\Block\Product\Renderer\Configurable\Interceptor');
                     $swatch->setProduct($product);
                     $jsonConfig = $swatch->getJsonConfig();
@@ -160,6 +161,7 @@ class Index extends Action
                     $numberOfSwatches = $swatch->getNumberSwatchesPerProduct();
                     $mediaCallback = $swatch->getMediaCallback();
                 }
+
                 $products[$key]['formAction'] = $formAction;
                 $products[$key]['uenc'] = $formUenc;
                 $products[$key]['formKey'] = $formKey;
@@ -168,34 +170,42 @@ class Index extends Action
                 $products[$key]['jsonSwatchConfig'] = $jsonSwatchConfig;
                 $products[$key]['mediaCallback'] = $mediaCallback;
             }
+
             $products[$key]['sentId'] = $sentIds[$products[$key]['id']];
 
         }
 
         $result = $this->resultJsonFactory->create();
         $result->setData(array_values($products));
+
         return $result;
     }
 
-    private function getStringBetween($string, $start, $finish) {
-        $string = " ".$string;
+    private function getStringBetween($string, $start, $finish)
+    {
+        $string = " " . $string;
         $position = strpos($string, $start);
         if ($position == 0) return "";
         $position += strlen($start);
         $length = strpos($string, $finish, $position) - $position;
+
         return substr($string, $position, $length);
     }
 
-    private function changeUenc($data, $newUenc){
+    private function changeUenc($data, $newUenc)
+    {
         $data = json_decode($data);
         $data->data->uenc = $newUenc;
+
         return json_encode($data);
     }
 
-    private function getCurrentURL(){
-        $url  = @( $_SERVER["HTTPS"] != 'on' ) ? 'http://'.$_SERVER["SERVER_NAME"] :  'https://'.$_SERVER["SERVER_NAME"];
-        $url .= ( $_SERVER["SERVER_PORT"] !== 80 ) ? ":".$_SERVER["SERVER_PORT"] : "";
+    private function getCurrentURL()
+    {
+        $url = @($_SERVER["HTTPS"] != 'on') ? 'http://' . $_SERVER["SERVER_NAME"] : 'https://' . $_SERVER["SERVER_NAME"];
+        $url .= ($_SERVER["SERVER_PORT"] !== 80) ? ":" . $_SERVER["SERVER_PORT"] : "";
         $url .= $_SERVER["REQUEST_URI"];
+
         return $url;
     }
 }
