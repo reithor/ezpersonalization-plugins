@@ -3,12 +3,12 @@
 namespace Yoochoose\Tracking\Model\Api;
 
 use Magento\Catalog\Api\CategoryRepositoryInterface;
+use Magento\Catalog\Model\Category;
 use Magento\Catalog\Model\Product\Visibility;
 use Magento\Catalog\Model\ProductRepository;
 use Magento\CatalogUrlRewrite\Model\CategoryUrlRewriteGenerator;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ObjectManager;
-use Magento\Framework\Url;
 use Magento\Framework\Webapi\Rest\Request;
 use Magento\Newsletter\Model\Subscriber;
 use Magento\Store\Model\App\Emulation;
@@ -65,6 +65,14 @@ class Yoochoose implements YoochooseInterface
      * @var ProductRepository
      */
     private $productRepository;
+    /**
+     * @var array
+     */
+    private $loadedCategories = [];
+    /**
+     * @var int
+     */
+    private $rootCategoryId = 1;
 
     /**
      * Yoochoose constructor.
@@ -412,13 +420,13 @@ class Yoochoose implements YoochooseInterface
     protected function getProductsHelper($limit, $offset, $storeId)
     {
         $this->appEmulation->startEnvironmentEmulation($storeId);
-        $categoriesRel = [];
         $products = [];
 
         /** @var \Magento\Catalog\Model\Product\Media\Config $helper */
         $helper = $this->om->get('Magento\Catalog\Model\Product\Media\Config');
         $placeHolderPath = $helper->getBaseMediaUrl() . '/placeholder/';
         $imagePh = $this->config->getValue("catalog/placeholder/image_placeholder", 'store', $storeId);
+        $this->rootCategoryId = $this->storeManager->getStore($storeId)->getRootCategoryId();
 
         /* @var \Magento\Catalog\Model\ResourceModel\Product\Collection $collection */
         $collection = $this->om->create('Magento\Catalog\Model\ResourceModel\Product\Collection');
@@ -466,30 +474,15 @@ class Yoochoose implements YoochooseInterface
                 }
             }
 
-//            if ($temp['image']) {
-//                $imageInfo = getimagesize($temp['image']);
-//                if (is_array($imageInfo)) {
-//                    $temp['image_size'] = $imageInfo[0] . 'x' . $imageInfo[1];
-//                }
-//            }
-
             // Categories
             /** @var \Magento\Catalog\Model\Category $category */
             foreach ($product->getCategoryCollection() as $category) {
                 $categoryId = $category->getId();
-                if (!array_key_exists($categoryId, $categoriesRel)) {
-                    $rewrite = $this->getCategoryUrlRewrite($categoryId, $storeId);
-
-                    if (!empty($rewrite)) {
-                        // remove .html suffix if it exists
-                        $parts = explode('.', $rewrite->getRequestPath());
-                        $categoriesRel[$categoryId] = $parts[0];
-                    } else {
-                        $categoriesRel[$categoryId] = '';
-                    }
+                if (!array_key_exists($categoryId, $this->loadedCategories)) {
+                    $this->loadedCategories[$categoryId] = $this->buildCategoryPath($categoryId, $storeId);
                 }
 
-                $temp['categories'][] = $categoriesRel[$categoryId];
+                $temp['categories'][] = $this->loadedCategories[$categoryId];
             }
 
             $products[$id] = $temp;
@@ -502,6 +495,31 @@ class Yoochoose implements YoochooseInterface
         }
 
         return $products;
+    }
+
+    /**
+     * @param $categoryId
+     * @param $storeId
+     * @return string
+     */
+    private function buildCategoryPath($categoryId, $storeId)
+    {
+        if (array_key_exists($categoryId, $this->loadedCategories)) {
+            return $this->loadedCategories[$categoryId];
+        }
+
+        /** @var Category $category */
+        $category = $this->om->get(CategoryRepositoryInterface::class)->get($categoryId, $storeId);
+        $categoryPath = $category->getName();
+        $parentId = $category->getParentId();
+        if ($parentId && $parentId !== $this->rootCategoryId) {
+            $categoryPath = $this->buildCategoryPath($parentId, $storeId) . '/' . $categoryPath;
+        }
+
+        $categoryPath = htmlspecialchars_decode($categoryPath);
+        $this->loadedCategories[$categoryId] = $categoryPath;
+
+        return $categoryPath;
     }
 
     /**
