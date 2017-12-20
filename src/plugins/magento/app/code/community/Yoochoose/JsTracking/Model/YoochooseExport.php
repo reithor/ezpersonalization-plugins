@@ -50,10 +50,6 @@ class  Yoochoose_JsTracking_Model_YoochooseExport extends Mage_Core_Model_Config
 
         $categoryCollection->clear();
 
-        if (empty($result)) {
-            http_response_code(204);
-        }
-
         return $result;
 
     }
@@ -127,10 +123,10 @@ class  Yoochoose_JsTracking_Model_YoochooseExport extends Mage_Core_Model_Config
                 }
             }
 
-            $imageInfo = getimagesize($temp['image']);
-            if (is_array($imageInfo)) {
-                $temp['image_size'] = $imageInfo[0] . 'x' . $imageInfo[1];
-            }
+//            $imageInfo = getimagesize($temp['image']);
+//            if (is_array($imageInfo)) {
+//                $temp['image_size'] = $imageInfo[0] . 'x' . $imageInfo[1];
+//            }
 
             //Categories
             foreach ($product->getCategoryCollection() as $category) {
@@ -139,13 +135,14 @@ class  Yoochoose_JsTracking_Model_YoochooseExport extends Mage_Core_Model_Config
                     continue;
                 }
 
-                $catId = end(explode('/', $categoryPath));
+                $paths = explode('/', $categoryPath);
+                $catId = end($paths);
                 if (!isset($categoriesRel[$catId])) {
+                    /** @var Mage_Catalog_Model_Category $cat */
                     $cat = Mage::getResourceModel('catalog/category_collection')
                         ->addAttributeToSelect('url_path')
                         ->addFieldToFilter('entity_id', $catId)
-                        ->getFirstItem()
-                        ->load();
+                        ->getFirstItem();
 
                     $url = $cat->getUrlPath();
                     $path = explode('.', $url);
@@ -165,10 +162,6 @@ class  Yoochoose_JsTracking_Model_YoochooseExport extends Mage_Core_Model_Config
         }
 
         $collection->clear();
-
-        if (empty($products)) {
-            http_response_code(204);
-        }
 
         return array_values($products);
     }
@@ -211,10 +204,6 @@ class  Yoochoose_JsTracking_Model_YoochooseExport extends Mage_Core_Model_Config
         }
 
         $vendorCollection->clear();
-
-        if (empty($vendors)) {
-            http_response_code(204);
-        }
 
         return $vendors;
     }
