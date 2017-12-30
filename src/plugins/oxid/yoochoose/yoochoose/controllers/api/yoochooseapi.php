@@ -74,7 +74,7 @@ class Yoochooseapi extends oxUBase
 
         $appSecret[] = $conf->getRequestParameter('ycauth');
 
-        if (in_array(md5($licenceKey), $appSecret)) {
+        if (in_array(md5($licenceKey), $appSecret, true)) {
             $this->limit = $conf->getRequestParameter('limit');
             $this->offset = $conf->getRequestParameter('offset');
             $this->language = $conf->getRequestParameter('lang');
