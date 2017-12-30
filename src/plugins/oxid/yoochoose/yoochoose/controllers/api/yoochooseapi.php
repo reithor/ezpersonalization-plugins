@@ -64,10 +64,17 @@ class Yoochooseapi extends oxUBase
             $licenceKey = $conf->getShopConfVar('ycLicenseKey');
         }
 
-        $header = apache_request_headers();
-        $appSecret = str_replace('Bearer ', '', $header['Authorization']);
+        $headers = apache_request_headers();
+        $appSecret = array();
+        $authorization = isset($headers['Authorization']) ? $headers['Authorization'] : '';
+        $appSecret[] = str_replace('Bearer ', '', $authorization);
 
-        if (md5($licenceKey) == $appSecret) {
+        $ycAuth = isset($headers['YCAuth']) ? $headers['YCAuth'] : '';
+        $appSecret[] = str_replace('Bearer ', '', $ycAuth);
+
+        $appSecret[] = $conf->getRequestParameter('ycauth');
+
+        if (in_array(md5($licenceKey), $appSecret)) {
             $this->limit = $conf->getRequestParameter('limit');
             $this->offset = $conf->getRequestParameter('offset');
             $this->language = $conf->getRequestParameter('lang');
