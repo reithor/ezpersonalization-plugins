@@ -2,17 +2,17 @@
 
 namespace Yoochoose\Tracking\Model\Api;
 
-
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\Controller\Result\JsonFactory;
-use Magento\Framework\Exception\LocalizedException;
-use Magento\Store\Model\StoreManagerInterface;
 use Magento\Config\Model\ResourceModel\Config;
-use Yoochoose\Tracking\Api\YoochooseExportInterface;
-use Yoochoose\Tracking\Logger\Logger;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\RequestInterface;
-
+use Magento\Framework\Controller\Result\JsonFactory;
+use Magento\Framework\Exception\AuthorizationException;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Phrase;
+use Magento\Store\Model\StoreManagerInterface;
+use Yoochoose\Tracking\Api\YoochooseExportInterface;
+use Yoochoose\Tracking\Logger\Logger;
 
 class YoochooseExport implements YoochooseExportInterface
 {
@@ -41,7 +41,7 @@ class YoochooseExport implements YoochooseExportInterface
     private $logger;
 
     /**
-     * @var RequestInterface
+     * @var \Magento\Framework\App\Request\Http
      */
     private $request;
 
@@ -87,19 +87,25 @@ class YoochooseExport implements YoochooseExportInterface
 
     /**
      * @param array $post
+     *
      * @return mixed
      */
 
     /**
      * Dispatch request
      *
-     * @throws \Magento\Framework\Exception\NotFoundException
+     * @return bool
+     * @throws AuthorizationException
+     * @throws LocalizedException
      */
     public function startExport()
     {
+        $this->authenticate();
+
         $post = [];
         $this->om->get('Magento\Framework\App\Config\ReinitableConfigInterface')->reinit();
         $enable = $this->scope->getValue('yoochoose/export/enable_flag');
+
         $post['limit'] = $this->request->getParam('size');
         $post['mandator'] = $this->request->getParam('mandator');
         $post['webHookUrl'] = $this->request->getParam('webHook');
@@ -141,6 +147,7 @@ class YoochooseExport implements YoochooseExportInterface
      * Generates random string with $length characters
      *
      * @param int $length
+     *
      * @return string
      */
     private function generateRandomString($length = 20)
@@ -155,17 +162,16 @@ class YoochooseExport implements YoochooseExportInterface
         return $randomString;
     }
 
-
     /**
      * triggerExport
      *
      * @param string @url
      * @param array $post
+     *
      * @return string execute
      */
     private function triggerExport($url, $post = array())
     {
-
         $this->logger->info('Trigger action called with URL: ' . $url . ' and parameters: ' . json_encode($post));
         $cURL = curl_init();
         curl_setopt($cURL, CURLOPT_URL, $url);
@@ -186,6 +192,7 @@ class YoochooseExport implements YoochooseExportInterface
      * Returns store ids as key and language as value based on madator id.
      *
      * @param array $mandator
+     *
      * @return array
      */
     private function getStoreData($mandator)
@@ -202,5 +209,23 @@ class YoochooseExport implements YoochooseExportInterface
         }
 
         return $result;
+    }
+
+    /**
+     * Check if sent token is correct
+     *
+     * @throws AuthorizationException
+     */
+    private function authenticate()
+    {
+        $authFallback = [];
+        $authFallback[] = str_replace('Bearer ', '', $this->request->getHeader('Authorization', ''));
+        $authFallback[] = str_replace('Bearer ', '', $this->request->getHeader('YCAuth', ''));
+        $authFallback[] = urldecode($this->request->getParam('ycauth', ''));
+        $token = $this->scope->getValue('yoochoose/auth/auth_token');
+
+        if (!in_array($token, $authFallback, true)) {
+            throw new AuthorizationException(new Phrase('Invalid authorization token.'));
+        }
     }
 }
