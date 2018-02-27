@@ -136,7 +136,7 @@ module.exports = function (grunt) {
             },
             dev_sw5_vojin: {
                 src: wrapModule('shopware', 5),
-                dest: 'c:/xampp/htdocs/v1/907/tracking.js'
+                dest: '/var/www/html/v1/907/tracking.js'
             },
             dev_oxid_vojin: {
                 src: wrapModule('oxid'),

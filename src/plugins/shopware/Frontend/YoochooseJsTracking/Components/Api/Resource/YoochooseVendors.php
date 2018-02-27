@@ -26,11 +26,9 @@ class YoochooseVendors extends Resource
      * @param integer $offset
      * @param integer $limit
      * @return array
-     * @throws \Shopware\Components\Api\Exception\PrivilegeException
      */
     public function getList($offset, $limit)
     {
-        $this->checkPrivilege('read');
         $builder = $this->getRepository()->createQueryBuilder('o1');
 
         $builder->setFirstResult($offset)

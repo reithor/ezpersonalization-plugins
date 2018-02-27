@@ -86,6 +86,10 @@ class YoochooseHelper
      * @param string $name
      * @param string $value
      * @param integer $shopId
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      */
     public function saveConfigParam($name, $value, $shopId)
     {
@@ -98,6 +102,7 @@ class YoochooseHelper
         }
 
         $element->setValue($value);
+        /** @var \Shopware\Models\Shop\Shop $shop */
         $shop = Shopware()->Models()->find('Shopware\Models\Shop\Shop', $shopId);
         $element->setShop($shop);
         $em->persist($element);
@@ -129,9 +134,7 @@ class YoochooseHelper
      */
     public function getDefaultShopId()
     {
-        return Shopware()->Db()->fetchOne(
-            'SELECT id FROM s_core_shops WHERE `default` = 1'
-        );
+        return Shopware()->Db()->fetchOne('SELECT id FROM s_core_shops WHERE `default` = 1');
     }
 
     /**
@@ -198,7 +201,11 @@ class YoochooseHelper
      * Returns shop base url based on shop id
      *
      * @param integer $shopId
+     *
      * @return string
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      */
     public function getShopUrl($shopId)
     {
@@ -211,12 +218,37 @@ class YoochooseHelper
         $shopUrl = 'http://' . $host;
         if(!empty($baseUrl)){
             $shopUrl .= $baseUrl;
-        }elseif(!empty($basePath)){
+        }else if(!empty($basePath)){
             $shopUrl .= $basePath;
         }
 
         return $shopUrl;
+    }
 
+    /**
+     * @param \Enlight_Controller_Request_Request $request
+     *
+     * @throws \Exception
+     * @return bool
+     */
+    public function authorizeUser(\Enlight_Controller_Request_Request $request)
+    {
+        /** @var \Shopware\Models\Yoochoose\Yoochoose[] $licenseKeys */
+        $licenseKeys = Shopware()->Models()->getRepository('Shopware\Models\Yoochoose\Yoochoose')
+            ->findBy(array('name' => 'licenseKey'));
+
+        $authFallback = array();
+        $authFallback[] = str_replace('Bearer ', '', $request->getHeader('Authorization') ? : '');
+        $authFallback[] = str_replace('Bearer ', '', $request->getHeader('YCAuth') ? : '');
+        $authFallback[] = urldecode($request->getParam('ycauth', ''));
+
+        foreach ($licenseKeys as $licenseKey) {
+            if (in_array(md5($licenseKey->getValue()), $authFallback, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -230,7 +262,7 @@ class YoochooseHelper
      * @param integer $exportIndex
      * @param integer $storeId
      * @param string $mandatorId
-     * @param lang
+     * @param $lang
      * @return array $postData
      */
     private function exportData($method, $postData, $directory, $limit = 0, $exportIndex = 0, $storeId,

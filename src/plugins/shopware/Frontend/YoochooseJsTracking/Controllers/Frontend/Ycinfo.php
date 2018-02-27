@@ -3,9 +3,9 @@
 use Shopware\Components\YoochooseHelper;
 
 /**
- * Class Shopware_Controllers_Api_Ycinfo
+ * Class Shopware_Controllers_Frontend_Ycinfo
  */
-class Shopware_Controllers_Api_Ycinfo extends Shopware_Controllers_Api_Rest
+class Shopware_Controllers_Frontend_Ycinfo extends Enlight_Controller_Action
 {
 
     /**
@@ -25,8 +25,20 @@ class Shopware_Controllers_Api_Ycinfo extends Shopware_Controllers_Api_Rest
         $this->helper = new YoochooseHelper();
     }
 
+    /**
+     * @throws Exception
+     */
     public function indexAction()
     {
+        $result = [];
+
+        if (!$this->helper->authorizeUser($this->request)) {
+            header('Content-Type: application/json', true, 400);
+            $result['success'] = false;
+            $result['message'] = 'Api key is incorrect.';
+            exit(json_encode($result));
+        }
+
         /** @var \Shopware\Models\Shop\Repository $shopRepository */
         $shopRepository = Shopware()->Models()->getRepository('Shopware\Models\Shop\Shop');
 
@@ -62,6 +74,6 @@ class Shopware_Controllers_Api_Ycinfo extends Shopware_Controllers_Api_Rest
             'os' => PHP_OS
         ];
 
-        $this->View()->assign($result);
+        exit(json_encode($result));
     }
 }

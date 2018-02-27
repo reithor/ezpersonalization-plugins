@@ -15,12 +15,9 @@ class YoochooseSubscribers extends Resource
      * @param $offset
      * @param $limit
      * @return array
-     * @throws \Shopware\Components\Api\Exception\PrivilegeException
      */
     public function getList($offset, $limit)
     {
-        $this->checkPrivilege('read');
-
         $builder = $this->getRepository()->createQueryBuilder('o1')
                 ->leftJoin('o1.customer', 'o2')
                 ->addSelect('o2');

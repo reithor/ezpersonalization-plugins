@@ -2,7 +2,6 @@
 
 namespace Shopware\Components\Api\Resource;
 
-use Shopware\Bundle\MediaBundle\MediaService;
 use Shopware\Components\YoochooseHelper;
 /**
  * Class YoochooseArticles
@@ -13,6 +12,8 @@ class YoochooseArticles extends Resource
 
     private $version = 4;
 
+    private $loadedCategories = array();
+
     /**
      * Retrieves Article Model Repository
      *
@@ -21,6 +22,16 @@ class YoochooseArticles extends Resource
     public function getRepository()
     {
         return $this->getManager()->getRepository('Shopware\Models\Article\Article');
+    }
+
+    /**
+     * Retrieves Article Model Repository
+     *
+     * @return \Shopware\Models\Category\Repository
+     */
+    public function getCategoryRepository()
+    {
+        return $this->getManager()->getRepository('Shopware\Models\Category\Category');
     }
 
     /**
@@ -46,12 +57,10 @@ class YoochooseArticles extends Resource
      * @param string $language
      * @return array
      * @throws \Exception
-     * @throws \Shopware\Components\Api\Exception\PrivilegeException
      */
     public function getList($offset, $limit, $category, $storeId, $language)
     {
         $helper = new YoochooseHelper();
-        $this->checkPrivilege('read');
         $this->version = (int)Shopware()->Config()->version;
         $base = $helper->getShopUrl($storeId) . '/';
         $mediaPath = Shopware()->Modules()->System()->sPathArticleImg;
@@ -106,13 +115,14 @@ class YoochooseArticles extends Resource
             $articleId = $art['id'];
             $path = $db->fetchOne($sql, array('sViewport=detail&sArticle=' . $articleId, 1,  $storeId));
             $path = strtolower($path);
+            $categories = $this->getArticleCategories($articleId);
             $item = array(
                 'id' => $articleId,
                 'supplierId' => $art['supplierId'],
                 'name' => $art['name'],
                 'description' => $art['description'],
                 'active' => $art['active'],
-                'categories' => array(),
+                'categories' => $this->getCategoryList(array_column($categories, 'id')),
                 'tags' => !empty($art['keywords']) ? explode(',', $art['keywords']) : array(),
                 'price' => null,
                 'url' => $base . $path,
@@ -127,10 +137,7 @@ class YoochooseArticles extends Resource
                 }
             }
 
-            $categories = $this->getArticleCategories($articleId);
-            foreach ($categories as $category) {
-                $item['categories'][] = $db->fetchOne($sql, array('sViewport=cat&sCategory=' . $category['id'], 1, $storeId));
-            }
+            $item['price'] = round($item['price'], 2);
 
             $images = $this->getArticleImages($articleId);
             if (!empty($images)) {
@@ -283,5 +290,26 @@ class YoochooseArticles extends Resource
         ));
 
         return $translation['data'][0];
+    }
+
+    /**
+     * Returns category list
+     *
+     * @param array $catIds
+     * @return array
+     */
+    protected function getCategoryList($catIds)
+    {
+        $categories = array();
+        foreach ($catIds as $catId) {
+            if (!array_key_exists($catId, $this->loadedCategories)) {
+                $paths = $this->getCategoryRepository()->getPathById($catId, 'name');
+                $this->loadedCategories[$catId] = implode('/', array_slice($paths, 1));
+            }
+
+            $categories[] = $this->loadedCategories[$catId];
+        }
+
+        return $categories;
     }
 }

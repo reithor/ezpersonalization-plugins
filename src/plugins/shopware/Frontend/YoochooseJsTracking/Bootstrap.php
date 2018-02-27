@@ -18,23 +18,9 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
 {
 
     /**
-     * List of API resources that are created by the plugin and used for export
-     * @var array
-     */
-    private $resources = array(
-        'yoochoosearticles' => array('read'),
-        'yoochoosecategories' => array('read'),
-        'yoochoosestorelocals' => array('read'),
-        'yoochoosesubscribers' => array('read'),
-        'supplier' => array('read'),
-        'yoochoosevendors' => array('read'),
-        'yoochooseinfo' => array('read'),
-    );
-
-    /**
      * This derived method is executed each time if this plugin will will be installed
      *
-     * @return bool
+     * @return array
      */
     public function install()
     {
@@ -42,7 +28,6 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
         $this->createMenu();
         $this->registerControllers();
         $this->registerEvents();
-        $this->registerResources();
 
         return array(
             'success' => true,
@@ -90,11 +75,11 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
      * Remove attributes from table
      *
      * @return bool
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function uninstall()
     {
         $this->removeDatabase();
-        $this->removeResources();
 
         /* @var $rootNode  \Shopware\Models\Menu\Menu */
         $menuItem = $this->Menu()->findOneBy(array('label' => 'Yoochoose'));
@@ -111,7 +96,7 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
      */
     public function getVersion()
     {
-        return '2.3.0';
+        return '2.4.0';
     }
 
     /**
@@ -208,64 +193,6 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
     }
 
     /**
-     * Registers resources and creates new user role and assigns resource privileges to that role. It also creates new user
-     * with newly created role.
-     */
-    public function registerResources()
-    {
-        $em = Shopware()->Models();
-        $role = $em->getRepository('Shopware\Models\User\Role')->findOneBy(array('name' => 'yoochoose_role'));
-
-        // Creating new user role
-        if ($role == null) {
-            $role = new \Shopware\Models\User\Role();
-            $role->setAdmin(0);
-            $role->setName('yoochoose_role');
-            $role->setDescription('Allows Yoochoose created user to start export.');
-            $role->setSource('custom');
-            $role->setEnabled(1);
-
-            $em->persist($role);
-            $em->flush();
-        }
-
-        try {
-            $this->createAclPermissions($role);
-        } catch (Exception $e) {
-            Shopware()->PluginLogger()->error("Couldn't retrieve instance of ACL service.");
-        }
-
-        $this->createApiUser($role);
-    }
-
-    /**
-     * Removes resources and role
-     */
-    public function removeResources()
-    {
-        $em = Shopware()->Models();
-        $user = $em->getRepository('Shopware\Models\User\User')->findOneBy(array('username' => 'YoochooseApiUser'));
-        if ($user) {
-            $em->remove($user);
-        }
-
-        $role = $em->getRepository('Shopware\Models\User\Role')->findOneBy(array('name' => 'yoochoose_role'));
-        if ($role) {
-            $em->remove($role);
-        }
-
-        foreach ($this->resources as $resource => $privileges) {
-            $resourceModel = $em->getRepository('Shopware\Models\User\Resource')->findOneBy(array('name' => $resource));
-            if (!$resourceModel) {
-                continue;
-            }
-
-            $em->remove($resourceModel->getPrivileges()->first());
-            $em->remove($resourceModel);
-        }
-    }
-
-    /**
      * Add template path
      *
      * @param Enlight_Event_EventArgs $args
@@ -310,13 +237,8 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
         $this->registerController('Frontend', 'Yoochoose');
         $this->registerController('Frontend', 'Yctrigger');
         $this->registerController('Backend', 'Yoochoose');
-        $this->registerController('Api', 'Ycsubscribers');
-        $this->registerController('Api', 'Ycarticles');
-        $this->registerController('Api', 'Yccategories');
-        $this->registerController('Api', 'Ycstorelocals');
-        $this->registerController('Api', 'Ycvendors');
-        $this->registerController('Api', 'Ycexport');
-        $this->registerController('Api', 'Ycinfo');
+        $this->registerController('Frontend', 'Ycexport');
+        $this->registerController('Frontend', 'Ycinfo');
     }
 
     private function createDatabase()
@@ -478,79 +400,5 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
         $language = $shop->getLocale()->getLocale();
 
         return str_replace('_', '-', $language);
-    }
-
-    /**
-     * @param \Shopware\Models\User\Role $role
-     * @throws Exception
-     */
-    private function createAclPermissions(\Shopware\Models\User\Role $role)
-    {
-        $pluginId = $this->getId();
-        $em = Shopware()->Models();
-
-        /** @var \Shopware_Components_Acl $aclService */
-        $aclService = Shopware()->Container()->get('acl');
-        foreach ($this->resources as $resource => $privileges) {
-            try {
-                $aclService->createResource($resource, $privileges, null, $pluginId);
-                $resourceModel = $em->getRepository('Shopware\Models\User\Resource')->findOneBy(array('name' => $resource));
-
-                $em->refresh($resourceModel);
-                $rule = new Shopware\Models\User\Rule();
-                $rule->setRole($role);
-                $rule->setResource($resourceModel);
-                $rule->setPrivilege($resourceModel->getPrivileges()->first());
-
-                $em->persist($rule);
-            } catch (Enlight_Exception $e) {
-                Shopware()->PluginLogger()->info($e->getMessage());
-            }
-        }
-    }
-
-    /**
-     * Creates API user with given role
-     * @param \Shopware\Models\User\Role $role
-     */
-    private function createApiUser(\Shopware\Models\User\Role $role)
-    {
-        $em = Shopware()->Models();
-
-        /* @var $apiUser Shopware\Models\User\User */
-        $apiUser = $em->getRepository('Shopware\Models\User\User')->findOneBy(array('username' => 'YoochooseApiUser'));
-        if ($apiUser == null) {
-            $apiUser = new \Shopware\Models\User\User();
-        }
-
-        $encoder = Shopware()->PasswordEncoder();
-        $apiUser->setRole($role);
-        $apiUser->setName('YoochooseApiUser');
-        $apiUser->setUsername('YoochooseApiUser');
-        $apiUser->setApiKey($this->generateRandomString());
-        $apiUser->setEncoder($encoder->getDefaultPasswordEncoderName());
-        $apiUser->setPassword($encoder->encodePassword($this->generateRandomString(10), $apiUser->getEncoder()));
-
-        $apiUser->setLocaleId(0);
-        $em->persist($apiUser);
-        $em->flush();
-    }
-
-    /**
-     * Generates random string with $length characters
-     *
-     * @param int $length
-     * @return string
-     */
-    private function generateRandomString($length = 40)
-    {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $charactersLength = strlen($characters);
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, $charactersLength - 1)];
-        }
-
-        return $randomString;
     }
 }

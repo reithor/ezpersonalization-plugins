@@ -32,10 +32,6 @@ Ext.define('Shopware.apps.Yoochoose.view.Config', {
             {
                 xtype: 'script-settings',
                 record: me.record
-            },
-            {
-                xtype: 'api-settings',
-                record: me.record
             }
         ];
     }

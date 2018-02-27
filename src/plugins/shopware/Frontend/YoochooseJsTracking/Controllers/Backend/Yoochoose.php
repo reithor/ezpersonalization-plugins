@@ -1,6 +1,5 @@
 <?php
 
-use Shopware\Components\YoochooseHelper;
 use Shopware\Components\YoochooseLogger;
 
 class Shopware_Controllers_Backend_Yoochoose extends Shopware_Controllers_Backend_ExtJs
@@ -91,13 +90,6 @@ class Shopware_Controllers_Backend_Yoochoose extends Shopware_Controllers_Backen
                 // $data['endpoint'] = Shopware()->Front()->Router()->assemble();
             }
 
-            /* @var $user Shopware\Models\User\User */
-            $user = $this->em->getRepository('Shopware\Models\User\User')->findOneBy(
-                array('username' => 'YoochooseApiUser')
-            );
-
-            $data[$shopId]['apiKey'] = $user->getApiKey();
-            $data[$shopId]['username'] = $user->getUsername();
             $data[$shopId]['shop'] = $shop->getName();
             $data[$shopId]['shopId'] = $shopId;
 
@@ -124,15 +116,7 @@ class Shopware_Controllers_Backend_Yoochoose extends Shopware_Controllers_Backen
                 }
             }
 
-            /* @var $user Shopware\Models\User\User */
-            $user = $this->em->getRepository('Shopware\Models\User\User')->findOneBy(
-                array('username' => 'YoochooseApiUser')
-            );
-
             foreach ($data as $key => $d) {
-                $d['apiKey'] = $user->getApiKey();
-                $d['username'] = $user->getUsername();
-
                 $this->validateLicence($d);
 
                 /** @var Shopware\Models\Shop\Shop $shop */
@@ -182,8 +166,8 @@ class Shopware_Controllers_Backend_Yoochoose extends Shopware_Controllers_Backen
                 'type' => 'SHOPWARE',
                 'pluginId' => $data['pluginId'],
                 'endpoint' => $data['endpoint'],
-                'appKey' => $data['username'],
-                'appSecret' => $data['apiKey'],
+                'appKey' => $customerId,
+                'appSecret' => md5($licenseKey),
             ),
             'frontend' => array(
                 'design' => $data['design'],
@@ -194,9 +178,8 @@ class Shopware_Controllers_Backend_Yoochoose extends Shopware_Controllers_Backen
         );
 
         $url = self::YOOCHOOSE_LICENSE_URL . $customerId . '/plugin/update?createIfNeeded=true&fallbackDesign=true';
-        $response = $this->executeCall($url, $body, $customerId, $licenseKey, $data['logSeverity']);
 
-        return $response;
+        return $this->executeCall($url, $body, $customerId, $licenseKey, $data['logSeverity']);
     }
 
     /**

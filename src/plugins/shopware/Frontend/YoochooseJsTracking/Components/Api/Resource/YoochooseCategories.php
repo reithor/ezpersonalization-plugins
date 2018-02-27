@@ -28,12 +28,10 @@ class YoochooseCategories extends Resource
      * @param integer $category
      * @param integer $storeId
      * @return array
-     * @throws \Shopware\Components\Api\Exception\PrivilegeException
      */
     public function getList($offset, $limit, $category, $storeId)
     {
         $helper = new YoochooseHelper();
-        $this->checkPrivilege('read');
         $db = Shopware()->Db();
         $base = $helper->getShopUrl($storeId) . '/';
         $builder = $this->getRepository()->createQueryBuilder('o1')
