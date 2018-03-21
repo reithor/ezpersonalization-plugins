@@ -64,8 +64,8 @@ class Shopware_Controllers_Frontend_Yctrigger extends Enlight_Controller_Action
             $response['message'] = 'Passwords do not match!';
         }
 
-        $this->Response()->setBody($response);
-        $this->Response()->sendResponse();
+        header('Content-Type: application/json');
+        exit(json_encode($response));
     }
 
     /**
