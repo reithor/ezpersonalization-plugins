@@ -20,12 +20,12 @@ var YC_RECO_TEMPLATES = {
             target: '.content-main--inner',
             position: 'APPEND',
             consts: {
-                title: {'': 'Personal', de: 'Personal'}
+                title: {'': 'Related', de: 'Related'}
             },
             priority: 0,
             rows: 1,
             columns: 10,
-            scenario: 'cross_rate',
+            scenario: 'related_products',
             enabled : true
         },
         crossselling: {
@@ -46,7 +46,7 @@ var YC_RECO_TEMPLATES = {
                 title: {'': 'Cross Sell', de: 'Cross Sell'}
             },
             columns: 10,
-            scenario: 'cross_sell',
+            scenario: 'cross_selling',
             enabled : true
         },
         personal : {
@@ -67,7 +67,7 @@ var YC_RECO_TEMPLATES = {
             },
             rows: 1,
             columns: 10,
-            scenario: 'personalized',
+            scenario: 'personal',
             enabled : true
         },
         upselling: {
@@ -88,7 +88,7 @@ var YC_RECO_TEMPLATES = {
                 title: {'': 'Upselling', de: 'Upselling'}
             },
             columns: 5,
-            scenario: 'ultimately_bought',
+            scenario: 'up_selling',
             enabled : true
         },
         bestseller: {
@@ -109,7 +109,7 @@ var YC_RECO_TEMPLATES = {
                 title: {'': 'Bestseller', de: 'Bestseller'}
             },
             columns: 5,
-            scenario: 'landing_page',
+            scenario: 'bestseller',
             enabled : true
         },
         category_page: {
