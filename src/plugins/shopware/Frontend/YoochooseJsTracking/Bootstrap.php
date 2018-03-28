@@ -96,7 +96,7 @@ class Shopware_Plugins_Frontend_YoochooseJsTracking_Bootstrap extends Shopware_C
      */
     public function getVersion()
     {
-        return '2.5.3';
+        return '2.5.4';
     }
 
     /**
