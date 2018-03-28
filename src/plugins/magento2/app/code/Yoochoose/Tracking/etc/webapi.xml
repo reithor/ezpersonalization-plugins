@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Webapi/etc/webapi.xsd">
+    <!-- Example: curl http://<magento_host>/rest/V1/yoochoose/subscribers -->
+    <route url="/V1/yoochoose/subscribers" method="GET">
+        <service class="Yoochoose\Tracking\Api\YoochooseInterface" method="getSubscribers"/>
+        <resources>
+            <resource ref="Magento_Customer::customer"/>
+        </resources>
+    </route>
+    <!-- Example: curl http://<magento_host>/rest/V1/yoochoose/products -->
+    <route url="/V1/yoochoose/products" method="GET">
+        <service class="Yoochoose\Tracking\Api\YoochooseInterface" method="getProducts"/>
+        <resources>
+            <resource ref="Magento_Catalog::products"/>
+        </resources>
+    </route>
+    <!-- Example: curl http://<magento_host>/rest/V1/yoochoose/stores -->
+    <route url="/V1/yoochoose/stores" method="GET">
+        <service class="Yoochoose\Tracking\Api\YoochooseInterface" method="getStoreViews"/>
+        <resources>
+            <resource ref="Magento_Backend::stores"/>
+        </resources>
+    </route>
+    <!-- Example: curl http://<magento_host>/rest/V1/yoochoose/categories -->
+    <route url="/V1/yoochoose/categories" method="GET">
+        <service class="Yoochoose\Tracking\Api\YoochooseInterface" method="getCategories"/>
+        <resources>
+            <resource ref="Magento_Catalog::categories"/>
+        </resources>
+    </route>
+    <!-- Example: curl http://<magento_host>/rest/V1/yoochoose/vendors -->
+    <route url="/V1/yoochoose/vendors" method="GET">
+        <service class="Yoochoose\Tracking\Api\YoochooseInterface" method="getVendors"/>
+        <resources>
+            <resource ref="Magento_Catalog::products"/>
+        </resources>
+    </route>
+    <!-- Example: curl http://<magento_host>/rest/V1/yoochoose/info -->
+    <route url="/V1/yoochoose/info" method="GET">
+        <service class="Yoochoose\Tracking\Api\YoochooseInfoInterface" method="getInfo"/>
+        <resources>
+            <resource ref="Magento_Catalog::products"/>
+        </resources>
+    </route>
+    <!-- Example: curl http://<magento_host>/rest/V1/yoochoose/export -->
+    <route url="/V1/yoochoose/export" method="GET">
+        <service class="Yoochoose\Tracking\Api\YoochooseExportInterface" method="startExport"/>
+        <resources>
+            <resource ref="anonymous"/>
+        </resources>
+    </route>
+</routes>

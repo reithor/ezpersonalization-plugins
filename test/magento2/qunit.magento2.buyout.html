@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="../qunit/qunit.css" rel="stylesheet" type="text/css"/>
+    <script src="../qunit/qunit.js"></script>
+
+    <script src="../../dist/yc-tracking.js"></script>
+
+    <script type="text/javascript">
+        var yc_config_object = {
+            "url": "http:\/\/magento2-test.yoochoose.net\/",
+            "trackid": "1",
+            "orderData": [
+                {"id": "467", "qty": "1.0000", "price": "24.0000", "currency": "EUR"},
+                {"id": "15", "qty": "3.0000", "price": "7.0000", "currency": "EUR"},
+                {"id": "23", "qty": "1.0000", "price": "22.0000", "currency": "EUR"}
+            ],
+            "itemType": "1",
+            "language": "en-US",
+            "currentPage": "buyout",
+            "productIds": ""
+        };
+    </script>
+</head>
+<body>
+
+<div class="magento-test-structure" style="display: none;">
+    <div class="main"></div>
+</div>
+
+<h1 id="qunit-header">Buyout</h1>
+
+<h2 id="qunit-banner"></h2>
+
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture"></div>
+<script>
+    (function () {
+        module('Shop Cart Page');
+    })();
+</script>
+</body>
+</html>
