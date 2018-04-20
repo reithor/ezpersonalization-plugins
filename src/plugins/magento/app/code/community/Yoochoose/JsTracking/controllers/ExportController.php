@@ -38,9 +38,9 @@ class Yoochoose_JsTracking_ExportController extends Mage_Core_Controller_Front_A
     public function indexAction()
     {
         $authFallback = [];
-        $header = apache_request_headers();
-        $authFallback[] = str_replace('Bearer ', '', $header['Authorization']);
-        $authFallback[] = str_replace('Bearer ', '', $header['YCAuth']);
+        $headers = apache_request_headers();
+        $authFallback[] = str_replace('Bearer ', '', isset($headers['Authorization']) ? $headers['Authorization'] : '');
+        $authFallback[] = str_replace('Bearer ', '', isset($headers['YCAuth']) ? $headers['YCAuth'] : '');
         $authFallback[] = urldecode($this->getRequest()->getParam('ycauth', ''));
         $licenceKey = Mage::getStoreConfig('yoochoose/general/license_key');
 
