@@ -1,4 +1,4 @@
-# YooChoose Plugins Library
+# eZ Personalization Plugins Library
 
 Add readme!
 
