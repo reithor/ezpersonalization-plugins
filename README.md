@@ -1,4 +1,4 @@
-# YooChoose JS Tracking Library
+# YooChoose Plugins Library
 
 Add readme!
 
