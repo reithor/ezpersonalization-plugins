@@ -50,4 +50,4 @@ $parsed = json_decode($contents, true);
 $version = $parsed['version'];
 
 $rootPath = dirname(__FILE__) . '/app/code/Yoochoose';
-makeArchiveFile($rootPath, "Yoochoose.zip");
+makeArchiveFile($rootPath, "ezsystems_magento2-tracking.zip");
