@@ -1,12 +1,25 @@
 {
   "name": "ezsystems/magento2-tracking",
-  "description": "",
+  "description": "ezsystems personalization (former YOOCHOOSE) solution for personalized recommendations, personalized search und triggered notifications",
+  "keywords": ["marketing","personalization","recommendations","search","notifications"],
+  "homepage": "https://github.com/ezsystems/ezpersonalization-plugins/tree/master/src/plugins/magento2/app/code/Yoochoose/Tracking",
   "type": "magento2-module",
   "version": "2.0.3",
   "license": [
     "OSL-3.0",
     "AFL-3.0"
   ],
+  "authors": [
+     {
+       "name": "eZ Systems/YOOCHOOSE",
+       "email": "support@yoochoose.com",
+       "homepage": "https://ez.no/Products/eZ-Personalization",
+       "role": "Developer"
+     }
+  ],
+  "require": {
+    "php": ">=5.6.0"
+  },
   "autoload": {
     "files": [
       "registration.php"
