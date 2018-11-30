@@ -1,0 +1,19 @@
+{
+  "name": "yoochoose/oxid",
+  "description": "Yoochoose Oxid plugin",
+  "type": "oxideshop-module",
+  "version": "2.0.0",
+  "require": {
+    "php": ">=5.6"
+  },
+  "autoload": {
+    "psr-4": {
+      "Yoochoose\\Oxid\\": "../../../source/modules/yc/yoochoose"
+    }
+  },
+  "extra": {
+    "oxideshop": {
+      "target-directory": "yc/yoochoose"
+    }
+  }
+}

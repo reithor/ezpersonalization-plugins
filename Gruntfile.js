@@ -1,5 +1,6 @@
 /*global module:false*/
 module.exports = function (grunt) {
+    var LIBRARY_NAME = 'yc-tracking';
 
     // Helper methods
     function sub(str) {
@@ -25,8 +26,6 @@ module.exports = function (grunt) {
 
         return result;
     }
-
-    var LIBRARY_NAME = 'yc-tracking';
 
     // Gets inserted at the top of the generated files in dist/.
     var BANNER = [
@@ -106,6 +105,13 @@ module.exports = function (grunt) {
                 src: wrapModule('shopware', 5),
                 dest: sub('dist/%s.js')
             },
+            dev_oxid6: {
+                options: {
+                    banner: BANNER
+                },
+                src: wrapModule('oxid', 6),
+                dest: sub('dist/%s.js')
+            },
             dev_mg_vojin: {
                 src: wrapModule('magento'),
                 dest: 'c:/xampp/htdocs/v1/903/tracking.js'
@@ -141,6 +147,10 @@ module.exports = function (grunt) {
             dev_oxid_vojin: {
                 src: wrapModule('oxid'),
                 dest: '/var/www/html/v1/908/tracking.js'
+            },
+            dev_oxid6_vojin: {
+                src: wrapModule('oxid', 6),
+                dest: '/var/www/html/v1/1574/tracking.js'
             }
         },
         uglify: {
@@ -212,6 +222,10 @@ module.exports = function (grunt) {
         'concat:dev_sw5',
         'uglify:dist'
     ]);
+    grunt.registerTask('build-oxid6', [
+        'concat:dev_oxid6',
+        'uglify:dist'
+    ]);
     grunt.registerTask('build-magento-vojin', [
         'concat:dev_mg_vojin'
     ]);
@@ -238,5 +252,8 @@ module.exports = function (grunt) {
     ]);
     grunt.registerTask('build-oxid-vojin', [
         'concat:dev_oxid_vojin'
+    ]);
+    grunt.registerTask('build-oxid6-vojin', [
+        'concat:dev_oxid6_vojin'
     ]);
 };

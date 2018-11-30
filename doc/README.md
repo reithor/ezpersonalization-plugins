@@ -6,6 +6,7 @@ For specific module use README.md files in module's directory.
 * Magento : /var/log/yoochoose.log
 * Shopware: /logs/yoochoose.log
 * OXID: /log/yoochoose.log
+* OXID 6: source/log/yoochoose.log
 * WooCommerce: /wp-content/uploads/wc-logs/yoochoose.log
 
 ## Handlebars template property names

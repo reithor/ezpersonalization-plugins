@@ -1,0 +1,8 @@
+.idea
+node_modules
+syntax: glob
+.buildpath
+.project
+.settings
+dist/
+npm-debug.log
