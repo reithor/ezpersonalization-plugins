@@ -224,7 +224,7 @@ class Export extends Base
     protected function getCategoryPath(Category $category, $langId)
     {
         $lang = new Language();
-        $temp = str_replace($this->getConfig()->getShopMainUrl(), '', $category->getLink($langId));
+        $temp = str_replace($this->getConfig()->getShopUrl(), '', $category->getLink($langId));
         foreach ($lang->getLanguageArray() as $val) {
             $temp = str_replace($val->abbr . '/', '', $temp);
         }
