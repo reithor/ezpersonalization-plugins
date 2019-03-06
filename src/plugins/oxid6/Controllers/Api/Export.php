@@ -64,7 +64,7 @@ class Export extends BaseApi
             $oxConfig->saveShopConfVar('str', 'ycPassword', $post['password'], $oxConfig->getShopId(),
                 'module:yoochoose');
 
-            $baseUrl = $oxConfig->getShopUrl() ?: $oxConfig->getShopMainUrl();
+            $baseUrl = $oxConfig->getShopUrl();
             
             $this->triggerExport($baseUrl . 'Yoochoose/Trigger?' . http_build_query($post));
         } else {
