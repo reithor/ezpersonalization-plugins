@@ -18,10 +18,7 @@ class Articles extends BaseApi
      * @var array
      */
     private $loadedCategories = [];
-    /**
-     * @var string
-     */
-    private $shopUrl;
+
     /**
      * @var array
      */
@@ -51,7 +48,6 @@ class Articles extends BaseApi
      */
     protected function getArticles()
     {
-        $this->shopUrl = $this->getConfig()->getShopMainUrl();
         $lang = new Language();
         $this->languageArray = $lang->getLanguageArray();
         $abbr = $lang->getLanguageAbbr();
