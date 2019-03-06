@@ -22,11 +22,6 @@ class Export extends Base
     private $loadedCategories = [];
 
     /**
-     * @var string
-     */
-    private $shopUrl;
-
-    /**
      * Returns list of categories that are visible on frontend
      *
      * @param string $shopId
@@ -83,7 +78,6 @@ class Export extends Base
     {
         $conf = $this->getConfig();
         $langId = $this->getLanguageId($language);
-        $this->shopUrl = $this->getConfig()->getShopMainUrl();
         $tableViewNameGenerator = new TableViewNameGenerator();
         $sArtTable = $tableViewNameGenerator->getViewName('oxarticles', $language, $shopId);
         $conf->setShopId($shopId);
