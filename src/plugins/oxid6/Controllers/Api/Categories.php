@@ -67,7 +67,7 @@ class Categories extends BaseApi
     protected function getCategoryList(Category $category)
     {
         $lang = new Language();
-        $temp = str_replace($this->getConfig()->getShopMainUrl(), '', $category->getLink());
+        $temp = str_replace($this->getConfig()->getShopUrl(), '', $category->getLink());
         foreach ($lang->getLanguageArray() as $val) {
             $temp = str_replace($val->abbr . '/', '', $temp);
         }
